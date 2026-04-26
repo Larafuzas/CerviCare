@@ -113,7 +113,7 @@
 
             <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg">
                 <h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Tendencia de Esfuerzo</h3>
-                <p class="text-[10px] text-gray-400 mb-3 text-center">Media de reps por ejercicio (Líneas Paralelas)</p>
+                <p class="text-[10px] text-gray-400 mb-3 text-center">Media de reps por ejercicio (Figuras geométricas)</p>
                 <div class="relative h-48 w-full"><canvas id="grafico-tendencia"></canvas></div>
             </div>
 
@@ -125,7 +125,7 @@
 
             <div class="bg-cardBg p-4 rounded-xl border border-gray-700 shadow-lg">
                 <h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Desempeño por Ejercicio</h3>
-                <p class="text-[10px] text-gray-400 mb-3 text-center">Ranking total de repeticiones (Filtro aplicado)</p>
+                <p class="text-[10px] text-gray-400 mb-3 text-center">Ranking total de repeticiones</p>
                 <div class="relative h-80 w-full"><canvas id="grafico-ejercicios"></canvas></div>
             </div>
         </section>
@@ -197,7 +197,6 @@
         let calMonth = new Date().getMonth(), calYear = new Date().getFullYear();
         const nombresMeses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
-        // VARIABLE GLOBAL DE NAVEGACIÓN HISTÓRICA
         let diaHistorialActual = getLocalDateStr();
 
         window.onload = () => { 
@@ -360,8 +359,10 @@
         }
 
         async function renderizarGraficos() {
-            const todos = await db.registros.toArray(); const fPeriodo = document.getElementById('filtro-periodo').value;
-            let fInicioStr = null, fFinStr = null; const hoyStr = getLocalDateStr();
+            const todos = await db.registros.toArray(); 
+            const fPeriodo = document.getElementById('filtro-periodo').value;
+            let fInicioStr = null, fFinStr = null; 
+            const hoyStr = getLocalDateStr();
             
             if (fPeriodo === 'hoy') { fInicioStr = hoyStr; fFinStr = hoyStr; }
             else if (fPeriodo === 'dia_concreto') { const d = document.getElementById('fecha-unica').value; if(d) { fInicioStr = d; fFinStr = d; } }
@@ -385,7 +386,6 @@
                         if (reg.fase.includes('Movilidad')) datosEquilibrio['Movilidad'] += reg.repeticiones;
                         if (reg.fase.includes('Fortalecimiento')) datosEquilibrio['Fortalecimiento'] += reg.repeticiones;
                         if (reg.fase.includes('Estiramientos')) datosEquilibrio['Estiramientos'] += reg.repeticiones;
-
                         if (!datosEjercicios[reg.ejercicio]) datosEjercicios[reg.ejercicio] = 0;
                         datosEjercicios[reg.ejercicio] += reg.repeticiones;
                     }
@@ -426,11 +426,12 @@
             
             if (fTipo === 'todos') {
                 datasetsLinea = [
-                    { label: 'Movilidad', data: fechas.map(f => datosTendenciaCat['Movilidad'][f] || 0), borderColor: '#2dd4bf', backgroundColor: 'rgba(45, 212, 191, 0.1)', fill: false, tension: 0.4 },
-                    { label: 'Fortalecimiento', data: fechas.map(f => datosTendenciaCat['Fortalecimiento'][f] || 0), borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: false, tension: 0.4 },
-                    { label: 'Estiramientos', data: fechas.map(f => datosTendenciaCat['Estiramientos'][f] || 0), borderColor: '#c084fc', backgroundColor: 'rgba(192, 132, 252, 0.1)', fill: false, tension: 0.4 }
+                    { label: 'Movilidad', pointStyle: 'circle', pointRadius: 5, pointHoverRadius: 7, data: fechas.map(f => datosTendenciaCat['Movilidad'][f] || 0), borderColor: '#2dd4bf', backgroundColor: 'rgba(45, 212, 191, 0.1)', fill: false, tension: 0.4 },
+                    { label: 'Fortalecimiento', pointStyle: 'rect', pointRadius: 5, pointHoverRadius: 7, data: fechas.map(f => datosTendenciaCat['Fortalecimiento'][f] || 0), borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: false, tension: 0.4 },
+                    { label: 'Estiramientos', pointStyle: 'triangle', pointRadius: 6, pointHoverRadius: 8, data: fechas.map(f => datosTendenciaCat['Estiramientos'][f] || 0), borderColor: '#c084fc', backgroundColor: 'rgba(192, 132, 252, 0.1)', fill: false, tension: 0.4 }
                 ];
 
+                // ALGORITMO JITTER VERTICAL
                 for (let i = 0; i < fechas.length; i++) {
                     let mapVal = {};
                     datasetsLinea.forEach((ds, dsIdx) => { let v = ds.data[i]; if (v > 0) { if(!mapVal[v]) mapVal[v] = []; mapVal[v].push(dsIdx); } });
@@ -443,15 +444,15 @@
                     });
                 }
             } else {
-                let color = '#2dd4bf', bg = 'rgba(45, 212, 191, 0.2)';
-                if (fTipo === 'Fortalecimiento') { color = '#3b82f6'; bg = 'rgba(59, 130, 246, 0.2)'; }
-                if (fTipo === 'Estiramientos') { color = '#c084fc'; bg = 'rgba(192, 132, 252, 0.2)'; }
-                datasetsLinea = [{ label: fTipo, data: fechas.map(f => datosTendenciaCat[fTipo][f] || 0), borderColor: color, backgroundColor: bg, fill: true, tension: 0.4 }];
+                let color = '#2dd4bf', bg = 'rgba(45, 212, 191, 0.2)', pStyle = 'circle';
+                if (fTipo === 'Fortalecimiento') { color = '#3b82f6'; bg = 'rgba(59, 130, 246, 0.2)'; pStyle = 'rect'; }
+                if (fTipo === 'Estiramientos') { color = '#c084fc'; bg = 'rgba(192, 132, 252, 0.2)'; pStyle = 'triangle'; }
+                datasetsLinea = [{ label: fTipo, pointStyle: pStyle, pointRadius: 5, pointHoverRadius: 7, data: fechas.map(f => datosTendenciaCat[fTipo][f] || 0), borderColor: color, backgroundColor: bg, fill: true, tension: 0.4 }];
             }
 
             chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), { 
                 type: 'line', data: { labels: fechas, datasets: datasetsLinea }, 
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: fTipo === 'todos', labels: { color: '#cbd5e1', boxWidth: 12 } }, tooltip: { callbacks: { label: function(context) { let realVal = Math.round(context.raw * 10) / 10; return context.dataset.label + ': ' + realVal.toFixed(1) + ' medias/ej'; } } }, datalabels: { display: false } } } 
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: fTipo === 'todos', labels: { usePointStyle: true, color: '#cbd5e1', boxWidth: 10 } }, tooltip: { callbacks: { label: function(context) { let realVal = Math.round(context.raw * 10) / 10; return context.dataset.label + ': ' + realVal.toFixed(1) + ' medias/ej'; } } }, datalabels: { display: false } } } 
             });
             
             if (chartEquilibrio) chartEquilibrio.destroy();
@@ -460,6 +461,7 @@
                 options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } }, tooltip: { callbacks: { label: function(context) { return ' ' + context.label + ': ' + context.parsed + ' medias/ej'; } } }, datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (value, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); if(sum === 0 || value === 0) return ''; return Math.round((value / sum) * 100) + '%'; } } } } 
             });
 
+            // GRÁFICO BARRAS ESTILIZADAS CON PADDING IZQUIERDO CORREGIDO
             if (chartEjercicios) chartEjercicios.destroy();
             const nombresEj = Object.keys(datosEjercicios).sort((a,b) => datosEjercicios[b] - datosEjercicios[a]);
             const valsEj = nombresEj.map(e => datosEjercicios[e]);
@@ -469,14 +471,25 @@
                 data: { labels: nombresEj, datasets: [{ label: 'Repeticiones Totales', data: valsEj, backgroundColor: '#2dd4bf', barThickness: 6, borderRadius: 3 }] },
                 options: { 
                     indexAxis: 'y', responsive: true, maintainAspectRatio: false, 
-                    layout: { padding: { top: 15, right: 30, left: 0, bottom: 0 } },
+                    // Se añade padding left para que los nombres tengan espacio y no se corten
+                    layout: { padding: { top: 15, right: 30, left: 70, bottom: 0 } },
                     scales: { x: { display: false, beginAtZero: true }, y: { display: true, grid: { display: false, drawBorder: false }, border: { display: false }, ticks: { display: false } } }, 
-                    plugins: { legend: { display: false }, tooltip: { enabled: false }, datalabels: { display: true, labels: { nombre: { align: 'top', anchor: 'start', offset: 2, formatter: (v, ctx) => ctx.chart.data.labels[ctx.dataIndex], color: '#cbd5e1', font: { size: 10 } }, valor: { align: 'end', anchor: 'end', offset: 4, formatter: Math.round, color: '#2dd4bf', font: { weight: 'bold', size: 11 } } } } } 
+                    plugins: { 
+                        legend: { display: false }, 
+                        tooltip: { enabled: false }, 
+                        datalabels: { 
+                            display: true, 
+                            labels: { 
+                                nombre: { align: 'top', anchor: 'start', offset: 2, formatter: (v, ctx) => ctx.chart.data.labels[ctx.dataIndex], color: '#cbd5e1', font: { size: 11 } }, 
+                                valor: { align: 'end', anchor: 'end', offset: 4, formatter: Math.round, color: '#2dd4bf', font: { weight: 'bold', size: 11 } } 
+                            } 
+                        } 
+                    } 
                 }
             });
         }
 
-        // --- SISTEMA DE NAVEGACIÓN DIARIA DEL HISTORIAL ---
+        // --- SISTEMA DE NAVEGACIÓN DIARIA Y EDICIÓN ---
         function cambiarDiaHistorial(offset) {
             let d = new Date(diaHistorialActual);
             d.setDate(d.getDate() + offset);
@@ -492,10 +505,8 @@
         }
 
         async function cargarHistorial() {
-            // Filtrar solo los registros que correspondan al día seleccionado (diaHistorialActual)
             const t = await db.registros.where('fecha').equals(diaHistorialActual).toArray();
-            t.reverse(); // Mostrar los más recientes de ese día arriba
-            
+            t.reverse(); 
             const l = document.getElementById('lista-registros'); l.innerHTML = '';
             
             if (t.length === 0) {
@@ -508,10 +519,43 @@
                         <p class="font-bold text-sm text-neonCyan">${r.ejercicio}</p>
                         <p class="text-xs text-gray-400 mt-1">${r.fase.includes('Fase 1') || r.fase.includes('Fase 5') ? 'Terapia de unidad' : r.series + ' Series / ' + r.repeticiones + ' Reps'}</p>
                     </div>
-                    <button onclick="borrarRegistro(${r.id})" class="text-red-500 p-2 hover:bg-red-900/30 rounded transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    </button>
+                    <div class="flex gap-1">
+                        <button onclick="editarRegistro(${r.id})" class="text-neonCyan p-2 hover:bg-neonCyan/20 rounded transition-colors" title="Editar">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                        </button>
+                        <button onclick="borrarRegistro(${r.id})" class="text-red-500 p-2 hover:bg-red-900/30 rounded transition-colors" title="Borrar">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                        </button>
+                    </div>
                 </div>`);
+        }
+
+        async function editarRegistro(id) {
+            const r = await db.registros.get(id);
+            if (!r) return;
+            
+            const esTerapia = r.fase.includes('Fase 1') || r.fase.includes('Fase 5');
+            
+            if(esTerapia) {
+                alert("Las terapias de unidad (Calor / Electro) se contabilizan como sesión única. No es necesario editar series ni repeticiones.");
+                return;
+            }
+
+            let p1 = prompt(`Editando: ${r.ejercicio}\nIntroduce las nuevas SERIES:`, r.series);
+            if (p1 === null) return; 
+            
+            let p2 = prompt(`Introduce las nuevas REPETICIONES:`, r.repeticiones);
+            if (p2 === null) return; 
+            
+            let ns = parseInt(p1);
+            let nr = parseInt(p2);
+            
+            if (isNaN(ns) || ns < 1) ns = 1;
+            if (isNaN(nr) || nr < 1) nr = 1;
+            
+            await db.registros.update(id, { series: ns, repeticiones: nr });
+            cargarHistorial();
+            actualizarVistasProgreso();
         }
 
         async function borrarRegistro(id) { if(confirm("¿Seguro que quieres borrar este registro?")){ await db.registros.delete(id); cargarHistorial(); actualizarVistasProgreso(); } }
