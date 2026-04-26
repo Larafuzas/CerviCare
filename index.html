@@ -29,7 +29,6 @@
     </script>
 
     <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     
@@ -86,14 +85,19 @@
 
             <div class="bg-cardBg p-3 rounded-xl border border-gray-700 mb-4 shadow-lg">
                 <div class="grid grid-cols-2 gap-2 mb-2">
-                    <select id="filtro-agrupacion" onchange="renderizarGraficos()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none">
-                        <option value="dias">Por Días</option><option value="semanas">Por Semanas</option><option value="meses">Por Meses</option>
-                    </select>
                     <select id="filtro-tipo" onchange="renderizarGraficos()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none">
-                        <option value="todos">Todas las Categorías</option><option value="Movilidad">Solo Movilidad</option><option value="Fortalecimiento">Solo Fortalecimiento</option><option value="Estiramientos">Solo Estiramientos</option>
+                        <option value="todos">Todas las Categorías</option>
+                        <option value="Movilidad">Solo Movilidad</option>
+                        <option value="Fortalecimiento">Solo Fortalecimiento</option>
+                        <option value="Estiramientos">Solo Estiramientos</option>
                     </select>
-                    <select id="filtro-periodo" onchange="toggleFechasPersonalizadas()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none col-span-2">
-                        <option value="hoy">Hoy</option><option value="dia_concreto">Día específico...</option><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="todo">Desde el principio</option><option value="rango">Rango de fechas...</option>
+                    <select id="filtro-periodo" onchange="toggleFechasPersonalizadas()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none">
+                        <option value="hoy">Hoy</option>
+                        <option value="dia_concreto">Día específico...</option>
+                        <option value="7">Últimos 7 días</option>
+                        <option value="30" selected>Últimos 30 días</option>
+                        <option value="todo">Desde el principio</option>
+                        <option value="rango">Rango de fechas...</option>
                     </select>
                 </div>
                 
@@ -129,13 +133,20 @@
         <section id="vista-ajustes" class="hidden h-full w-full p-4 overflow-y-auto pb-24">
             <h2 class="text-xl font-bold text-white mb-4">Ajustes y Datos</h2>
             <div class="grid grid-cols-2 gap-3 mb-6">
-                <button onclick="exportarCSV()" class="bg-cardBg border border-neonCyan text-neonCyan py-2 rounded text-sm font-semibold">Exportar CSV</button>
-                <button onclick="exportarBackup()" class="bg-cardBg border border-neonCyan text-neonCyan py-2 rounded text-sm font-semibold">Backup JSON</button>
-                <button onclick="document.getElementById('import-file').click()" class="bg-cardBg border border-gray-500 text-gray-300 py-2 rounded text-sm font-semibold">Restaurar JSON</button>
+                <button onclick="exportarCSV()" class="bg-cardBg border border-neonCyan text-neonCyan py-2 rounded text-sm font-semibold shadow-md">Exportar CSV</button>
+                <button onclick="exportarBackup()" class="bg-cardBg border border-neonCyan text-neonCyan py-2 rounded text-sm font-semibold shadow-md">Backup JSON</button>
+                <button onclick="document.getElementById('import-file').click()" class="bg-cardBg border border-gray-500 text-gray-300 py-2 rounded text-sm font-semibold shadow-md">Restaurar JSON</button>
                 <input type="file" id="import-file" class="hidden" accept=".json" onchange="importarBackup(event)">
-                <button onclick="borrarTodosLosDatos()" class="bg-red-900 border border-red-500 text-red-200 py-2 rounded text-sm font-semibold">Borrar Todo</button>
+                <button onclick="borrarTodosLosDatos()" class="bg-red-900 border border-red-500 text-red-200 py-2 rounded text-sm font-semibold shadow-md">Borrar Todo</button>
             </div>
-            <h3 class="text-neonCyan font-semibold mb-3 text-sm uppercase tracking-wide">Últimos Registros</h3>
+
+            <h3 class="text-neonCyan font-semibold mb-3 text-sm uppercase tracking-wide">Registro Diario</h3>
+            <div class="flex justify-between items-center bg-cardBg p-2 rounded-xl border border-gray-700 mb-4 shadow-lg">
+                <button onclick="cambiarDiaHistorial(-1)" class="text-neonCyan p-2 px-4 bg-darkBg rounded hover:bg-gray-700 transition">&lt;</button>
+                <input type="date" id="fecha-historial-input" onchange="seleccionarDiaHistorial(this.value)" class="bg-transparent text-white font-bold text-sm text-center outline-none cursor-pointer">
+                <button onclick="cambiarDiaHistorial(1)" class="text-neonCyan p-2 px-4 bg-darkBg rounded hover:bg-gray-700 transition">&gt;</button>
+            </div>
+
             <div id="lista-registros" class="space-y-2 mb-8"></div>
         </section>
 
@@ -157,9 +168,8 @@
     </nav>
 
     <script>
-        // CONFIGURACIÓN GLOBAL DEL PLUGIN DE ETIQUETAS
         Chart.register(ChartDataLabels);
-        Chart.defaults.plugins.datalabels.display = false; // Desactivado por defecto, activado localmente
+        Chart.defaults.plugins.datalabels.display = false;
 
         const db = new Dexie('CerviCareDB');
         db.version(1).stores({ registros: '++id, fecha, ejercicio, series, repeticiones, fase' });
@@ -187,7 +197,14 @@
         let calMonth = new Date().getMonth(), calYear = new Date().getFullYear();
         const nombresMeses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
-        window.onload = () => { renderizarRutina(); cargarHistorial(); };
+        // VARIABLE GLOBAL DE NAVEGACIÓN HISTÓRICA
+        let diaHistorialActual = getLocalDateStr();
+
+        window.onload = () => { 
+            renderizarRutina(); 
+            document.getElementById('fecha-historial-input').value = diaHistorialActual;
+            cargarHistorial(); 
+        };
 
         function getLocalDateStr(d = new Date()) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 
@@ -294,11 +311,11 @@
         async function guardarRegistro(id, titulo, fase, btn) {
             await db.registros.add({ fecha: getLocalDateStr(), ejercicio: titulo, series: parseInt(document.getElementById(`series-${id}`).innerText), repeticiones: parseInt(document.getElementById(`reps-${id}`).innerText), fase });
             const txt = btn.innerText; btn.innerText = "¡Guardado!"; btn.className = btn.className.replace('bg-gray-700', 'bg-green-500').replace('text-white', 'text-darkBg');
-            setTimeout(() => { btn.innerText = txt; btn.className = btn.className.replace('bg-green-500', 'bg-gray-700').replace('text-darkBg', 'text-white'); miSwiper.slideNext(); actualizarVistasProgreso(); }, 600);
+            setTimeout(() => { btn.innerText = txt; btn.className = btn.className.replace('bg-green-500', 'bg-gray-700').replace('text-darkBg', 'text-white'); miSwiper.slideNext(); actualizarVistasProgreso(); cargarHistorial(); }, 600);
         }
         async function guardarElectro(ap, btn) {
             if(ap) { await db.registros.add({ fecha: getLocalDateStr(), ejercicio: 'Electroestimulación', series: 1, repeticiones: 1, fase: 'Fase 5' }); btn.innerText = "¡Registrado!"; btn.classList.replace('bg-neonCyan', 'bg-green-500'); }
-            setTimeout(() => { miSwiper.slideTo(0); btn.innerText = "Sí, Aplicada"; btn.classList.replace('bg-green-500', 'bg-neonCyan'); actualizarVistasProgreso(); }, 800); 
+            setTimeout(() => { miSwiper.slideTo(0); btn.innerText = "Sí, Aplicada"; btn.classList.replace('bg-green-500', 'bg-neonCyan'); actualizarVistasProgreso(); cargarHistorial(); }, 800); 
         }
 
         function toggleFechasPersonalizadas() {
@@ -307,7 +324,6 @@
             if (per !== 'rango' && per !== 'dia_concreto') renderizarGraficos();
         }
 
-        function obtenerSemana(fechaStr) { const d = new Date(fechaStr); d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7)); const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1)); return `${d.getUTCFullYear()}-W${Math.ceil((((d-yearStart)/86400000)+1)/7).toString().padStart(2,'0')}`; }
         async function actualizarVistasProgreso() { await dibujarCalendarioMensual(); await renderizarGraficos(); }
         function cambiarMes(offset) { calMonth += offset; if(calMonth < 0) { calMonth = 11; calYear--; } if(calMonth > 11) { calMonth = 0; calYear++; } dibujarCalendarioMensual(); }
 
@@ -346,6 +362,7 @@
         async function renderizarGraficos() {
             const todos = await db.registros.toArray(); const fPeriodo = document.getElementById('filtro-periodo').value;
             let fInicioStr = null, fFinStr = null; const hoyStr = getLocalDateStr();
+            
             if (fPeriodo === 'hoy') { fInicioStr = hoyStr; fFinStr = hoyStr; }
             else if (fPeriodo === 'dia_concreto') { const d = document.getElementById('fecha-unica').value; if(d) { fInicioStr = d; fFinStr = d; } }
             else if (fPeriodo === '7') { const d = new Date(); d.setDate(d.getDate()-7); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
@@ -353,7 +370,7 @@
             else if (fPeriodo === 'rango') { fInicioStr = document.getElementById('fecha-inicio').value; fFinStr = document.getElementById('fecha-fin').value; }
 
             const datosFiltradosTemp = todos.filter(r => { if (fInicioStr && r.fecha < fInicioStr) return false; if (fFinStr && r.fecha > fFinStr) return false; return true; });
-            const fTipo = document.getElementById('filtro-tipo').value, fAgrupacion = document.getElementById('filtro-agrupacion').value;
+            const fTipo = document.getElementById('filtro-tipo').value;
             
             const datosEquilibrio = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 };
             const datosTendenciaCat = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} };
@@ -378,8 +395,6 @@
                 if (fTipo === 'todos' && (esCalor || esElectro)) return; 
                 
                 let claveStr = reg.fecha;
-                if (fAgrupacion === 'semanas') claveStr = obtenerSemana(reg.fecha);
-                if (fAgrupacion === 'meses') claveStr = reg.fecha.substring(0, 7);
                 fechasSet.add(claveStr);
 
                 if (!esCalor && !esElectro) {
@@ -395,7 +410,6 @@
                 }
             });
 
-            // Normalización
             datosEquilibrio.Movilidad = +(datosEquilibrio.Movilidad / PESO_CATEGORIA.Movilidad).toFixed(1);
             datosEquilibrio.Fortalecimiento = +(datosEquilibrio.Fortalecimiento / PESO_CATEGORIA.Fortalecimiento).toFixed(1);
             datosEquilibrio.Estiramientos = +(datosEquilibrio.Estiramientos / PESO_CATEGORIA.Estiramientos).toFixed(1);
@@ -406,6 +420,7 @@
                 });
             });
 
+            if (chartTendencia) chartTendencia.destroy(); 
             const fechas = Array.from(fechasSet).sort();
             let datasetsLinea = [];
             
@@ -416,21 +431,14 @@
                     { label: 'Estiramientos', data: fechas.map(f => datosTendenciaCat['Estiramientos'][f] || 0), borderColor: '#c084fc', backgroundColor: 'rgba(192, 132, 252, 0.1)', fill: false, tension: 0.4 }
                 ];
 
-                // ALGORITMO JITTER PARA LÍNEAS EN PARALELO
                 for (let i = 0; i < fechas.length; i++) {
                     let mapVal = {};
-                    datasetsLinea.forEach((ds, dsIdx) => {
-                        let v = ds.data[i];
-                        if (v > 0) { 
-                            if(!mapVal[v]) mapVal[v] = [];
-                            mapVal[v].push(dsIdx);
-                        }
-                    });
+                    datasetsLinea.forEach((ds, dsIdx) => { let v = ds.data[i]; if (v > 0) { if(!mapVal[v]) mapVal[v] = []; mapVal[v].push(dsIdx); } });
                     Object.keys(mapVal).forEach(v => {
                         let indices = mapVal[v];
                         if(indices.length > 1) {
-                            let offset = -0.15 * (indices.length - 1) / 2; 
-                            indices.forEach(idx => { datasetsLinea[idx].data[i] = parseFloat(v) + offset; offset += 0.15; });
+                            let offset = -0.05 * (indices.length - 1) / 2; 
+                            indices.forEach(idx => { datasetsLinea[idx].data[i] = parseFloat(v) + offset; offset += 0.05; });
                         }
                     });
                 }
@@ -441,10 +449,9 @@
                 datasetsLinea = [{ label: fTipo, data: fechas.map(f => datosTendenciaCat[fTipo][f] || 0), borderColor: color, backgroundColor: bg, fill: true, tension: 0.4 }];
             }
 
-            if (chartTendencia) chartTendencia.destroy(); 
             chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), { 
                 type: 'line', data: { labels: fechas, datasets: datasetsLinea }, 
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: fTipo === 'todos', labels: { color: '#cbd5e1', boxWidth: 12 } }, tooltip: { callbacks: { label: function(context) { let realVal = Math.round(context.raw * 10) / 10; return context.dataset.label + ': ' + realVal.toFixed(1) + ' medias/ej'; } } } } } 
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: fTipo === 'todos', labels: { color: '#cbd5e1', boxWidth: 12 } }, tooltip: { callbacks: { label: function(context) { let realVal = Math.round(context.raw * 10) / 10; return context.dataset.label + ': ' + realVal.toFixed(1) + ' medias/ej'; } } }, datalabels: { display: false } } } 
             });
             
             if (chartEquilibrio) chartEquilibrio.destroy();
@@ -463,22 +470,56 @@
                 options: { 
                     indexAxis: 'y', responsive: true, maintainAspectRatio: false, 
                     layout: { padding: { top: 15, right: 30, left: 0, bottom: 0 } },
-                    scales: { x: { display: false, beginAtZero: true }, y: { display: true, grid: { display: false, drawBorder: false }, border: { display: false }, ticks: { color: '#cbd5e1', font: { size: 11 }, mirror: true, padding: 0, labelOffset: -12, z: 10 } } }, 
-                    plugins: { legend: { display: false }, tooltip: { enabled: false }, datalabels: { display: true, align: 'right', anchor: 'end', offset: 4, formatter: Math.round, color: '#2dd4bf', font: { weight: 'bold', size: 11 } } } 
+                    scales: { x: { display: false, beginAtZero: true }, y: { display: true, grid: { display: false, drawBorder: false }, border: { display: false }, ticks: { display: false } } }, 
+                    plugins: { legend: { display: false }, tooltip: { enabled: false }, datalabels: { display: true, labels: { nombre: { align: 'top', anchor: 'start', offset: 2, formatter: (v, ctx) => ctx.chart.data.labels[ctx.dataIndex], color: '#cbd5e1', font: { size: 10 } }, valor: { align: 'end', anchor: 'end', offset: 4, formatter: Math.round, color: '#2dd4bf', font: { weight: 'bold', size: 11 } } } } } 
                 }
             });
         }
 
-        async function cargarHistorial() {
-            const t = await db.registros.orderBy('id').reverse().limit(20).toArray(); const l = document.getElementById('lista-registros'); l.innerHTML = '';
-            if (t.length===0) return l.innerHTML = '<p class="text-gray-400 text-sm">No hay registros.</p>';
-            t.forEach(r => l.innerHTML += `<div class="bg-darkBg p-3 rounded border border-gray-700 flex justify-between items-center"><div><p class="font-bold text-sm text-neonCyan">${r.ejercicio}</p><p class="text-xs text-gray-400">${r.fecha} | ${r.series} Ser / ${r.repeticiones} Reps</p></div><button onclick="borrarRegistro(${r.id})" class="text-red-500 px-2">🗑️</button></div>`);
+        // --- SISTEMA DE NAVEGACIÓN DIARIA DEL HISTORIAL ---
+        function cambiarDiaHistorial(offset) {
+            let d = new Date(diaHistorialActual);
+            d.setDate(d.getDate() + offset);
+            diaHistorialActual = getLocalDateStr(d);
+            document.getElementById('fecha-historial-input').value = diaHistorialActual;
+            cargarHistorial();
         }
-        async function borrarRegistro(id) { if(confirm("¿Borrar?")){ await db.registros.delete(id); cargarHistorial(); actualizarVistasProgreso(); } }
-        async function borrarTodosLosDatos() { if(confirm("⚠️ ¿Borrar TODOS?")){ await db.registros.clear(); alert("Borrados."); cargarHistorial(); actualizarVistasProgreso(); } }
+
+        function seleccionarDiaHistorial(fechaStr) {
+            if(!fechaStr) return;
+            diaHistorialActual = fechaStr;
+            cargarHistorial();
+        }
+
+        async function cargarHistorial() {
+            // Filtrar solo los registros que correspondan al día seleccionado (diaHistorialActual)
+            const t = await db.registros.where('fecha').equals(diaHistorialActual).toArray();
+            t.reverse(); // Mostrar los más recientes de ese día arriba
+            
+            const l = document.getElementById('lista-registros'); l.innerHTML = '';
+            
+            if (t.length === 0) {
+                return l.innerHTML = '<p class="text-gray-400 text-sm text-center py-6 border border-gray-800 border-dashed rounded-lg">No hay registros de actividad en este día.</p>';
+            }
+
+            t.forEach(r => l.innerHTML += `
+                <div class="bg-darkBg p-3 rounded-lg border border-gray-700 flex justify-between items-center shadow-md">
+                    <div>
+                        <p class="font-bold text-sm text-neonCyan">${r.ejercicio}</p>
+                        <p class="text-xs text-gray-400 mt-1">${r.fase.includes('Fase 1') || r.fase.includes('Fase 5') ? 'Terapia de unidad' : r.series + ' Series / ' + r.repeticiones + ' Reps'}</p>
+                    </div>
+                    <button onclick="borrarRegistro(${r.id})" class="text-red-500 p-2 hover:bg-red-900/30 rounded transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
+                </div>`);
+        }
+
+        async function borrarRegistro(id) { if(confirm("¿Seguro que quieres borrar este registro?")){ await db.registros.delete(id); cargarHistorial(); actualizarVistasProgreso(); } }
+        async function borrarTodosLosDatos() { if(confirm("⚠️ ¿Borrar TODOS los datos de la app? Esta acción no se puede deshacer.")){ await db.registros.clear(); alert("Borrados."); cargarHistorial(); actualizarVistasProgreso(); } }
+        
         async function exportarCSV() { const d = await db.registros.toArray(); let c="ID,Fecha,Fase,Ejercicio,Series,Reps\n"; d.forEach(r=>c+=`${r.id},${r.fecha},${r.fase},${r.ejercicio},${r.series},${r.repeticiones}\n`); descargarArchivo(c,`cervicare.csv`,'text/csv'); }
         async function exportarBackup() { descargarArchivo(JSON.stringify(await db.registros.toArray()),`cervicare.json`,'application/json'); }
-        function importarBackup(e) { const r=new FileReader(); r.onload=async(ev)=>{ await db.registros.clear(); await db.registros.bulkAdd(JSON.parse(ev.target.result)); alert("Restaurado."); cargarHistorial(); actualizarVistasProgreso(); }; r.readAsText(e.target.files[0]); }
+        function importarBackup(e) { const r=new FileReader(); r.onload=async(ev)=>{ await db.registros.clear(); await db.registros.bulkAdd(JSON.parse(ev.target.result)); alert("Restaurado."); diaHistorialActual = getLocalDateStr(); document.getElementById('fecha-historial-input').value = diaHistorialActual; cargarHistorial(); actualizarVistasProgreso(); }; r.readAsText(e.target.files[0]); }
         function descargarArchivo(c, n, t) { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([c],{type:t})); a.download=n; a.click(); }
 
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(err => console.warn('Error SW', err)); }); }
