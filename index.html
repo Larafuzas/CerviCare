@@ -87,7 +87,7 @@
                         <option value="dias">Por Días</option><option value="semanas">Por Semanas</option><option value="meses">Por Meses</option>
                     </select>
                     <select id="filtro-tipo" onchange="renderizarGraficos()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none">
-                        <option value="todos">Todos los Ejercicios</option><option value="Movilidad">Solo Movilidad</option><option value="Fortalecimiento">Solo Fortalecimiento</option><option value="Estiramientos">Solo Estiramientos</option>
+                        <option value="todos">Todas las Categorías</option><option value="Movilidad">Solo Movilidad</option><option value="Fortalecimiento">Solo Fortalecimiento</option><option value="Estiramientos">Solo Estiramientos</option>
                     </select>
                     <select id="filtro-periodo" onchange="toggleFechasPersonalizadas()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none col-span-2">
                         <option value="hoy">Hoy</option><option value="dia_concreto">Día específico...</option><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="todo">Desde el principio</option><option value="rango">Rango de fechas...</option>
@@ -105,12 +105,14 @@
             </div>
 
             <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg">
-                <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Tendencia de Volumen</h3>
+                <h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Tendencia de Esfuerzo</h3>
+                <p class="text-[10px] text-gray-400 mb-3 text-center">Media de repeticiones por ejercicio</p>
                 <div class="relative h-48 w-full"><canvas id="grafico-tendencia"></canvas></div>
             </div>
 
             <div class="bg-cardBg p-4 rounded-xl border border-gray-700 shadow-lg">
-                <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Equilibrio del Entrenamiento</h3>
+                <h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Equilibrio Relativo</h3>
+                <p class="text-[10px] text-gray-400 mb-3 text-center">Intensidad ajustada por categoría</p>
                 <div class="relative h-48 w-full flex justify-center"><canvas id="grafico-equilibrio"></canvas></div>
             </div>
         </section>
@@ -150,6 +152,13 @@
         db.version(1).stores({ registros: '++id, fecha, ejercicio, series, repeticiones, fase' });
 
         const RUTINA_TOTAL_EJERCICIOS = 9;
+        
+        // Ponderación de ejercicios para normalización estadística
+        const PESO_CATEGORIA = {
+            'Movilidad': 5,
+            'Fortalecimiento': 2,
+            'Estiramientos': 2
+        };
 
         const rutinaCervical = [
             { id: "fase1_calor", short: "Calor", fase: "Fase 1: Preparación", titulo: "Aplicación de Calor", imagen: null, tipo: "temporizador", instrucciones: "<p><strong>Fundamento:</strong> El calor provoca vasodilatación, aumentando el flujo sanguíneo y relajando las fibras musculares antes del estiramiento.</p>" },
@@ -186,11 +195,7 @@
 
                 let controlesHTML = '';
                 if (ej.tipo === 'temporizador') {
-                    controlesHTML = `
-                        <div class="flex gap-2 w-full">
-                            <button id="btn-timer-play" onclick="toggleTemporizador()" class="flex-1 bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-[0_0_10px_rgba(45,212,191,0.3)] transition-colors">Iniciar Calor</button>
-                            <button id="btn-timer-reset" onclick="resetTemporizador()" class="hidden px-4 bg-red-900 border border-red-500 text-red-200 font-bold py-3 rounded-lg transition-colors">⏹️</button>
-                        </div>`;
+                    controlesHTML = `<div class="flex gap-2 w-full"><button id="btn-timer-play" onclick="toggleTemporizador()" class="flex-1 bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-[0_0_10px_rgba(45,212,191,0.3)] transition-colors">Iniciar Calor</button><button id="btn-timer-reset" onclick="resetTemporizador()" class="hidden px-4 bg-red-900 border border-red-500 text-red-200 font-bold py-3 rounded-lg transition-colors">⏹️</button></div>`;
                 } else if (ej.tipo === 'contador') {
                     controlesHTML = `
                         <div class="flex justify-between gap-3 mb-3">
@@ -212,12 +217,7 @@
                 } else if (ej.tipo === 'temporizador') {
                     visualHTML = `<div class="flex items-center justify-center h-60"><span class="text-5xl font-bold text-neonCyan" id="display-${ej.id}">15:00</span></div>`;
                 } else if (ej.tipo === 'electro') {
-                    visualHTML = `
-                        <div class="flex items-center justify-center h-60">
-                            <svg class="w-24 h-24 text-neonCyan drop-shadow-[0_0_10px_rgba(45,212,191,0.4)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <rect x="8" y="4" width="8" height="12" rx="2" stroke-width="1.5"/><rect x="10" y="6" width="4" height="3" rx="0.5" stroke-width="1.5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><path d="M12 4V2" stroke-width="1.5" stroke-linecap="round"/><path d="M12 2 Q18 2 18 5" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M12 2 Q6 2 6 5" stroke-width="1.5" fill="none" stroke-linecap="round"/><rect x="4" y="5" width="4" height="6" rx="1" stroke-width="1.5" fill="currentColor" fill-opacity="0.2"/><rect x="16" y="5" width="4" height="6" rx="1" stroke-width="1.5" fill="currentColor" fill-opacity="0.2"/><path d="M5.5 7.5L6.5 8.5M17.5 7.5L18.5 8.5" stroke-width="1" stroke-linecap="round"/>
-                            </svg>
-                        </div>`;
+                    visualHTML = `<div class="flex items-center justify-center h-60"><svg class="w-24 h-24 text-neonCyan drop-shadow-[0_0_10px_rgba(45,212,191,0.4)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="8" y="4" width="8" height="12" rx="2" stroke-width="1.5"/><rect x="10" y="6" width="4" height="3" rx="0.5" stroke-width="1.5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><path d="M12 4V2" stroke-width="1.5" stroke-linecap="round"/><path d="M12 2 Q18 2 18 5" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M12 2 Q6 2 6 5" stroke-width="1.5" fill="none" stroke-linecap="round"/><rect x="4" y="5" width="4" height="6" rx="1" stroke-width="1.5" fill="currentColor" fill-opacity="0.2"/><rect x="16" y="5" width="4" height="6" rx="1" stroke-width="1.5" fill="currentColor" fill-opacity="0.2"/><path d="M5.5 7.5L6.5 8.5M17.5 7.5L18.5 8.5" stroke-width="1" stroke-linecap="round"/></svg></div>`;
                 }
 
                 contenedor.innerHTML += `
@@ -258,53 +258,32 @@
 
         function cambiarValor(id, inc) { let el = document.getElementById(id), v = parseInt(el.innerText) + inc; el.innerText = v < 1 ? 1 : v; }
 
-        async function solicitarPermisoNotificaciones() {
-            if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
-                await Notification.requestPermission();
-            }
-        }
-
+        async function solicitarPermisoNotificaciones() { if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") { await Notification.requestPermission(); } }
         function enviarNotificacion() {
             if ("Notification" in window && Notification.permission === "granted") {
-                const title = "¡Tiempo de Calor Completado!";
-                const options = { body: "Han pasado los 15 minutos. Es hora de continuar con la rutina.", icon: "./icono.jpg", vibrate: [200, 100, 200, 100, 200, 100, 200], badge: "./icono.jpg" };
-                if ('serviceWorker' in navigator) { navigator.serviceWorker.ready.then(reg => reg.showNotification(title, options)); } 
-                else { new Notification(title, options); }
+                const title = "¡Tiempo de Calor Completado!"; const options = { body: "Han pasado los 15 minutos. Es hora de continuar con la rutina.", icon: "./icono.jpg", vibrate: [200, 100, 200, 100, 200, 100, 200], badge: "./icono.jpg" };
+                if ('serviceWorker' in navigator) { navigator.serviceWorker.ready.then(reg => reg.showNotification(title, options)); } else { new Notification(title, options); }
             }
         }
 
-        async function guardarCalorAuto() {
-            await db.registros.add({ fecha: getLocalDateStr(), ejercicio: 'Aplicación de Calor', series: 1, repeticiones: 1, fase: 'Fase 1: Preparación' });
-            actualizarVistasProgreso();
-        }
+        async function guardarCalorAuto() { await db.registros.add({ fecha: getLocalDateStr(), ejercicio: 'Aplicación de Calor', series: 1, repeticiones: 1, fase: 'Fase 1: Preparación' }); actualizarVistasProgreso(); }
 
         function toggleTemporizador() {
             const bp = document.getElementById('btn-timer-play'), br = document.getElementById('btn-timer-reset');
             if (timerEstado === 'detenido' || timerEstado === 'pausado') {
-                solicitarPermisoNotificaciones();
-                timerEstado = 'corriendo'; bp.innerText = "Pausar"; bp.className = bp.className.replace('bg-neonCyan', 'bg-amber-500').replace('text-darkBg', 'text-white'); br.classList.remove('hidden');
+                solicitarPermisoNotificaciones(); timerEstado = 'corriendo'; bp.innerText = "Pausar"; bp.className = bp.className.replace('bg-neonCyan', 'bg-amber-500').replace('text-darkBg', 'text-white'); br.classList.remove('hidden');
                 endTime = Date.now() + (tiempoRestante * 1000);
-                
                 timerInterval = setInterval(() => {
                     tiempoRestante = Math.round((endTime - Date.now()) / 1000);
                     if (tiempoRestante <= 0) { 
-                        tiempoRestante = 0; clearInterval(timerInterval); timerEstado = 'completado'; 
-                        document.getElementById('display-fase1_calor').innerText = "¡Listo!"; 
+                        tiempoRestante = 0; clearInterval(timerInterval); timerEstado = 'completado'; document.getElementById('display-fase1_calor').innerText = "¡Listo!"; 
                         bp.innerText = "Siguiente Fase"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); bp.onclick = () => miSwiper.slideNext(); br.classList.add('hidden'); 
-                        enviarNotificacion();
-                        guardarCalorAuto();
-                    } else {
-                        document.getElementById('display-fase1_calor').innerText = `${Math.floor(tiempoRestante/60).toString().padStart(2,'0')}:${(tiempoRestante%60).toString().padStart(2,'0')}`;
-                    }
+                        enviarNotificacion(); guardarCalorAuto();
+                    } else { document.getElementById('display-fase1_calor').innerText = `${Math.floor(tiempoRestante/60).toString().padStart(2,'0')}:${(tiempoRestante%60).toString().padStart(2,'0')}`; }
                 }, 500); 
-            } else if (timerEstado === 'corriendo') { 
-                clearInterval(timerInterval); timerEstado = 'pausado'; bp.innerText = "Reanudar"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); 
-            }
+            } else if (timerEstado === 'corriendo') { clearInterval(timerInterval); timerEstado = 'pausado'; bp.innerText = "Reanudar"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); }
         }
-        function resetTemporizador() { 
-            clearInterval(timerInterval); tiempoRestante = 15*60; timerEstado = 'detenido'; endTime = null;
-            document.getElementById('display-fase1_calor').innerText = "15:00"; const bp = document.getElementById('btn-timer-play'); bp.innerText = "Iniciar Calor"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); bp.onclick = toggleTemporizador; document.getElementById('btn-timer-reset').classList.add('hidden'); 
-        }
+        function resetTemporizador() { clearInterval(timerInterval); tiempoRestante = 15*60; timerEstado = 'detenido'; endTime = null; document.getElementById('display-fase1_calor').innerText = "15:00"; const bp = document.getElementById('btn-timer-play'); bp.innerText = "Iniciar Calor"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); bp.onclick = toggleTemporizador; document.getElementById('btn-timer-reset').classList.add('hidden'); }
 
         async function guardarRegistro(id, titulo, fase, btn) {
             await db.registros.add({ fecha: getLocalDateStr(), ejercicio: titulo, series: parseInt(document.getElementById(`series-${id}`).innerText), repeticiones: parseInt(document.getElementById(`reps-${id}`).innerText), fase });
@@ -358,13 +337,9 @@
             }
         }
 
-        /* --- LÓGICA REESCRITA PARA GRÁFICAS MÚLTIPLES --- */
         async function renderizarGraficos() {
-            const todos = await db.registros.toArray(); 
-            const fPeriodo = document.getElementById('filtro-periodo').value;
-            let fInicioStr = null, fFinStr = null; 
-            const hoyStr = getLocalDateStr();
-            
+            const todos = await db.registros.toArray(); const fPeriodo = document.getElementById('filtro-periodo').value;
+            let fInicioStr = null, fFinStr = null; const hoyStr = getLocalDateStr();
             if (fPeriodo === 'hoy') { fInicioStr = hoyStr; fFinStr = hoyStr; }
             else if (fPeriodo === 'dia_concreto') { const d = document.getElementById('fecha-unica').value; if(d) { fInicioStr = d; fFinStr = d; } }
             else if (fPeriodo === '7') { const d = new Date(); d.setDate(d.getDate()-7); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
@@ -372,9 +347,7 @@
             else if (fPeriodo === 'rango') { fInicioStr = document.getElementById('fecha-inicio').value; fFinStr = document.getElementById('fecha-fin').value; }
 
             const datosFiltradosTemp = todos.filter(r => { if (fInicioStr && r.fecha < fInicioStr) return false; if (fFinStr && r.fecha > fFinStr) return false; return true; });
-            
-            const fTipo = document.getElementById('filtro-tipo').value;
-            const fAgrupacion = document.getElementById('filtro-agrupacion').value;
+            const fTipo = document.getElementById('filtro-tipo').value, fAgrupacion = document.getElementById('filtro-agrupacion').value;
             
             const datosEquilibrio = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 };
             const datosTendenciaCat = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} };
@@ -383,24 +356,21 @@
             datosFiltradosTemp.forEach(reg => {
                 const esCalor = reg.fase.includes('Fase 1'), esElectro = reg.fase.includes('Fase 5');
                 
-                // Calculamos para el dónut siempre (salvo que sea calor/electro)
+                // Sumamos brutos primero
                 if (!esCalor && !esElectro) {
                     if (reg.fase.includes('Movilidad')) datosEquilibrio['Movilidad'] += reg.repeticiones;
                     if (reg.fase.includes('Fortalecimiento')) datosEquilibrio['Fortalecimiento'] += reg.repeticiones;
                     if (reg.fase.includes('Estiramientos')) datosEquilibrio['Estiramientos'] += reg.repeticiones;
                 }
 
-                // Filtrado general
                 if (fTipo !== 'todos' && !reg.fase.includes(fTipo)) return;
                 if (fTipo === 'todos' && (esCalor || esElectro)) return; 
                 
                 let claveStr = reg.fecha;
                 if (fAgrupacion === 'semanas') claveStr = obtenerSemana(reg.fecha);
                 if (fAgrupacion === 'meses') claveStr = reg.fecha.substring(0, 7);
-                
                 fechasSet.add(claveStr);
 
-                // Agrupamos por categoría para las líneas
                 if (!esCalor && !esElectro) {
                     let cat = '';
                     if (reg.fase.includes('Movilidad')) cat = 'Movilidad';
@@ -414,10 +384,19 @@
                 }
             });
 
+            // APLICAMOS LA NORMALIZACIÓN ESTADÍSTICA
+            datosEquilibrio.Movilidad = +(datosEquilibrio.Movilidad / PESO_CATEGORIA.Movilidad).toFixed(1);
+            datosEquilibrio.Fortalecimiento = +(datosEquilibrio.Fortalecimiento / PESO_CATEGORIA.Fortalecimiento).toFixed(1);
+            datosEquilibrio.Estiramientos = +(datosEquilibrio.Estiramientos / PESO_CATEGORIA.Estiramientos).toFixed(1);
+
+            Object.keys(datosTendenciaCat).forEach(cat => {
+                Object.keys(datosTendenciaCat[cat]).forEach(fecha => {
+                    datosTendenciaCat[cat][fecha] = +(datosTendenciaCat[cat][fecha] / PESO_CATEGORIA[cat]).toFixed(1);
+                });
+            });
+
             if (chartTendencia) chartTendencia.destroy(); 
             const fechas = Array.from(fechasSet).sort();
-            
-            // Generación de Datasets dinámicos
             let datasetsLinea = [];
             if (fTipo === 'todos') {
                 datasetsLinea = [
@@ -433,20 +412,14 @@
             }
 
             chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), { 
-                type: 'line', 
-                data: { labels: fechas, datasets: datasetsLinea }, 
-                options: { 
-                    responsive: true, maintainAspectRatio: false, 
-                    scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, 
-                    plugins: { legend: { display: fTipo === 'todos', labels: { color: '#cbd5e1', boxWidth: 12 } } } 
-                } 
+                type: 'line', data: { labels: fechas, datasets: datasetsLinea }, 
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: fTipo === 'todos', labels: { color: '#cbd5e1', boxWidth: 12 } }, tooltip: { callbacks: { label: function(context) { return context.dataset.label + ': ' + context.parsed.y + ' medias/ej'; } } } } } 
             });
             
             if (chartEquilibrio) chartEquilibrio.destroy();
             chartEquilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), { 
-                type: 'doughnut', 
-                data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'], borderWidth: 0 }] }, 
-                options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right', labels: { color: '#cbd5e1' } } } } 
+                type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'], borderWidth: 0 }] }, 
+                options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right', labels: { color: '#cbd5e1' } }, tooltip: { callbacks: { label: function(context) { return ' ' + context.label + ': ' + context.parsed + ' medias/ej'; } } } } } 
             });
         }
 
