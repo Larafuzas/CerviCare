@@ -35,6 +35,14 @@
         .swiper-pagination-bullet-active { background-color: #2dd4bf !important; }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        
+        /* Clases para el Heatmap */
+        .heat-0 { background-color: #1f2937; } /* Gris oscuro */
+        .heat-1 { background-color: #134e4a; } /* Turquesa oscuro (Algunos) */
+        .heat-2 { background-color: #0f766e; } /* Turquesa medio (Calor + Algunos) */
+        .heat-3 { background-color: #1d4ed8; } /* Azul oscuro (Todos) */
+        .heat-4 { background-color: #3b82f6; } /* Azul claro (Calor + Todos) */
+        .heat-electro { outline: 2px solid #8b5cf6; outline-offset: -2px; } /* Borde Morado */
     </style>
 </head>
 <body class="bg-darkBg text-white font-sans antialiased h-screen flex flex-col overflow-hidden">
@@ -53,31 +61,61 @@
         </section>
 
         <section id="vista-estadisticas" class="hidden h-full w-full p-4 overflow-y-auto pb-24">
-            <h2 class="text-xl font-bold text-white mb-4">Tu Progreso</h2>
+            <h2 class="text-xl font-bold text-white mb-3">Tu Progreso</h2>
             
-            <div class="grid grid-cols-2 gap-3 mb-4">
-                <div class="bg-cardBg p-3 rounded-xl border border-gray-700 shadow-lg flex flex-col items-center">
-                    <p class="text-xs text-gray-400 uppercase tracking-wide">Total Series</p>
-                    <p class="text-3xl font-bold text-neonCyan mt-1" id="stat-series">0</p>
+            <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg">
+                <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Constancia (Últimos 35 días)</h3>
+                <div id="calendario-heatmap" class="grid grid-cols-7 gap-1 mb-2"></div>
+                
+                <div class="flex flex-wrap gap-2 justify-center text-[10px] text-gray-400 mt-3">
+                    <div class="flex items-center gap-1"><div class="w-3 h-3 heat-1 rounded-sm"></div> Ejercicios</div>
+                    <div class="flex items-center gap-1"><div class="w-3 h-3 heat-2 rounded-sm"></div> + Calor</div>
+                    <div class="flex items-center gap-1"><div class="w-3 h-3 heat-3 rounded-sm"></div> Tabla Completa</div>
+                    <div class="flex items-center gap-1"><div class="w-3 h-3 heat-4 rounded-sm"></div> + Calor</div>
+                    <div class="flex items-center gap-1"><div class="w-3 h-3 bg-gray-700 heat-electro rounded-sm"></div> Electro</div>
                 </div>
-                <div class="bg-cardBg p-3 rounded-xl border border-gray-700 shadow-lg flex flex-col items-center">
-                    <p class="text-xs text-gray-400 uppercase tracking-wide">Total Reps</p>
-                    <p class="text-3xl font-bold text-neonCyan mt-1" id="stat-reps">0</p>
+            </div>
+
+            <div class="bg-cardBg p-3 rounded-xl border border-gray-700 mb-4 shadow-lg">
+                <div class="grid grid-cols-2 gap-2 mb-2">
+                    <select id="filtro-agrupacion" onchange="renderizarGraficos()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none">
+                        <option value="dias">Por Días</option>
+                        <option value="semanas">Por Semanas</option>
+                        <option value="meses">Por Meses</option>
+                    </select>
+                    <select id="filtro-tipo" onchange="renderizarGraficos()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none">
+                        <option value="todos">Todos los Ejercicios</option>
+                        <option value="Movilidad">Solo Movilidad</option>
+                        <option value="Fortalecimiento">Solo Fortalecimiento</option>
+                        <option value="Estiramientos">Solo Estiramientos</option>
+                    </select>
+                    <select id="filtro-periodo" onchange="toggleFechasPersonalizadas()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none col-span-2">
+                        <option value="7">Últimos 7 días</option>
+                        <option value="30" selected>Últimos 30 días</option>
+                        <option value="todo">Desde el principio</option>
+                        <option value="custom">Personalizado...</option>
+                    </select>
+                </div>
+                <div id="rango-fechas" class="hidden grid-cols-2 gap-2 mt-2 pt-2 border-t border-gray-700">
+                    <div>
+                        <label class="text-[10px] text-gray-400">Inicio</label>
+                        <input type="date" id="fecha-inicio" onchange="renderizarGraficos()" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1 text-white">
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-gray-400">Fin</label>
+                        <input type="date" id="fecha-fin" onchange="renderizarGraficos()" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1 text-white">
+                    </div>
                 </div>
             </div>
 
             <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg">
                 <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Tendencia de Volumen</h3>
-                <div class="relative h-48 w-full">
-                    <canvas id="grafico-tendencia"></canvas>
-                </div>
+                <div class="relative h-48 w-full"><canvas id="grafico-tendencia"></canvas></div>
             </div>
 
             <div class="bg-cardBg p-4 rounded-xl border border-gray-700 shadow-lg">
                 <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Equilibrio del Entrenamiento</h3>
-                <div class="relative h-48 w-full flex justify-center">
-                    <canvas id="grafico-equilibrio"></canvas>
-                </div>
+                <div class="relative h-48 w-full flex justify-center"><canvas id="grafico-equilibrio"></canvas></div>
             </div>
         </section>
 
@@ -98,16 +136,13 @@
 
     <nav class="bg-cardBg border-t border-gray-800 flex justify-around p-2 pb-safe z-10 fixed bottom-0 w-full h-16">
         <button id="nav-rutina" class="nav-btn text-neonCyan flex flex-col items-center justify-center w-1/3" onclick="cambiarPestana('rutina')">
-            <span class="text-xl">📋</span>
-            <span class="text-xs font-bold mt-1">Rutina</span>
+            <span class="text-xl">📋</span><span class="text-xs font-bold mt-1">Rutina</span>
         </button>
         <button id="nav-estadisticas" class="nav-btn text-gray-500 hover:text-neonCyan flex flex-col items-center justify-center w-1/3 transition-colors" onclick="cambiarPestana('estadisticas')">
-            <span class="text-xl">📈</span>
-            <span class="text-xs font-bold mt-1">Progreso</span>
+            <span class="text-xl">📈</span><span class="text-xs font-bold mt-1">Progreso</span>
         </button>
         <button id="nav-ajustes" class="nav-btn text-gray-500 hover:text-neonCyan flex flex-col items-center justify-center w-1/3 transition-colors" onclick="cambiarPestana('ajustes')">
-            <span class="text-xl">⚙️</span>
-            <span class="text-xs font-bold mt-1">Ajustes</span>
+            <span class="text-xl">⚙️</span><span class="text-xs font-bold mt-1">Ajustes</span>
         </button>
     </nav>
 
@@ -115,69 +150,24 @@
         const db = new Dexie('CerviCareDB');
         db.version(1).stores({ registros: '++id, fecha, ejercicio, series, repeticiones, fase' });
 
+        const RUTINA_TOTAL_EJERCICIOS = 9; // 5 mov + 2 fort + 2 estiramientos
+
         const rutinaCervical = [
-            { 
-                id: "fase1_calor", fase: "Fase 1: Preparación", titulo: "Aplicación de Calor", imagen: null, tipo: "temporizador",
-                instrucciones: "<p><strong>Fundamento:</strong> El calor provoca vasodilatación, aumentando el flujo sanguíneo y relajando las fibras musculares antes del estiramiento.</p>" 
-            },
-            { 
-                id: "mov_flexion", fase: "Fase 2: Movilidad", titulo: "Flexión y Extensión", imagen: "flexion.jpg", tipo: "contador",
-                instrucciones: "<p><strong>Técnica:</strong> Siéntate recto. Exhala y lleva lentamente la barbilla hacia el pecho. Inhala y vuelve al centro, luego extiende la cabeza suavemente hacia atrás mirando al techo.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>No fuerces la extensión hacia atrás si sientes mareos o pellizcos articulares.</p>" 
-            },
-            { 
-                id: "mov_inclinacion", fase: "Fase 2: Movilidad", titulo: "Inclinación Lateral", imagen: "inclinacion.jpg", tipo: "contador",
-                instrucciones: "<p><strong>Técnica:</strong> Intenta tocar el hombro con la oreja de forma controlada, sintiendo el estiramiento en el lado opuesto del cuello.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Es un error común levantar el hombro hacia la oreja. Para evitarlo, ancla la mano del lado que estás estirando debajo de tu muslo.</p>" 
-            },
-            { 
-                id: "mov_rotacion", fase: "Fase 2: Movilidad", titulo: "Rotación", imagen: "rotacion.jpg", tipo: "contador",
-                instrucciones: "<p><strong>Técnica:</strong> Gira la cabeza lentamente para mirar por encima de tu hombro. Mantén la posición 2 segundos y cambia de lado.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Imagina una línea horizontal trazada desde tu nariz hasta la pared; evita que la cabeza cabecee hacia arriba o abajo.</p>" 
-            },
-            { 
-                id: "mov_circulos", fase: "Fase 2: Movilidad", titulo: "Semicírculos", imagen: "circulos.jpg", tipo: "contador",
-                instrucciones: "<p><strong>Técnica:</strong> Deja caer la barbilla al pecho y traza un arco de movimiento de hombro a hombro, dibujando una 'U' pendular.</p><p class='mt-2 text-red-400 font-semibold'>⚠️ Advertencia:</p><p>La rehabilitación moderna desaconseja hacer giros de 360 grados. Evita realizar el semicírculo por la parte de la espalda.</p>" 
-            },
-            { 
-                id: "mov_elevacion", fase: "Fase 2: Movilidad", titulo: "Elevación de Hombros", imagen: "elevacion.jpg", tipo: "contador",
-                instrucciones: "<p><strong>Técnica:</strong> Sube ambos hombros hacia las orejas encogiéndote. Mantén la tensión máxima durante 2-3 segundos.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>La clave de este ejercicio está en la bajada. Déjalos caer abruptamente soltando el aire de golpe.</p>" 
-            },
-            { 
-                id: "fort_resistencia1", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Frontal/Nuca", imagen: "resistencia1.jpg", tipo: "contador",
-                instrucciones: "<p><strong>Técnica:</strong> Coloca tus manos en la frente y empuja con la cabeza hacia delante, mientras tus manos resisten el movimiento (isométrico). Repite con las manos en la nuca empujando hacia atrás.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Aplica sólo un 20-30% de tu fuerza máxima. 'No rompas el huevo'.</p>" 
-            },
-            { 
-                id: "fort_resistencia2", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Lateral", imagen: "resistencia2.jpg", tipo: "contador",
-                instrucciones: "<p><strong>Técnica:</strong> Coloca la mano en la sien y empuja la cabeza lateralmente sin permitir que haya desplazamiento.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Aplica una fuerza progresiva durante 5 segundos y relaja lentamente durante otros 5 segundos.</p>" 
-            },
-            { 
-                id: "est_traccion1", fase: "Fase 4: Estiramientos", titulo: "Tracción Abajo/Adelante", imagen: "traccion1.jpg", tipo: "contador",
-                instrucciones: "<p><strong>Técnica:</strong> Entrelaza las manos detrás de la cabeza (no en la nuca) y deja caer la barbilla al pecho.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>No tires con fuerza hacia abajo. Simplemente deja que el peso libre de tus brazos ejerza la tracción durante 15 segundos.</p>" 
-            },
-            { 
-                id: "est_traccion2", fase: "Fase 4: Estiramientos", titulo: "Tracción Lateral", imagen: "traccion2.jpg", tipo: "contador",
-                instrucciones: "<p><strong>Técnica:</strong> Pasa la mano por encima de la cabeza hasta tocar la oreja contraria e inclina suavemente.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Utiliza la respiración: en cada exhalación, permite que el músculo ceda un par de milímetros más.</p>" 
-            },
-            { 
-                id: "fase5_electro", fase: "Fase 5: Recuperación", titulo: "Electroestimulación (TENS)", imagen: null, tipo: "electro",
-                instrucciones: `
-                    <p><strong>Ubicación:</strong> Coloca los electrodos bilateralmente sobre los músculos trapecios o en la zona esplenia posterior.</p>
-                    <p class="text-red-400 font-bold mb-3 mt-1 text-sm border-l-2 border-red-500 pl-2">⚠️ NUNCA colocar en la parte delantera del cuello.</p>
-                    <div class="space-y-2 mt-2">
-                        <details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer">
-                            <summary class="font-semibold text-neonCyan outline-none">⚡ TENS (Alivio del Dolor)</summary>
-                            <p class="mt-1 text-xs text-gray-300">Frecuencia Alta (80-120 Hz). Hormigueo constante y agradable.</p>
-                        </details>
-                        <details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer">
-                            <summary class="font-semibold text-neonCyan outline-none">💆 EMS (Masaje)</summary>
-                            <p class="mt-1 text-xs text-gray-300">Frecuencia Baja (2-10 Hz). Bombeo o pequeñas sacudidas.</p>
-                        </details>
-                    </div>` 
-            }
+            { id: "fase1_calor", fase: "Fase 1: Preparación", titulo: "Aplicación de Calor", imagen: null, tipo: "temporizador", instrucciones: "<p><strong>Fundamento:</strong> Vasodilatación para relajar.</p>" },
+            { id: "mov_flexion", fase: "Fase 2: Movilidad", titulo: "Flexión y Extensión", imagen: "flexion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Barbilla al pecho y extensión atrás.</p>" },
+            { id: "mov_inclinacion", fase: "Fase 2: Movilidad", titulo: "Inclinación Lateral", imagen: "inclinacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Oreja al hombro.</p>" },
+            { id: "mov_rotacion", fase: "Fase 2: Movilidad", titulo: "Rotación", imagen: "rotacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Gira la cabeza lentamente.</p>" },
+            { id: "mov_circulos", fase: "Fase 2: Movilidad", titulo: "Semicírculos", imagen: "circulos.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Dibuja una 'U' pendular.</p>" },
+            { id: "mov_elevacion", fase: "Fase 2: Movilidad", titulo: "Elevación de Hombros", imagen: "elevacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Sube hombros y relaja de golpe.</p>" },
+            { id: "fort_resistencia1", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Frontal/Nuca", imagen: "resistencia1.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Empuje isométrico.</p>" },
+            { id: "fort_resistencia2", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Lateral", imagen: "resistencia2.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Empuje lateral isométrico.</p>" },
+            { id: "est_traccion1", fase: "Fase 4: Estiramientos", titulo: "Tracción Abajo/Adelante", imagen: "traccion1.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Peso muerto de brazos nuca.</p>" },
+            { id: "est_traccion2", fase: "Fase 4: Estiramientos", titulo: "Tracción Lateral", imagen: "traccion2.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Inclinación suave asistida.</p>" },
+            { id: "fase5_electro", fase: "Fase 5: Recuperación", titulo: "Electroestimulación", imagen: null, tipo: "electro", instrucciones: `<p>Colocar electrodos en trapecios/esplenios.</p>` }
         ];
 
         let miSwiper, chartTendencia = null, chartEquilibrio = null;
-        let timerInterval;
-        let tiempoRestante = 15 * 60;
-        let timerEstado = 'detenido';
+        let timerInterval, tiempoRestante = 15 * 60, timerEstado = 'detenido';
 
         window.onload = () => { renderizarRutina(); cargarHistorial(); };
 
@@ -219,231 +209,209 @@
 
                 const visualHTML = ej.imagen 
                     ? `<img src="${ej.imagen}" class="h-36 mx-auto object-contain p-1" onerror="this.src=''; this.alt='Imagen: ${ej.imagen}'">`
-                    : (ej.tipo === 'temporizador' 
-                        ? `<div class="flex items-center justify-center h-36"><span class="text-5xl font-bold text-neonCyan" id="display-${ej.id}">15:00</span></div>` 
-                        : `<div class="flex items-center justify-center h-20"><span class="text-4xl">⚡</span></div>`);
+                    : (ej.tipo === 'temporizador' ? `<div class="flex items-center justify-center h-36"><span class="text-5xl font-bold text-neonCyan" id="display-${ej.id}">15:00</span></div>` : `<div class="flex items-center justify-center h-20"><span class="text-4xl">⚡</span></div>`);
 
                 contenedor.innerHTML += `
                     <div class="swiper-slide flex flex-col items-center justify-center p-4 pt-2 pb-8">
                         <div class="bg-cardBg w-full max-w-sm h-[78vh] rounded-2xl shadow-lg p-5 flex flex-col border border-gray-700">
                             <p class="text-neonCyan font-bold text-center text-xs uppercase tracking-wide mb-2">${ej.fase}</p>
                             <h3 class="text-white font-bold text-lg text-center mb-4 leading-tight">${ej.titulo}</h3>
-                            
                             <div class="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-3 pr-1">
-                                <div class="w-full bg-gray-800 rounded-xl border border-gray-700 flex-shrink-0 flex items-center justify-center overflow-hidden">
-                                    ${visualHTML}
-                                </div>
+                                <div class="w-full bg-gray-800 rounded-xl border border-gray-700 flex-shrink-0 flex items-center justify-center overflow-hidden">${visualHTML}</div>
                                 <details class="group bg-darkBg border border-gray-700 rounded-lg p-3">
-                                    <summary class="font-semibold text-gray-300 outline-none select-none cursor-pointer flex justify-between items-center text-sm">
-                                        Instrucciones de Fisioterapia
-                                        <span class="text-neonCyan font-bold text-xl group-open:rotate-180 transition-transform">▾</span>
-                                    </summary>
-                                    <div class="mt-3 text-sm text-gray-300 space-y-2 border-t border-gray-700 pt-2 pb-1">
-                                        ${ej.instrucciones}
-                                    </div>
+                                    <summary class="font-semibold text-gray-300 outline-none select-none cursor-pointer flex justify-between items-center text-sm">Instrucciones <span class="text-neonCyan font-bold text-xl group-open:rotate-180 transition-transform">▾</span></summary>
+                                    <div class="mt-3 text-sm text-gray-300 space-y-2 border-t border-gray-700 pt-2 pb-1">${ej.instrucciones}</div>
                                 </details>
                             </div>
-
                             <div class="h-auto flex flex-col justify-end mt-4">${controlesHTML}</div>
                         </div>
                     </div>`;
             });
-
             miSwiper = new Swiper(".mySwiper", { spaceBetween: 15, pagination: { el: ".swiper-pagination", dynamicBullets: true } });
         }
 
         // --- NAVEGACIÓN ---
         function cambiarPestana(id) {
-            ['rutina', 'estadisticas', 'ajustes'].forEach(p => {
-                document.getElementById(`vista-${p}`).classList.add('hidden');
-                document.getElementById(`nav-${p}`).classList.replace('text-neonCyan', 'text-gray-500');
-            });
-            document.getElementById(`vista-${id}`).classList.remove('hidden');
-            document.getElementById(`nav-${id}`).classList.replace('text-gray-500', 'text-neonCyan');
-
-            // CRUCIAL: Esperar un instante a que el DOM remueva el 'hidden' antes de renderizar el Chart
+            ['rutina', 'estadisticas', 'ajustes'].forEach(p => { document.getElementById(`vista-${p}`).classList.add('hidden'); document.getElementById(`nav-${p}`).classList.replace('text-neonCyan', 'text-gray-500'); });
+            document.getElementById(`vista-${id}`).classList.remove('hidden'); document.getElementById(`nav-${id}`).classList.replace('text-gray-500', 'text-neonCyan');
             if (id === 'estadisticas') setTimeout(renderizarGraficos, 50);
             if (id === 'ajustes') cargarHistorial();
         }
 
-        function cambiarValor(elementId, incremento) {
-            const el = document.getElementById(elementId);
-            let val = parseInt(el.innerText) + incremento;
-            if (val < 1) val = 1;
-            el.innerText = val;
-        }
+        function cambiarValor(id, inc) { let el = document.getElementById(id), v = parseInt(el.innerText) + inc; el.innerText = v < 1 ? 1 : v; }
 
         // --- TEMPORIZADOR ---
         function toggleTemporizador() {
-            const btnPlay = document.getElementById('btn-timer-play');
-            const btnReset = document.getElementById('btn-timer-reset');
-            
+            const bp = document.getElementById('btn-timer-play'), br = document.getElementById('btn-timer-reset');
             if (timerEstado === 'detenido' || timerEstado === 'pausado') {
-                timerEstado = 'corriendo';
-                btnPlay.innerText = "Pausar";
-                btnPlay.classList.replace('bg-neonCyan', 'bg-amber-500');
-                btnPlay.classList.replace('text-darkBg', 'text-white');
-                btnReset.classList.remove('hidden');
-                
+                timerEstado = 'corriendo'; bp.innerText = "Pausar"; bp.className = bp.className.replace('bg-neonCyan', 'bg-amber-500').replace('text-darkBg', 'text-white'); br.classList.remove('hidden');
                 timerInterval = setInterval(() => {
-                    tiempoRestante--;
-                    actualizarDisplayTemporizador();
-                    if (tiempoRestante <= 0) {
-                        clearInterval(timerInterval);
-                        timerEstado = 'completado';
-                        document.getElementById('display-fase1_calor').innerText = "¡Listo!";
-                        btnPlay.innerText = "Siguiente Fase";
-                        btnPlay.classList.replace('bg-amber-500', 'bg-neonCyan');
-                        btnPlay.classList.replace('text-white', 'text-darkBg');
-                        btnPlay.onclick = () => miSwiper.slideNext();
-                        btnReset.classList.add('hidden');
-                    }
+                    tiempoRestante--; document.getElementById('display-fase1_calor').innerText = `${Math.floor(tiempoRestante/60).toString().padStart(2,'0')}:${(tiempoRestante%60).toString().padStart(2,'0')}`;
+                    if (tiempoRestante <= 0) { clearInterval(timerInterval); timerEstado = 'completado'; document.getElementById('display-fase1_calor').innerText = "¡Listo!"; bp.innerText = "Siguiente Fase"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); bp.onclick = () => miSwiper.slideNext(); br.classList.add('hidden'); }
                 }, 1000);
-            } else if (timerEstado === 'corriendo') {
-                clearInterval(timerInterval); timerEstado = 'pausado';
-                btnPlay.innerText = "Reanudar"; btnPlay.classList.replace('bg-amber-500', 'bg-neonCyan');
-                btnPlay.classList.replace('text-white', 'text-darkBg');
-            }
+            } else if (timerEstado === 'corriendo') { clearInterval(timerInterval); timerEstado = 'pausado'; bp.innerText = "Reanudar"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); }
         }
+        function resetTemporizador() { clearInterval(timerInterval); tiempoRestante = 15*60; timerEstado = 'detenido'; document.getElementById('display-fase1_calor').innerText = "15:00"; const bp = document.getElementById('btn-timer-play'); bp.innerText = "Iniciar Calor"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); bp.onclick = toggleTemporizador; document.getElementById('btn-timer-reset').classList.add('hidden'); }
 
-        function resetTemporizador() {
-            clearInterval(timerInterval); tiempoRestante = 15 * 60; timerEstado = 'detenido';
-            actualizarDisplayTemporizador();
-            const btnPlay = document.getElementById('btn-timer-play');
-            btnPlay.innerText = "Iniciar Calor"; btnPlay.classList.remove('bg-amber-500');
-            btnPlay.classList.add('bg-neonCyan'); btnPlay.classList.replace('text-white', 'text-darkBg');
-            btnPlay.onclick = toggleTemporizador;
-            document.getElementById('btn-timer-reset').classList.add('hidden');
-        }
-
-        function actualizarDisplayTemporizador() {
-            document.getElementById('display-fase1_calor').innerText = `${Math.floor(tiempoRestante / 60).toString().padStart(2, '0')}:${(tiempoRestante % 60).toString().padStart(2, '0')}`;
-        }
-
-        // --- REGISTRO Y CRUD ---
+        // --- REGISTRO ---
         async function guardarRegistro(id, titulo, fase, btn) {
-            const series = parseInt(document.getElementById(`series-${id}`).innerText);
-            const repeticiones = parseInt(document.getElementById(`reps-${id}`).innerText);
-            await db.registros.add({ fecha: new Date().toISOString().slice(0,10), ejercicio: titulo, series, repeticiones, fase });
-            
-            const txtOriginal = btn.innerText;
-            btn.innerText = "¡Guardado!"; btn.classList.replace('bg-gray-700', 'bg-green-500'); btn.classList.replace('text-white', 'text-darkBg');
-            setTimeout(() => { btn.innerText = txtOriginal; btn.classList.replace('bg-green-500', 'bg-gray-700'); btn.classList.replace('text-darkBg', 'text-white'); miSwiper.slideNext(); }, 600);
+            await db.registros.add({ fecha: new Date().toISOString().slice(0,10), ejercicio: titulo, series: parseInt(document.getElementById(`series-${id}`).innerText), repeticiones: parseInt(document.getElementById(`reps-${id}`).innerText), fase });
+            const txt = btn.innerText; btn.innerText = "¡Guardado!"; btn.className = btn.className.replace('bg-gray-700', 'bg-green-500').replace('text-white', 'text-darkBg');
+            setTimeout(() => { btn.innerText = txt; btn.className = btn.className.replace('bg-green-500', 'bg-gray-700').replace('text-darkBg', 'text-white'); miSwiper.slideNext(); }, 600);
         }
-
-        async function guardarElectro(aplicada, btn) {
-            if (aplicada) {
-                await db.registros.add({ fecha: new Date().toISOString().slice(0,10), ejercicio: 'Electroestimulación', series: 1, repeticiones: 1, fase: 'Fase 5' });
-                btn.innerText = "¡Registrado!"; btn.classList.replace('bg-neonCyan', 'bg-green-500');
-            }
+        async function guardarElectro(ap, btn) {
+            if(ap) { await db.registros.add({ fecha: new Date().toISOString().slice(0,10), ejercicio: 'Electroestimulación', series: 1, repeticiones: 1, fase: 'Fase 5' }); btn.innerText = "¡Registrado!"; btn.classList.replace('bg-neonCyan', 'bg-green-500'); }
             setTimeout(() => { miSwiper.slideTo(0); btn.innerText = "Sí, Aplicada"; btn.classList.replace('bg-green-500', 'bg-neonCyan'); }, 800); 
         }
 
-        // --- GRÁFICOS (Versión Corregida) ---
+        // --- LÓGICA DE FECHAS Y GRÁFICOS AVANZADOS ---
+        function toggleFechasPersonalizadas() {
+            const per = document.getElementById('filtro-periodo').value;
+            const divFechas = document.getElementById('rango-fechas');
+            if (per === 'custom') { divFechas.classList.remove('hidden'); divFechas.classList.add('grid'); } 
+            else { divFechas.classList.add('hidden'); divFechas.classList.remove('grid'); renderizarGraficos(); }
+        }
+
+        function obtenerSemana(fechaStr) {
+            const d = new Date(fechaStr);
+            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+            const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+            const weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
+            return `${d.getUTCFullYear()}-W${weekNo.toString().padStart(2, '0')}`;
+        }
+
         async function renderizarGraficos() {
             const todos = await db.registros.toArray();
-            let totalSeries = 0, totalReps = 0; 
+            
+            // 1. Dibujar Heatmap Global (últimos 35 días)
+            dibujarHeatmap(todos);
+
+            // 2. Aplicar Filtros Temporales para Gráficas
+            const fPeriodo = document.getElementById('filtro-periodo').value;
+            let fechaInicio = null, fechaFin = null;
+            const hoy = new Date();
+            
+            if (fPeriodo === '7') { fechaInicio = new Date(hoy); fechaInicio.setDate(hoy.getDate() - 7); } 
+            else if (fPeriodo === '30') { fechaInicio = new Date(hoy); fechaInicio.setDate(hoy.getDate() - 30); }
+            else if (fPeriodo === 'custom') {
+                fechaInicio = new Date(document.getElementById('fecha-inicio').value || '2000-01-01');
+                fechaFin = new Date(document.getElementById('fecha-fin').value || '2100-01-01');
+            }
+
+            const datosFiltradosTemp = todos.filter(r => {
+                const fr = new Date(r.fecha);
+                if (fechaInicio && fr < fechaInicio) return false;
+                if (fechaFin && fr > fechaFin) return false;
+                return true;
+            });
+
+            // 3. Aplicar Filtro de Tipo y Agrupar
+            const fTipo = document.getElementById('filtro-tipo').value;
+            const fAgrupacion = document.getElementById('filtro-agrupacion').value;
             
             const datosTendencia = {};
             const datosEquilibrio = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 };
 
-            todos.forEach(reg => {
-                totalSeries += reg.series; 
-                totalReps += reg.repeticiones;
+            datosFiltradosTemp.forEach(reg => {
+                const esCalor = reg.fase.includes('Fase 1');
+                const esElectro = reg.fase.includes('Fase 5');
                 
-                // Agrupar para Tendencia temporal
-                if (!datosTendencia[reg.fecha]) datosTendencia[reg.fecha] = 0;
-                datosTendencia[reg.fecha] += reg.repeticiones;
+                // Acumular para Equilibrio (solo si no es calor/electro)
+                if (!esCalor && !esElectro) {
+                    if (reg.fase.includes('Movilidad')) datosEquilibrio['Movilidad'] += reg.repeticiones;
+                    if (reg.fase.includes('Fortalecimiento')) datosEquilibrio['Fortalecimiento'] += reg.repeticiones;
+                    if (reg.fase.includes('Estiramientos')) datosEquilibrio['Estiramientos'] += reg.repeticiones;
+                }
 
-                // Agrupar para Equilibrio (filtrando Calor y Electro)
-                if (reg.fase.includes('Movilidad')) datosEquilibrio['Movilidad'] += reg.repeticiones;
-                if (reg.fase.includes('Fortalecimiento')) datosEquilibrio['Fortalecimiento'] += reg.repeticiones;
-                if (reg.fase.includes('Estiramientos')) datosEquilibrio['Estiramientos'] += reg.repeticiones;
+                // Filtrar para el gráfico de Tendencia
+                if (fTipo !== 'todos' && !reg.fase.includes(fTipo)) return;
+                
+                // El Calor y Electro no suman "repeticiones de volumen" a la gráfica general si estamos viendo "Todos"
+                if (fTipo === 'todos' && (esCalor || esElectro)) return; 
+
+                // Agrupación
+                let claveStr = reg.fecha;
+                if (fAgrupacion === 'semanas') claveStr = obtenerSemana(reg.fecha);
+                if (fAgrupacion === 'meses') claveStr = reg.fecha.substring(0, 7);
+
+                if (!datosTendencia[claveStr]) datosTendencia[claveStr] = 0;
+                datosTendencia[claveStr] += reg.repeticiones; // Calor/Electro suman 1 si se filtraron específicamente
             });
 
-            document.getElementById('stat-series').innerText = totalSeries; 
-            document.getElementById('stat-reps').innerText = totalReps;
-
-            // Destruir instancias previas para evitar superposición
+            // Renderizar Chart Tendencia
             if (chartTendencia) chartTendencia.destroy();
-            if (chartEquilibrio) chartEquilibrio.destroy();
-
-            // 1. Configurar Gráfico de Tendencia (Línea)
             const fechas = Object.keys(datosTendencia).sort();
-            const repeticionesFechas = fechas.map(f => datosTendencia[f]);
-            
-            const ctxTendencia = document.getElementById('grafico-tendencia').getContext('2d');
-            chartTendencia = new Chart(ctxTendencia, {
+            chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), {
                 type: 'line', 
-                data: { 
-                    labels: fechas, 
-                    datasets: [{ 
-                        label: 'Volumen', 
-                        data: repeticionesFechas, 
-                        borderColor: '#2dd4bf', 
-                        backgroundColor: 'rgba(45, 212, 191, 0.2)',
-                        fill: true,
-                        tension: 0.4, // Curvas suaves
-                        pointBackgroundColor: '#fff'
-                    }] 
-                },
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false, // Ahora funciona bien gracias al CSS
-                    scales: { 
-                        y: { beginAtZero: true, grid: { color: '#334155' }, ticks: { color: '#94a3b8' } }, 
-                        x: { grid: { display: false }, ticks: { color: '#94a3b8' } } 
-                    }, 
-                    plugins: { legend: { display: false } } 
-                }
+                data: { labels: fechas, datasets: [{ label: 'Repeticiones', data: fechas.map(f => datosTendencia[f]), borderColor: '#2dd4bf', backgroundColor: 'rgba(45, 212, 191, 0.2)', fill: true, tension: 0.4 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
             });
 
-            // 2. Configurar Gráfico de Equilibrio (Anillo / Doughnut)
-            const ctxEquilibrio = document.getElementById('grafico-equilibrio').getContext('2d');
-            chartEquilibrio = new Chart(ctxEquilibrio, {
+            // Renderizar Chart Equilibrio
+            if (chartEquilibrio) chartEquilibrio.destroy();
+            chartEquilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), {
                 type: 'doughnut',
-                data: {
-                    labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'],
-                    datasets: [{
-                        data: [datosEquilibrio['Movilidad'], datosEquilibrio['Fortalecimiento'], datosEquilibrio['Estiramientos']],
-                        backgroundColor: ['#2dd4bf', '#3b82f6', '#8b5cf6'], // Colores neon
-                        borderWidth: 0,
-                        hoverOffset: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'right', labels: { color: '#cbd5e1', font: { size: 12 } } }
-                    },
-                    cutout: '70%' // Hace que el anillo sea más fino y elegante
-                }
+                data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#8b5cf6'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right', labels: { color: '#cbd5e1' } } } }
             });
         }
 
+        function dibujarHeatmap(todosRegistros) {
+            const container = document.getElementById('calendario-heatmap');
+            container.innerHTML = '';
+            
+            // Agrupar por fecha
+            const evaluacionPorDia = {};
+            todosRegistros.forEach(r => {
+                if (!evaluacionPorDia[r.fecha]) evaluacionPorDia[r.fecha] = { ejercicios: new Set(), calor: false, electro: false };
+                if (r.fase.includes('Fase 1')) evaluacionPorDia[r.fecha].calor = true;
+                else if (r.fase.includes('Fase 5')) evaluacionPorDia[r.fecha].electro = true;
+                else evaluacionPorDia[r.fecha].ejercicios.add(r.ejercicio);
+            });
+
+            // Generar los últimos 35 días
+            const hoy = new Date();
+            for (let i = 34; i >= 0; i--) {
+                const d = new Date(hoy);
+                d.setDate(hoy.getDate() - i);
+                const fechaStr = d.toISOString().slice(0,10);
+                
+                const datosDia = evaluacionPorDia[fechaStr];
+                let claseColor = 'heat-0';
+                let clasesExtra = '';
+                
+                if (datosDia) {
+                    const numEjercicios = datosDia.ejercicios.size;
+                    const esCompleta = numEjercicios >= RUTINA_TOTAL_EJERCICIOS;
+                    
+                    if (esCompleta && datosDia.calor) claseColor = 'heat-4';
+                    else if (esCompleta) claseColor = 'heat-3';
+                    else if (numEjercicios > 0 && datosDia.calor) claseColor = 'heat-2';
+                    else if (numEjercicios > 0) claseColor = 'heat-1';
+                    // Solo calor sin ejercicios
+                    else if (datosDia.calor) claseColor = 'heat-1'; 
+                    
+                    if (datosDia.electro) clasesExtra = 'heat-electro';
+                }
+
+                const title = datosDia ? `${fechaStr}: ${datosDia.ejercicios.size} Ejs, Calor:${datosDia.calor?'Sí':'No'}, Electro:${datosDia.electro?'Sí':'No'}` : fechaStr;
+                container.innerHTML += `<div class="aspect-square rounded-sm ${claseColor} ${clasesExtra}" title="${title}"></div>`;
+            }
+        }
+
+        // --- CRUD BÁSICO ---
         async function cargarHistorial() {
-            const todos = await db.registros.orderBy('id').reverse().limit(20).toArray();
-            const lista = document.getElementById('lista-registros'); lista.innerHTML = '';
-            if (todos.length === 0) return lista.innerHTML = '<p class="text-gray-400 text-sm">No hay registros todavía.</p>';
-            todos.forEach(reg => lista.innerHTML += `<div class="bg-darkBg p-3 rounded border border-gray-700 flex justify-between items-center"><div><p class="font-bold text-sm text-neonCyan">${reg.ejercicio}</p><p class="text-xs text-gray-400">${reg.fecha} | ${reg.series} Series / ${reg.repeticiones} Reps</p></div><button onclick="borrarRegistro(${reg.id})" class="text-red-500 px-2 py-1">🗑️</button></div>`);
+            const t = await db.registros.orderBy('id').reverse().limit(20).toArray();
+            const l = document.getElementById('lista-registros'); l.innerHTML = '';
+            if (t.length===0) return l.innerHTML = '<p class="text-gray-400 text-sm">No hay registros.</p>';
+            t.forEach(r => l.innerHTML += `<div class="bg-darkBg p-3 rounded border border-gray-700 flex justify-between items-center"><div><p class="font-bold text-sm text-neonCyan">${r.ejercicio}</p><p class="text-xs text-gray-400">${r.fecha} | ${r.series} Ser / ${r.repeticiones} Reps</p></div><button onclick="borrarRegistro(${r.id})" class="text-red-500 px-2">🗑️</button></div>`);
         }
-        async function borrarRegistro(id) { if (confirm("¿Borrar registro?")) { await db.registros.delete(id); cargarHistorial(); renderizarGraficos(); } }
-        async function borrarTodosLosDatos() { if (confirm("⚠️ ¿Borrar TODOS los datos?")) { await db.registros.clear(); alert("Borrados."); cargarHistorial(); } }
-        async function exportarCSV() {
-            const datos = await db.registros.toArray(); if (datos.length === 0) return alert("Sin datos.");
-            let csv = "ID,Fecha,Fase,Ejercicio,Series,Repeticiones\n"; datos.forEach(d => csv += `${d.id},${d.fecha},${d.fase},${d.ejercicio},${d.series},${d.repeticiones}\n`);
-            descargarArchivo(csv, `cervicare_${new Date().toISOString().slice(0,10)}.csv`, 'text/csv');
-        }
-        async function exportarBackup() { descargarArchivo(JSON.stringify(await db.registros.toArray()), `cervicare_backup_${new Date().toISOString().slice(0,10)}.json`, 'application/json'); }
-        function importarBackup(e) {
-            const file = e.target.files[0]; if (!file) return; const reader = new FileReader();
-            reader.onload = async (evento) => {
-                try { await db.registros.clear(); await db.registros.bulkAdd(JSON.parse(evento.target.result)); alert("Restaurado."); cargarHistorial(); } 
-                catch (error) { alert("Error al leer archivo."); }
-            }; reader.readAsText(file);
-        }
-        function descargarArchivo(contenido, nombre, tipo) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([contenido], { type: tipo })); a.download = nombre; a.click(); }
+        async function borrarRegistro(id) { if(confirm("¿Borrar?")){ await db.registros.delete(id); cargarHistorial(); renderizarGraficos(); } }
+        async function borrarTodosLosDatos() { if(confirm("⚠️ ¿Borrar TODOS?")){ await db.registros.clear(); alert("Borrados."); cargarHistorial(); renderizarGraficos(); } }
+        async function exportarCSV() { const d = await db.registros.toArray(); let c="ID,Fecha,Fase,Ejercicio,Series,Reps\n"; d.forEach(r=>c+=`${r.id},${r.fecha},${r.fase},${r.ejercicio},${r.series},${r.repeticiones}\n`); descargarArchivo(c,`cervicare.csv`,'text/csv'); }
+        async function exportarBackup() { descargarArchivo(JSON.stringify(await db.registros.toArray()),`cervicare.json`,'application/json'); }
+        function importarBackup(e) { const r=new FileReader(); r.onload=async(ev)=>{ await db.registros.clear(); await db.registros.bulkAdd(JSON.parse(ev.target.result)); alert("Restaurado."); cargarHistorial(); }; r.readAsText(e.target.files[0]); }
+        function descargarArchivo(c, n, t) { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([c],{type:t})); a.download=n; a.click(); }
     </script>
 </body>
 </html>
