@@ -358,9 +358,13 @@
             }
         }
 
+        /* --- LÓGICA REESCRITA PARA GRÁFICAS MÚLTIPLES --- */
         async function renderizarGraficos() {
-            const todos = await db.registros.toArray(); const fPeriodo = document.getElementById('filtro-periodo').value;
-            let fInicioStr = null, fFinStr = null; const hoyStr = getLocalDateStr();
+            const todos = await db.registros.toArray(); 
+            const fPeriodo = document.getElementById('filtro-periodo').value;
+            let fInicioStr = null, fFinStr = null; 
+            const hoyStr = getLocalDateStr();
+            
             if (fPeriodo === 'hoy') { fInicioStr = hoyStr; fFinStr = hoyStr; }
             else if (fPeriodo === 'dia_concreto') { const d = document.getElementById('fecha-unica').value; if(d) { fInicioStr = d; fFinStr = d; } }
             else if (fPeriodo === '7') { const d = new Date(); d.setDate(d.getDate()-7); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
@@ -368,28 +372,82 @@
             else if (fPeriodo === 'rango') { fInicioStr = document.getElementById('fecha-inicio').value; fFinStr = document.getElementById('fecha-fin').value; }
 
             const datosFiltradosTemp = todos.filter(r => { if (fInicioStr && r.fecha < fInicioStr) return false; if (fFinStr && r.fecha > fFinStr) return false; return true; });
-            const fTipo = document.getElementById('filtro-tipo').value, fAgrupacion = document.getElementById('filtro-agrupacion').value;
-            const datosTendencia = {}, datosEquilibrio = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 };
+            
+            const fTipo = document.getElementById('filtro-tipo').value;
+            const fAgrupacion = document.getElementById('filtro-agrupacion').value;
+            
+            const datosEquilibrio = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 };
+            const datosTendenciaCat = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} };
+            const fechasSet = new Set();
 
             datosFiltradosTemp.forEach(reg => {
                 const esCalor = reg.fase.includes('Fase 1'), esElectro = reg.fase.includes('Fase 5');
+                
+                // Calculamos para el dónut siempre (salvo que sea calor/electro)
                 if (!esCalor && !esElectro) {
                     if (reg.fase.includes('Movilidad')) datosEquilibrio['Movilidad'] += reg.repeticiones;
                     if (reg.fase.includes('Fortalecimiento')) datosEquilibrio['Fortalecimiento'] += reg.repeticiones;
                     if (reg.fase.includes('Estiramientos')) datosEquilibrio['Estiramientos'] += reg.repeticiones;
                 }
+
+                // Filtrado general
                 if (fTipo !== 'todos' && !reg.fase.includes(fTipo)) return;
                 if (fTipo === 'todos' && (esCalor || esElectro)) return; 
+                
                 let claveStr = reg.fecha;
                 if (fAgrupacion === 'semanas') claveStr = obtenerSemana(reg.fecha);
                 if (fAgrupacion === 'meses') claveStr = reg.fecha.substring(0, 7);
-                if (!datosTendencia[claveStr]) datosTendencia[claveStr] = 0; datosTendencia[claveStr] += reg.repeticiones;
+                
+                fechasSet.add(claveStr);
+
+                // Agrupamos por categoría para las líneas
+                if (!esCalor && !esElectro) {
+                    let cat = '';
+                    if (reg.fase.includes('Movilidad')) cat = 'Movilidad';
+                    else if (reg.fase.includes('Fortalecimiento')) cat = 'Fortalecimiento';
+                    else if (reg.fase.includes('Estiramientos')) cat = 'Estiramientos';
+
+                    if (cat) {
+                        if (!datosTendenciaCat[cat][claveStr]) datosTendenciaCat[cat][claveStr] = 0;
+                        datosTendenciaCat[cat][claveStr] += reg.repeticiones;
+                    }
+                }
             });
 
-            if (chartTendencia) chartTendencia.destroy(); const fechas = Object.keys(datosTendencia).sort();
-            chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), { type: 'line', data: { labels: fechas, datasets: [{ label: 'Reps', data: fechas.map(f => datosTendencia[f]), borderColor: '#2dd4bf', backgroundColor: 'rgba(45, 212, 191, 0.2)', fill: true, tension: 0.4 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } } });
+            if (chartTendencia) chartTendencia.destroy(); 
+            const fechas = Array.from(fechasSet).sort();
+            
+            // Generación de Datasets dinámicos
+            let datasetsLinea = [];
+            if (fTipo === 'todos') {
+                datasetsLinea = [
+                    { label: 'Movilidad', data: fechas.map(f => datosTendenciaCat['Movilidad'][f] || 0), borderColor: '#2dd4bf', backgroundColor: 'rgba(45, 212, 191, 0.1)', fill: true, tension: 0.4 },
+                    { label: 'Fortalecimiento', data: fechas.map(f => datosTendenciaCat['Fortalecimiento'][f] || 0), borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4 },
+                    { label: 'Estiramientos', data: fechas.map(f => datosTendenciaCat['Estiramientos'][f] || 0), borderColor: '#c084fc', backgroundColor: 'rgba(192, 132, 252, 0.1)', fill: true, tension: 0.4 }
+                ];
+            } else {
+                let color = '#2dd4bf', bg = 'rgba(45, 212, 191, 0.2)';
+                if (fTipo === 'Fortalecimiento') { color = '#3b82f6'; bg = 'rgba(59, 130, 246, 0.2)'; }
+                if (fTipo === 'Estiramientos') { color = '#c084fc'; bg = 'rgba(192, 132, 252, 0.2)'; }
+                datasetsLinea = [{ label: fTipo, data: fechas.map(f => datosTendenciaCat[fTipo][f] || 0), borderColor: color, backgroundColor: bg, fill: true, tension: 0.4 }];
+            }
+
+            chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), { 
+                type: 'line', 
+                data: { labels: fechas, datasets: datasetsLinea }, 
+                options: { 
+                    responsive: true, maintainAspectRatio: false, 
+                    scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, 
+                    plugins: { legend: { display: fTipo === 'todos', labels: { color: '#cbd5e1', boxWidth: 12 } } } 
+                } 
+            });
+            
             if (chartEquilibrio) chartEquilibrio.destroy();
-            chartEquilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), { type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right', labels: { color: '#cbd5e1' } } } } });
+            chartEquilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), { 
+                type: 'doughnut', 
+                data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'], borderWidth: 0 }] }, 
+                options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right', labels: { color: '#cbd5e1' } } } } 
+            });
         }
 
         async function cargarHistorial() {
