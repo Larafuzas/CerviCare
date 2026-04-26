@@ -17,11 +17,11 @@
                     colors: {
                         darkBg: '#0f172a',
                         cardBg: '#1e293b',
-                        neonCyan: '#2dd4bf',   /* Azul eléctrico principal */
-                        neonYellow: '#facc15', /* Amarillo neón */
-                        neonOrange: '#fb923c', /* Naranja neón */
-                        neonGreen: '#4ade80',  /* Verde neón */
-                        neonPurple: '#c084fc'  /* Morado neón */
+                        neonCyan: '#2dd4bf',   
+                        neonYellow: '#facc15', 
+                        neonOrange: '#fb923c', 
+                        neonGreen: '#4ade80',  
+                        neonPurple: '#c084fc'  
                     }
                 }
             }
@@ -35,13 +35,10 @@
     
     <style>
         body { -webkit-tap-highlight-color: transparent; user-select: none; }
-        /* Ocultar barra de scroll para el menú superior y listados */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        
-        /* Animación suave para los chips del menú */
         .chip { transition: all 0.3s ease; }
     </style>
 </head>
@@ -205,14 +202,12 @@
             navPills.innerHTML = '';
 
             rutinaCervical.forEach((ej, index) => {
-                // 1. Generar Chip de Navegación
                 navPills.innerHTML += `
                     <button id="pill-${index}" onclick="irADiapositiva(${index})" 
                             class="chip flex-shrink-0 text-xs font-bold px-4 py-1.5 rounded-full border border-gray-600 bg-transparent text-gray-400">
                         ${index + 1}. ${ej.short}
                     </button>`;
 
-                // 2. Generar Tarjeta
                 let controlesHTML = '';
                 if (ej.tipo === 'temporizador') {
                     controlesHTML = `
@@ -245,9 +240,28 @@
                         </div>`;
                 }
 
-                const visualHTML = ej.imagen 
-                    ? `<img src="${ej.imagen}" class="h-32 mx-auto object-contain p-1" onerror="this.src=''; this.alt='Imagen: ${ej.imagen}'">`
-                    : (ej.tipo === 'temporizador' ? `<div class="flex items-center justify-center h-32"><span class="text-5xl font-bold text-neonCyan" id="display-${ej.id}">15:00</span></div>` : `<div class="flex items-center justify-center h-20"><span class="text-4xl">⚡</span></div>`);
+                let visualHTML = '';
+                if (ej.imagen) {
+                    visualHTML = `<img src="${ej.imagen}" class="h-32 mx-auto object-contain p-1" onerror="this.src=''; this.alt='Imagen: ${ej.imagen}'">`;
+                } else if (ej.tipo === 'temporizador') {
+                    visualHTML = `<div class="flex items-center justify-center h-32"><span class="text-5xl font-bold text-neonCyan" id="display-${ej.id}">15:00</span></div>`;
+                } else if (ej.tipo === 'electro') {
+                    // Nuevo SVG Vectorial de dispositivo TENS
+                    visualHTML = `
+                        <div class="flex items-center justify-center h-32">
+                            <svg class="w-16 h-16 text-neonCyan drop-shadow-[0_0_10px_rgba(45,212,191,0.4)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <rect x="8" y="4" width="8" height="12" rx="2" stroke-width="1.5"/>
+                                <rect x="10" y="6" width="4" height="3" rx="0.5" stroke-width="1.5"/>
+                                <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+                                <path d="M12 4V2" stroke-width="1.5" stroke-linecap="round"/>
+                                <path d="M12 2 Q18 2 18 5" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                                <path d="M12 2 Q6 2 6 5" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                                <rect x="4" y="5" width="4" height="6" rx="1" stroke-width="1.5" fill="currentColor" fill-opacity="0.2"/>
+                                <rect x="16" y="5" width="4" height="6" rx="1" stroke-width="1.5" fill="currentColor" fill-opacity="0.2"/>
+                                <path d="M5.5 7.5L6.5 8.5M17.5 7.5L18.5 8.5" stroke-width="1" stroke-linecap="round"/>
+                            </svg>
+                        </div>`;
+                }
 
                 contenedor.innerHTML += `
                     <div class="swiper-slide flex flex-col items-center justify-start p-4 pt-0 pb-6">
@@ -268,19 +282,12 @@
 
             miSwiper = new Swiper(".mySwiper", { 
                 spaceBetween: 15,
-                on: {
-                    slideChange: function () { actualizarEstiloPills(this.activeIndex); }
-                }
+                on: { slideChange: function () { actualizarEstiloPills(this.activeIndex); } }
             });
-            
-            // Inicializar el estilo de la primera píldora
             actualizarEstiloPills(0);
         }
 
-        // Lógica del menú de navegación superior
-        function irADiapositiva(index) {
-            if(miSwiper) miSwiper.slideTo(index);
-        }
+        function irADiapositiva(index) { if(miSwiper) miSwiper.slideTo(index); }
 
         function actualizarEstiloPills(activeIndex) {
             const pills = document.querySelectorAll('.chip');
@@ -402,7 +409,7 @@
                     else if (numEj > 0 && datosDia.calor) { dotColor = 'bg-neonOrange'; shadowClass = 'shadow-[0_0_8px_rgba(251,146,60,0.6)]'; }
                     else if (numEj > 0 || datosDia.calor) { dotColor = 'bg-neonYellow'; shadowClass = 'shadow-[0_0_8px_rgba(250,204,21,0.6)]'; }
                     
-                    if (datosDia.electro) clasesBorde = 'ring-2 ring-neonCyan'; // Anillo Azul Eléctrico
+                    if (datosDia.electro) clasesBorde = 'ring-2 ring-neonCyan'; 
                 }
 
                 const bgCelda = fechaStr === hoyStr ? 'bg-gray-800' : 'bg-transparent';
