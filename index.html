@@ -18,7 +18,11 @@
                         cardBg: '#1e293b',
                         neonCyan: '#2dd4bf',
                         neonBlue: '#3b82f6',
-                        neonPurple: '#8b5cf6'
+                        neonPurple: '#8b5cf6',
+                        tealDark: '#0f766e',
+                        tealLight: '#2dd4bf',
+                        blueDark: '#1d4ed8',
+                        blueLight: '#60a5fa'
                     }
                 }
             }
@@ -35,14 +39,6 @@
         .swiper-pagination-bullet-active { background-color: #2dd4bf !important; }
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        
-        /* Clases para el Heatmap */
-        .heat-0 { background-color: #1f2937; } /* Gris oscuro */
-        .heat-1 { background-color: #134e4a; } /* Turquesa oscuro (Algunos) */
-        .heat-2 { background-color: #0f766e; } /* Turquesa medio (Calor + Algunos) */
-        .heat-3 { background-color: #1d4ed8; } /* Azul oscuro (Todos) */
-        .heat-4 { background-color: #3b82f6; } /* Azul claro (Calor + Todos) */
-        .heat-electro { outline: 2px solid #8b5cf6; outline-offset: -2px; } /* Borde Morado */
     </style>
 </head>
 <body class="bg-darkBg text-white font-sans antialiased h-screen flex flex-col overflow-hidden">
@@ -64,15 +60,25 @@
             <h2 class="text-xl font-bold text-white mb-3">Tu Progreso</h2>
             
             <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg">
-                <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Constancia (Últimos 35 días)</h3>
-                <div id="calendario-heatmap" class="grid grid-cols-7 gap-1 mb-2"></div>
+                <div class="flex justify-between items-center mb-3">
+                    <button onclick="cambiarMes(-1)" class="text-neonCyan p-1 px-3 bg-darkBg rounded hover:bg-gray-700 transition">&lt;</button>
+                    <h3 id="mes-actual-label" class="font-bold text-sm uppercase tracking-wide text-white">Mes Año</h3>
+                    <button onclick="cambiarMes(1)" class="text-neonCyan p-1 px-3 bg-darkBg rounded hover:bg-gray-700 transition">&gt;</button>
+                </div>
                 
-                <div class="flex flex-wrap gap-2 justify-center text-[10px] text-gray-400 mt-3">
-                    <div class="flex items-center gap-1"><div class="w-3 h-3 heat-1 rounded-sm"></div> Ejercicios</div>
-                    <div class="flex items-center gap-1"><div class="w-3 h-3 heat-2 rounded-sm"></div> + Calor</div>
-                    <div class="flex items-center gap-1"><div class="w-3 h-3 heat-3 rounded-sm"></div> Tabla Completa</div>
-                    <div class="flex items-center gap-1"><div class="w-3 h-3 heat-4 rounded-sm"></div> + Calor</div>
-                    <div class="flex items-center gap-1"><div class="w-3 h-3 bg-gray-700 heat-electro rounded-sm"></div> Electro</div>
+                <div class="grid grid-cols-7 text-center text-[10px] text-gray-400 mb-1 font-semibold uppercase">
+                    <div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div>
+                </div>
+                
+                <div id="calendario-grid" class="grid grid-cols-7 gap-1 text-center">
+                    </div>
+                
+                <div class="flex flex-wrap gap-2 justify-center text-[10px] text-gray-300 mt-4 border-t border-gray-700 pt-3">
+                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-tealDark rounded-full"></div> Algunos</div>
+                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-tealLight rounded-full"></div> + Calor</div>
+                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-blueDark rounded-full"></div> Rutina Comp.</div>
+                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-blueLight rounded-full"></div> + Calor</div>
+                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 border border-neonPurple rounded-full bg-transparent"></div> Electro (Anillo)</div>
                 </div>
             </div>
 
@@ -90,20 +96,27 @@
                         <option value="Estiramientos">Solo Estiramientos</option>
                     </select>
                     <select id="filtro-periodo" onchange="toggleFechasPersonalizadas()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none col-span-2">
+                        <option value="hoy">Hoy</option>
+                        <option value="dia_concreto">Día específico...</option>
                         <option value="7">Últimos 7 días</option>
                         <option value="30" selected>Últimos 30 días</option>
                         <option value="todo">Desde el principio</option>
-                        <option value="custom">Personalizado...</option>
+                        <option value="rango">Rango de fechas...</option>
                     </select>
+                </div>
+                
+                <div id="input-dia-concreto" class="hidden mt-2 pt-2 border-t border-gray-700">
+                    <label class="text-[10px] text-gray-400">Selecciona el día</label>
+                    <input type="date" id="fecha-unica" onchange="renderizarGraficos()" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1.5 text-white mt-1">
                 </div>
                 <div id="rango-fechas" class="hidden grid-cols-2 gap-2 mt-2 pt-2 border-t border-gray-700">
                     <div>
                         <label class="text-[10px] text-gray-400">Inicio</label>
-                        <input type="date" id="fecha-inicio" onchange="renderizarGraficos()" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1 text-white">
+                        <input type="date" id="fecha-inicio" onchange="renderizarGraficos()" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1.5 text-white mt-1">
                     </div>
                     <div>
                         <label class="text-[10px] text-gray-400">Fin</label>
-                        <input type="date" id="fecha-fin" onchange="renderizarGraficos()" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1 text-white">
+                        <input type="date" id="fecha-fin" onchange="renderizarGraficos()" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1.5 text-white mt-1">
                     </div>
                 </div>
             </div>
@@ -168,14 +181,23 @@
 
         let miSwiper, chartTendencia = null, chartEquilibrio = null;
         let timerInterval, tiempoRestante = 15 * 60, timerEstado = 'detenido';
+        
+        // Estado del Calendario
+        let calMonth = new Date().getMonth();
+        let calYear = new Date().getFullYear();
+        const nombresMeses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
         window.onload = () => { renderizarRutina(); cargarHistorial(); };
+
+        // Helper para obtener YYYY-MM-DD local y seguro
+        function getLocalDateStr(d = new Date()) {
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
 
         function renderizarRutina() {
             const contenedor = document.getElementById('contenedor-ejercicios');
             rutinaCervical.forEach(ej => {
                 let controlesHTML = '';
-                
                 if (ej.tipo === 'temporizador') {
                     controlesHTML = `
                         <div class="flex gap-2 w-full">
@@ -230,17 +252,15 @@
             miSwiper = new Swiper(".mySwiper", { spaceBetween: 15, pagination: { el: ".swiper-pagination", dynamicBullets: true } });
         }
 
-        // --- NAVEGACIÓN ---
         function cambiarPestana(id) {
             ['rutina', 'estadisticas', 'ajustes'].forEach(p => { document.getElementById(`vista-${p}`).classList.add('hidden'); document.getElementById(`nav-${p}`).classList.replace('text-neonCyan', 'text-gray-500'); });
             document.getElementById(`vista-${id}`).classList.remove('hidden'); document.getElementById(`nav-${id}`).classList.replace('text-gray-500', 'text-neonCyan');
-            if (id === 'estadisticas') setTimeout(renderizarGraficos, 50);
+            if (id === 'estadisticas') setTimeout(actualizarVistasProgreso, 50);
             if (id === 'ajustes') cargarHistorial();
         }
 
         function cambiarValor(id, inc) { let el = document.getElementById(id), v = parseInt(el.innerText) + inc; el.innerText = v < 1 ? 1 : v; }
 
-        // --- TEMPORIZADOR ---
         function toggleTemporizador() {
             const bp = document.getElementById('btn-timer-play'), br = document.getElementById('btn-timer-reset');
             if (timerEstado === 'detenido' || timerEstado === 'pausado') {
@@ -253,62 +273,132 @@
         }
         function resetTemporizador() { clearInterval(timerInterval); tiempoRestante = 15*60; timerEstado = 'detenido'; document.getElementById('display-fase1_calor').innerText = "15:00"; const bp = document.getElementById('btn-timer-play'); bp.innerText = "Iniciar Calor"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); bp.onclick = toggleTemporizador; document.getElementById('btn-timer-reset').classList.add('hidden'); }
 
-        // --- REGISTRO ---
         async function guardarRegistro(id, titulo, fase, btn) {
-            await db.registros.add({ fecha: new Date().toISOString().slice(0,10), ejercicio: titulo, series: parseInt(document.getElementById(`series-${id}`).innerText), repeticiones: parseInt(document.getElementById(`reps-${id}`).innerText), fase });
+            await db.registros.add({ fecha: getLocalDateStr(), ejercicio: titulo, series: parseInt(document.getElementById(`series-${id}`).innerText), repeticiones: parseInt(document.getElementById(`reps-${id}`).innerText), fase });
             const txt = btn.innerText; btn.innerText = "¡Guardado!"; btn.className = btn.className.replace('bg-gray-700', 'bg-green-500').replace('text-white', 'text-darkBg');
-            setTimeout(() => { btn.innerText = txt; btn.className = btn.className.replace('bg-green-500', 'bg-gray-700').replace('text-darkBg', 'text-white'); miSwiper.slideNext(); }, 600);
+            setTimeout(() => { btn.innerText = txt; btn.className = btn.className.replace('bg-green-500', 'bg-gray-700').replace('text-darkBg', 'text-white'); miSwiper.slideNext(); actualizarVistasProgreso(); }, 600);
         }
         async function guardarElectro(ap, btn) {
-            if(ap) { await db.registros.add({ fecha: new Date().toISOString().slice(0,10), ejercicio: 'Electroestimulación', series: 1, repeticiones: 1, fase: 'Fase 5' }); btn.innerText = "¡Registrado!"; btn.classList.replace('bg-neonCyan', 'bg-green-500'); }
-            setTimeout(() => { miSwiper.slideTo(0); btn.innerText = "Sí, Aplicada"; btn.classList.replace('bg-green-500', 'bg-neonCyan'); }, 800); 
+            if(ap) { await db.registros.add({ fecha: getLocalDateStr(), ejercicio: 'Electroestimulación', series: 1, repeticiones: 1, fase: 'Fase 5' }); btn.innerText = "¡Registrado!"; btn.classList.replace('bg-neonCyan', 'bg-green-500'); }
+            setTimeout(() => { miSwiper.slideTo(0); btn.innerText = "Sí, Aplicada"; btn.classList.replace('bg-green-500', 'bg-neonCyan'); actualizarVistasProgreso(); }, 800); 
         }
 
-        // --- LÓGICA DE FECHAS Y GRÁFICOS AVANZADOS ---
         function toggleFechasPersonalizadas() {
             const per = document.getElementById('filtro-periodo').value;
-            const divFechas = document.getElementById('rango-fechas');
-            if (per === 'custom') { divFechas.classList.remove('hidden'); divFechas.classList.add('grid'); } 
-            else { divFechas.classList.add('hidden'); divFechas.classList.remove('grid'); renderizarGraficos(); }
+            document.getElementById('rango-fechas').classList.toggle('hidden', per !== 'rango');
+            document.getElementById('rango-fechas').classList.toggle('grid', per === 'rango');
+            document.getElementById('input-dia-concreto').classList.toggle('hidden', per !== 'dia_concreto');
+            if (per !== 'rango' && per !== 'dia_concreto') renderizarGraficos();
         }
 
         function obtenerSemana(fechaStr) {
             const d = new Date(fechaStr);
             d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
             const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-            const weekNo = Math.ceil(( ( (d - yearStart) / 86400000) + 1)/7);
-            return `${d.getUTCFullYear()}-W${weekNo.toString().padStart(2, '0')}`;
+            return `${d.getUTCFullYear()}-W${Math.ceil((((d-yearStart)/86400000)+1)/7).toString().padStart(2,'0')}`;
+        }
+
+        async function actualizarVistasProgreso() {
+            await dibujarCalendarioMensual();
+            await renderizarGraficos();
+        }
+
+        function cambiarMes(offset) {
+            calMonth += offset;
+            if(calMonth < 0) { calMonth = 11; calYear--; }
+            if(calMonth > 11) { calMonth = 0; calYear++; }
+            dibujarCalendarioMensual();
+        }
+
+        async function dibujarCalendarioMensual() {
+            document.getElementById('mes-actual-label').innerText = `${nombresMeses[calMonth]} ${calYear}`;
+            const container = document.getElementById('calendario-grid');
+            container.innerHTML = '';
+            
+            const todos = await db.registros.toArray();
+            const evaluacionPorDia = {};
+            todos.forEach(r => {
+                if (!evaluacionPorDia[r.fecha]) evaluacionPorDia[r.fecha] = { ejercicios: new Set(), calor: false, electro: false };
+                if (r.fase.includes('Fase 1')) evaluacionPorDia[r.fecha].calor = true;
+                else if (r.fase.includes('Fase 5')) evaluacionPorDia[r.fecha].electro = true;
+                else evaluacionPorDia[r.fecha].ejercicios.add(r.ejercicio);
+            });
+
+            // Lógica de generación del mes (Lunes como primer día)
+            let primerDiaMes = new Date(calYear, calMonth, 1).getDay();
+            if (primerDiaMes === 0) primerDiaMes = 7; // Ajustar Domingo(0) a 7
+            const diasEnMes = new Date(calYear, calMonth + 1, 0).getDate();
+
+            // Rellenar huecos vacíos antes del día 1
+            for (let i = 1; i < primerDiaMes; i++) {
+                container.innerHTML += `<div class="h-10"></div>`;
+            }
+
+            const hoyStr = getLocalDateStr();
+
+            // Renderizar los días
+            for (let day = 1; day <= diasEnMes; day++) {
+                const fechaStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                const datosDia = evaluacionPorDia[fechaStr];
+                
+                let dotColor = 'bg-transparent';
+                let clasesBorde = 'border border-transparent';
+                let tieneDatos = false;
+
+                if (datosDia) {
+                    tieneDatos = true;
+                    const numEj = datosDia.ejercicios.size;
+                    const esCompleta = numEj >= RUTINA_TOTAL_EJERCICIOS;
+                    
+                    if (esCompleta && datosDia.calor) dotColor = 'bg-blueLight'; // Azul claro
+                    else if (esCompleta) dotColor = 'bg-blueDark'; // Azul Oscuro
+                    else if (numEj > 0 && datosDia.calor) dotColor = 'bg-tealLight'; // Turquesa Claro
+                    else if (numEj > 0 || datosDia.calor) dotColor = 'bg-tealDark'; // Turquesa Oscuro
+                    
+                    if (datosDia.electro) clasesBorde = 'ring-1 ring-neonPurple';
+                }
+
+                const bgCelda = fechaStr === hoyStr ? 'bg-gray-800' : 'bg-transparent';
+                const textDay = tieneDatos ? 'text-white font-bold' : 'text-gray-400';
+
+                container.innerHTML += `
+                    <div class="h-10 flex flex-col items-center justify-center rounded-lg ${bgCelda} ${clasesBorde} cursor-pointer hover:bg-gray-700 transition" 
+                         onclick="document.getElementById('filtro-periodo').value='dia_concreto'; document.getElementById('fecha-unica').value='${fechaStr}'; toggleFechasPersonalizadas(); renderizarGraficos();">
+                        <span class="text-xs ${textDay}">${day}</span>
+                        <div class="w-1.5 h-1.5 rounded-full mt-0.5 ${dotColor}"></div>
+                    </div>`;
+            }
         }
 
         async function renderizarGraficos() {
             const todos = await db.registros.toArray();
-            
-            // 1. Dibujar Heatmap Global (últimos 35 días)
-            dibujarHeatmap(todos);
-
-            // 2. Aplicar Filtros Temporales para Gráficas
             const fPeriodo = document.getElementById('filtro-periodo').value;
-            let fechaInicio = null, fechaFin = null;
-            const hoy = new Date();
-            
-            if (fPeriodo === '7') { fechaInicio = new Date(hoy); fechaInicio.setDate(hoy.getDate() - 7); } 
-            else if (fPeriodo === '30') { fechaInicio = new Date(hoy); fechaInicio.setDate(hoy.getDate() - 30); }
-            else if (fPeriodo === 'custom') {
-                fechaInicio = new Date(document.getElementById('fecha-inicio').value || '2000-01-01');
-                fechaFin = new Date(document.getElementById('fecha-fin').value || '2100-01-01');
+            let fInicioStr = null, fFinStr = null;
+            const hoyStr = getLocalDateStr();
+
+            if (fPeriodo === 'hoy') { fInicioStr = hoyStr; fFinStr = hoyStr; }
+            else if (fPeriodo === 'dia_concreto') {
+                const d = document.getElementById('fecha-unica').value;
+                if(d) { fInicioStr = d; fFinStr = d; }
+            }
+            else if (fPeriodo === '7') { 
+                const d = new Date(); d.setDate(d.getDate()-7); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; 
+            }
+            else if (fPeriodo === '30') { 
+                const d = new Date(); d.setDate(d.getDate()-30); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; 
+            }
+            else if (fPeriodo === 'rango') {
+                fInicioStr = document.getElementById('fecha-inicio').value; fFinStr = document.getElementById('fecha-fin').value;
             }
 
             const datosFiltradosTemp = todos.filter(r => {
-                const fr = new Date(r.fecha);
-                if (fechaInicio && fr < fechaInicio) return false;
-                if (fechaFin && fr > fechaFin) return false;
+                if (fInicioStr && r.fecha < fInicioStr) return false;
+                if (fFinStr && r.fecha > fFinStr) return false;
                 return true;
             });
 
-            // 3. Aplicar Filtro de Tipo y Agrupar
             const fTipo = document.getElementById('filtro-tipo').value;
             const fAgrupacion = document.getElementById('filtro-agrupacion').value;
-            
             const datosTendencia = {};
             const datosEquilibrio = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 };
 
@@ -316,38 +406,31 @@
                 const esCalor = reg.fase.includes('Fase 1');
                 const esElectro = reg.fase.includes('Fase 5');
                 
-                // Acumular para Equilibrio (solo si no es calor/electro)
                 if (!esCalor && !esElectro) {
                     if (reg.fase.includes('Movilidad')) datosEquilibrio['Movilidad'] += reg.repeticiones;
                     if (reg.fase.includes('Fortalecimiento')) datosEquilibrio['Fortalecimiento'] += reg.repeticiones;
                     if (reg.fase.includes('Estiramientos')) datosEquilibrio['Estiramientos'] += reg.repeticiones;
                 }
 
-                // Filtrar para el gráfico de Tendencia
                 if (fTipo !== 'todos' && !reg.fase.includes(fTipo)) return;
-                
-                // El Calor y Electro no suman "repeticiones de volumen" a la gráfica general si estamos viendo "Todos"
                 if (fTipo === 'todos' && (esCalor || esElectro)) return; 
 
-                // Agrupación
                 let claveStr = reg.fecha;
                 if (fAgrupacion === 'semanas') claveStr = obtenerSemana(reg.fecha);
                 if (fAgrupacion === 'meses') claveStr = reg.fecha.substring(0, 7);
 
                 if (!datosTendencia[claveStr]) datosTendencia[claveStr] = 0;
-                datosTendencia[claveStr] += reg.repeticiones; // Calor/Electro suman 1 si se filtraron específicamente
+                datosTendencia[claveStr] += reg.repeticiones;
             });
 
-            // Renderizar Chart Tendencia
             if (chartTendencia) chartTendencia.destroy();
             const fechas = Object.keys(datosTendencia).sort();
             chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), {
                 type: 'line', 
-                data: { labels: fechas, datasets: [{ label: 'Repeticiones', data: fechas.map(f => datosTendencia[f]), borderColor: '#2dd4bf', backgroundColor: 'rgba(45, 212, 191, 0.2)', fill: true, tension: 0.4 }] },
+                data: { labels: fechas, datasets: [{ label: 'Reps', data: fechas.map(f => datosTendencia[f]), borderColor: '#2dd4bf', backgroundColor: 'rgba(45, 212, 191, 0.2)', fill: true, tension: 0.4 }] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
             });
 
-            // Renderizar Chart Equilibrio
             if (chartEquilibrio) chartEquilibrio.destroy();
             chartEquilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), {
                 type: 'doughnut',
@@ -356,61 +439,17 @@
             });
         }
 
-        function dibujarHeatmap(todosRegistros) {
-            const container = document.getElementById('calendario-heatmap');
-            container.innerHTML = '';
-            
-            // Agrupar por fecha
-            const evaluacionPorDia = {};
-            todosRegistros.forEach(r => {
-                if (!evaluacionPorDia[r.fecha]) evaluacionPorDia[r.fecha] = { ejercicios: new Set(), calor: false, electro: false };
-                if (r.fase.includes('Fase 1')) evaluacionPorDia[r.fecha].calor = true;
-                else if (r.fase.includes('Fase 5')) evaluacionPorDia[r.fecha].electro = true;
-                else evaluacionPorDia[r.fecha].ejercicios.add(r.ejercicio);
-            });
-
-            // Generar los últimos 35 días
-            const hoy = new Date();
-            for (let i = 34; i >= 0; i--) {
-                const d = new Date(hoy);
-                d.setDate(hoy.getDate() - i);
-                const fechaStr = d.toISOString().slice(0,10);
-                
-                const datosDia = evaluacionPorDia[fechaStr];
-                let claseColor = 'heat-0';
-                let clasesExtra = '';
-                
-                if (datosDia) {
-                    const numEjercicios = datosDia.ejercicios.size;
-                    const esCompleta = numEjercicios >= RUTINA_TOTAL_EJERCICIOS;
-                    
-                    if (esCompleta && datosDia.calor) claseColor = 'heat-4';
-                    else if (esCompleta) claseColor = 'heat-3';
-                    else if (numEjercicios > 0 && datosDia.calor) claseColor = 'heat-2';
-                    else if (numEjercicios > 0) claseColor = 'heat-1';
-                    // Solo calor sin ejercicios
-                    else if (datosDia.calor) claseColor = 'heat-1'; 
-                    
-                    if (datosDia.electro) clasesExtra = 'heat-electro';
-                }
-
-                const title = datosDia ? `${fechaStr}: ${datosDia.ejercicios.size} Ejs, Calor:${datosDia.calor?'Sí':'No'}, Electro:${datosDia.electro?'Sí':'No'}` : fechaStr;
-                container.innerHTML += `<div class="aspect-square rounded-sm ${claseColor} ${clasesExtra}" title="${title}"></div>`;
-            }
-        }
-
-        // --- CRUD BÁSICO ---
         async function cargarHistorial() {
             const t = await db.registros.orderBy('id').reverse().limit(20).toArray();
             const l = document.getElementById('lista-registros'); l.innerHTML = '';
             if (t.length===0) return l.innerHTML = '<p class="text-gray-400 text-sm">No hay registros.</p>';
             t.forEach(r => l.innerHTML += `<div class="bg-darkBg p-3 rounded border border-gray-700 flex justify-between items-center"><div><p class="font-bold text-sm text-neonCyan">${r.ejercicio}</p><p class="text-xs text-gray-400">${r.fecha} | ${r.series} Ser / ${r.repeticiones} Reps</p></div><button onclick="borrarRegistro(${r.id})" class="text-red-500 px-2">🗑️</button></div>`);
         }
-        async function borrarRegistro(id) { if(confirm("¿Borrar?")){ await db.registros.delete(id); cargarHistorial(); renderizarGraficos(); } }
-        async function borrarTodosLosDatos() { if(confirm("⚠️ ¿Borrar TODOS?")){ await db.registros.clear(); alert("Borrados."); cargarHistorial(); renderizarGraficos(); } }
+        async function borrarRegistro(id) { if(confirm("¿Borrar?")){ await db.registros.delete(id); cargarHistorial(); actualizarVistasProgreso(); } }
+        async function borrarTodosLosDatos() { if(confirm("⚠️ ¿Borrar TODOS?")){ await db.registros.clear(); alert("Borrados."); cargarHistorial(); actualizarVistasProgreso(); } }
         async function exportarCSV() { const d = await db.registros.toArray(); let c="ID,Fecha,Fase,Ejercicio,Series,Reps\n"; d.forEach(r=>c+=`${r.id},${r.fecha},${r.fase},${r.ejercicio},${r.series},${r.repeticiones}\n`); descargarArchivo(c,`cervicare.csv`,'text/csv'); }
         async function exportarBackup() { descargarArchivo(JSON.stringify(await db.registros.toArray()),`cervicare.json`,'application/json'); }
-        function importarBackup(e) { const r=new FileReader(); r.onload=async(ev)=>{ await db.registros.clear(); await db.registros.bulkAdd(JSON.parse(ev.target.result)); alert("Restaurado."); cargarHistorial(); }; r.readAsText(e.target.files[0]); }
+        function importarBackup(e) { const r=new FileReader(); r.onload=async(ev)=>{ await db.registros.clear(); await db.registros.bulkAdd(JSON.parse(ev.target.result)); alert("Restaurado."); cargarHistorial(); actualizarVistasProgreso(); }; r.readAsText(e.target.files[0]); }
         function descargarArchivo(c, n, t) { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([c],{type:t})); a.download=n; a.click(); }
     </script>
 </body>
