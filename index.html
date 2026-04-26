@@ -30,6 +30,8 @@
 
     <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     
@@ -106,14 +108,20 @@
 
             <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg">
                 <h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Tendencia de Esfuerzo</h3>
-                <p class="text-[10px] text-gray-400 mb-3 text-center">Media de repeticiones por ejercicio</p>
+                <p class="text-[10px] text-gray-400 mb-3 text-center">Media de repeticiones (Barras en paralelo)</p>
                 <div class="relative h-48 w-full"><canvas id="grafico-tendencia"></canvas></div>
             </div>
 
-            <div class="bg-cardBg p-4 rounded-xl border border-gray-700 shadow-lg">
+            <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg">
                 <h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Equilibrio Relativo</h3>
                 <p class="text-[10px] text-gray-400 mb-3 text-center">Intensidad ajustada por categoría</p>
-                <div class="relative h-48 w-full flex justify-center"><canvas id="grafico-equilibrio"></canvas></div>
+                <div class="relative h-56 w-full flex justify-center"><canvas id="grafico-equilibrio"></canvas></div>
+            </div>
+
+            <div class="bg-cardBg p-4 rounded-xl border border-gray-700 shadow-lg">
+                <h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Desempeño por Ejercicio</h3>
+                <p class="text-[10px] text-gray-400 mb-3 text-center">Ranking total de repeticiones</p>
+                <div class="relative h-64 w-full"><canvas id="grafico-ejercicios"></canvas></div>
             </div>
         </section>
 
@@ -148,12 +156,15 @@
     </nav>
 
     <script>
+        // Registramos el plugin Datalabels de forma global pero lo desactivamos por defecto
+        Chart.register(ChartDataLabels);
+        Chart.defaults.plugins.datalabels.display = false;
+
         const db = new Dexie('CerviCareDB');
         db.version(1).stores({ registros: '++id, fecha, ejercicio, series, repeticiones, fase' });
 
         const RUTINA_TOTAL_EJERCICIOS = 9;
         
-        // Ponderación de ejercicios para normalización estadística
         const PESO_CATEGORIA = {
             'Movilidad': 5,
             'Fortalecimiento': 2,
@@ -174,7 +185,7 @@
             { id: "fase5_electro", short: "Electro", fase: "Fase 5: Recuperación", titulo: "Electroestimulación", imagen: null, tipo: "electro", instrucciones: `<p><strong>Ubicación:</strong> Electrodos sobre los músculos trapecios o zona esplenia.</p><p class="text-red-400 font-bold mb-3 mt-1 text-sm border-l-2 border-red-500 pl-2">⚠️ NUNCA colocar en la garganta o carótidas.</p><div class="space-y-2 mt-2"><details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer"><summary class="font-semibold text-neonCyan outline-none">⚡ TENS (Alivio)</summary><p class="mt-1 text-xs text-gray-300">Frecuencia Alta (80-120 Hz). Hormigueo constante 20-30 min.</p></details><details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer"><summary class="font-semibold text-neonCyan outline-none">💆 EMS (Masaje)</summary><p class="mt-1 text-xs text-gray-300">Frecuencia Baja (2-10 Hz). Pequeñas sacudidas 15-20 min.</p></details></div>` }
         ];
 
-        let miSwiper, chartTendencia = null, chartEquilibrio = null;
+        let miSwiper, chartTendencia = null, chartEquilibrio = null, chartEjercicios = null;
         let timerInterval, tiempoRestante = 15 * 60, timerEstado = 'detenido';
         let endTime = null; 
         
@@ -351,16 +362,21 @@
             
             const datosEquilibrio = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 };
             const datosTendenciaCat = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} };
+            const datosEjercicios = {}; // Para el nuevo gráfico de barras horizontales
             const fechasSet = new Set();
 
             datosFiltradosTemp.forEach(reg => {
                 const esCalor = reg.fase.includes('Fase 1'), esElectro = reg.fase.includes('Fase 5');
                 
-                // Sumamos brutos primero
                 if (!esCalor && !esElectro) {
+                    // Datos Equilibrio
                     if (reg.fase.includes('Movilidad')) datosEquilibrio['Movilidad'] += reg.repeticiones;
                     if (reg.fase.includes('Fortalecimiento')) datosEquilibrio['Fortalecimiento'] += reg.repeticiones;
                     if (reg.fase.includes('Estiramientos')) datosEquilibrio['Estiramientos'] += reg.repeticiones;
+
+                    // Datos Desempeño Individual
+                    if (!datosEjercicios[reg.ejercicio]) datosEjercicios[reg.ejercicio] = 0;
+                    datosEjercicios[reg.ejercicio] += reg.repeticiones;
                 }
 
                 if (fTipo !== 'todos' && !reg.fase.includes(fTipo)) return;
@@ -384,7 +400,6 @@
                 }
             });
 
-            // APLICAMOS LA NORMALIZACIÓN ESTADÍSTICA
             datosEquilibrio.Movilidad = +(datosEquilibrio.Movilidad / PESO_CATEGORIA.Movilidad).toFixed(1);
             datosEquilibrio.Fortalecimiento = +(datosEquilibrio.Fortalecimiento / PESO_CATEGORIA.Fortalecimiento).toFixed(1);
             datosEquilibrio.Estiramientos = +(datosEquilibrio.Estiramientos / PESO_CATEGORIA.Estiramientos).toFixed(1);
@@ -398,28 +413,46 @@
             if (chartTendencia) chartTendencia.destroy(); 
             const fechas = Array.from(fechasSet).sort();
             let datasetsLinea = [];
+            
+            // Cambio a 'bar' agrupado para colocar datos en paralelo y evitar solapamiento
             if (fTipo === 'todos') {
                 datasetsLinea = [
-                    { label: 'Movilidad', data: fechas.map(f => datosTendenciaCat['Movilidad'][f] || 0), borderColor: '#2dd4bf', backgroundColor: 'rgba(45, 212, 191, 0.1)', fill: true, tension: 0.4 },
-                    { label: 'Fortalecimiento', data: fechas.map(f => datosTendenciaCat['Fortalecimiento'][f] || 0), borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4 },
-                    { label: 'Estiramientos', data: fechas.map(f => datosTendenciaCat['Estiramientos'][f] || 0), borderColor: '#c084fc', backgroundColor: 'rgba(192, 132, 252, 0.1)', fill: true, tension: 0.4 }
+                    { label: 'Movilidad', data: fechas.map(f => datosTendenciaCat['Movilidad'][f] || 0), backgroundColor: '#2dd4bf', borderRadius: 4 },
+                    { label: 'Fortalecimiento', data: fechas.map(f => datosTendenciaCat['Fortalecimiento'][f] || 0), backgroundColor: '#3b82f6', borderRadius: 4 },
+                    { label: 'Estiramientos', data: fechas.map(f => datosTendenciaCat['Estiramientos'][f] || 0), backgroundColor: '#c084fc', borderRadius: 4 }
                 ];
             } else {
-                let color = '#2dd4bf', bg = 'rgba(45, 212, 191, 0.2)';
-                if (fTipo === 'Fortalecimiento') { color = '#3b82f6'; bg = 'rgba(59, 130, 246, 0.2)'; }
-                if (fTipo === 'Estiramientos') { color = '#c084fc'; bg = 'rgba(192, 132, 252, 0.2)'; }
-                datasetsLinea = [{ label: fTipo, data: fechas.map(f => datosTendenciaCat[fTipo][f] || 0), borderColor: color, backgroundColor: bg, fill: true, tension: 0.4 }];
+                let color = '#2dd4bf';
+                if (fTipo === 'Fortalecimiento') color = '#3b82f6';
+                if (fTipo === 'Estiramientos') color = '#c084fc';
+                datasetsLinea = [{ label: fTipo, data: fechas.map(f => datosTendenciaCat[fTipo][f] || 0), backgroundColor: color, borderRadius: 4 }];
             }
 
             chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), { 
-                type: 'line', data: { labels: fechas, datasets: datasetsLinea }, 
+                type: 'bar', data: { labels: fechas, datasets: datasetsLinea }, 
                 options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: fTipo === 'todos', labels: { color: '#cbd5e1', boxWidth: 12 } }, tooltip: { callbacks: { label: function(context) { return context.dataset.label + ': ' + context.parsed.y + ' medias/ej'; } } } } } 
             });
             
             if (chartEquilibrio) chartEquilibrio.destroy();
             chartEquilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), { 
                 type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'], borderWidth: 0 }] }, 
-                options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right', labels: { color: '#cbd5e1' } }, tooltip: { callbacks: { label: function(context) { return ' ' + context.label + ': ' + context.parsed + ' medias/ej'; } } } } } 
+                options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } }, tooltip: { callbacks: { label: function(context) { return ' ' + context.label + ': ' + context.parsed + ' medias/ej'; } } },
+                datalabels: { color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (value, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); if(sum === 0 || value === 0) return ''; return Math.round((value / sum) * 100) + '%'; } } } },
+                plugins: [ChartDataLabels]
+            });
+
+            // Nuevo Gráfico Horizontal (Ranking de Ejercicios)
+            if (chartEjercicios) chartEjercicios.destroy();
+            
+            // Ordenar de más repetido a menos
+            const nombresEj = Object.keys(datosEjercicios).sort((a,b) => datosEjercicios[b] - datosEjercicios[a]);
+            const valsEj = nombresEj.map(e => datosEjercicios[e]);
+
+            chartEjercicios = new Chart(document.getElementById('grafico-ejercicios').getContext('2d'), {
+                type: 'bar',
+                data: { labels: nombresEj, datasets: [{ label: 'Repeticiones Totales', data: valsEj, backgroundColor: '#3b82f6', borderRadius: 4 }] },
+                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, scales: { x: { beginAtZero: true, grid: { color: '#334155' } }, y: { grid: { display: false }, ticks: { color: '#cbd5e1', font: {size: 10} } } }, plugins: { legend: { display: false }, datalabels: { color: '#fff', anchor: 'end', align: 'left', font: {weight: 'bold', size: 10}, formatter: Math.round } } },
+                plugins: [ChartDataLabels]
             });
         }
 
