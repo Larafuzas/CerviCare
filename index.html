@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CerviCare</title>
+    
+    <meta name="theme-color" content="#111827">
+    <link rel="icon" href="icono.jpg" type="image/jpeg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0f172a',    /* Fondo oscuro */
+                        cardBg: '#1e293b',    /* Fondo de tarjetas */
+                        neonCyan: '#2dd4bf',  /* Acento del icono */
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-darkBg text-white font-sans antialiased h-screen flex flex-col overflow-hidden">
+
+    <header class="p-4 border-b border-gray-800 flex justify-center items-center shadow-md z-10">
+        <h1 class="text-2xl font-bold text-neonCyan tracking-wider flex items-center gap-2">
+            CerviCare
+        </h1>
+    </header>
+
+    <main id="app-container" class="flex-1 overflow-y-auto relative">
+        
+        <section id="vista-rutina" class="h-full w-full flex flex-col items-center justify-center p-4">
+            <div class="bg-cardBg w-full max-w-sm h-full rounded-2xl shadow-[0_0_15px_rgba(45,212,191,0.2)] p-6 flex flex-col items-center border border-gray-700">
+                <p class="text-neonCyan font-semibold mb-2">Fase 1: Calentamiento</p>
+                <div class="flex-1 flex items-center justify-center">
+                    <div class="w-48 h-48 rounded-full border-4 border-neonCyan flex items-center justify-center text-4xl font-bold">
+                        15:00
+                    </div>
+                </div>
+                <button class="w-full bg-neonCyan text-darkBg font-bold py-3 rounded-lg mt-4 shadow-[0_0_10px_rgba(45,212,191,0.5)]">
+                    Iniciar Calor
+                </button>
+            </div>
+        </section>
+
+        <section id="vista-estadisticas" class="hidden h-full w-full p-4 overflow-y-auto pb-20">
+            </section>
+
+    </main>
+
+    <nav class="bg-cardBg border-t border-gray-800 flex justify-around p-3 pb-safe z-10">
+        <button id="btn-nav-rutina" class="text-neonCyan flex flex-col items-center p-2">
+            <span class="text-xs font-bold mt-1">Rutina</span>
+        </button>
+        <button id="btn-nav-estadisticas" class="text-gray-400 hover:text-neonCyan flex flex-col items-center p-2 transition-colors">
+            <span class="text-xs font-bold mt-1">Progreso</span>
+        </button>
+    </nav>
+
+    <script>
+        // Inicialización de la Base de Datos Dexie
+        const db = new Dexie('CerviCareDB');
+        db.version(1).stores({
+            registros: '++id, fecha, ejercicio, series, repeticiones, fase'
+        });
+
+        // La lógica de la aplicación se desarrollará aquí
+    </script>
+</body>
+</html>
