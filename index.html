@@ -29,9 +29,11 @@
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     
     <style>
-        /* Ajustes para evitar selecciones accidentales en móvil */
         body { -webkit-tap-highlight-color: transparent; user-select: none; }
         .swiper-pagination-bullet-active { background-color: #2dd4bf !important; }
+        /* Scrollbar personalizada oculta para tarjetas más limpias */
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
     </style>
 </head>
 <body class="bg-darkBg text-white font-sans antialiased h-screen flex flex-col overflow-hidden">
@@ -44,23 +46,20 @@
         
         <section id="vista-rutina" class="h-full w-full">
             <div class="swiper mySwiper h-full w-full">
-                <div class="swiper-wrapper" id="contenedor-ejercicios">
-                    </div>
+                <div class="swiper-wrapper" id="contenedor-ejercicios"></div>
                 <div class="swiper-pagination mb-12"></div>
             </div>
         </section>
 
         <section id="vista-estadisticas" class="hidden h-full w-full p-4 overflow-y-auto pb-24">
             <h2 class="text-xl font-bold text-white mb-4">Tu Progreso</h2>
-            
             <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg">
                 <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Volumen de Ejercicio</h3>
                 <canvas id="grafico-volumen" class="w-full h-48"></canvas>
             </div>
-
             <div class="bg-cardBg p-4 rounded-xl border border-gray-700 shadow-lg">
                 <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Estadísticas Generales</h3>
-                <div class="grid grid-cols-2 gap-4 text-center mt-4" id="resumen-stats">
+                <div class="grid grid-cols-2 gap-4 text-center mt-4">
                     <div class="bg-darkBg p-3 rounded border border-gray-600">
                         <p class="text-xs text-gray-400">Total Series</p>
                         <p class="text-2xl font-bold text-neonCyan" id="stat-series">0</p>
@@ -75,7 +74,6 @@
 
         <section id="vista-ajustes" class="hidden h-full w-full p-4 overflow-y-auto pb-24">
             <h2 class="text-xl font-bold text-white mb-4">Ajustes y Datos</h2>
-            
             <div class="grid grid-cols-2 gap-3 mb-6">
                 <button onclick="exportarCSV()" class="bg-cardBg border border-neonCyan text-neonCyan py-2 rounded text-sm font-semibold">Exportar CSV</button>
                 <button onclick="exportarBackup()" class="bg-cardBg border border-neonCyan text-neonCyan py-2 rounded text-sm font-semibold">Backup JSON</button>
@@ -83,10 +81,8 @@
                 <input type="file" id="import-file" class="hidden" accept=".json" onchange="importarBackup(event)">
                 <button onclick="borrarTodosLosDatos()" class="bg-red-900 border border-red-500 text-red-200 py-2 rounded text-sm font-semibold">Borrar Todo</button>
             </div>
-
             <h3 class="text-neonCyan font-semibold mb-3 text-sm uppercase tracking-wide">Últimos Registros</h3>
-            <div id="lista-registros" class="space-y-2 mb-8">
-                </div>
+            <div id="lista-registros" class="space-y-2 mb-8"></div>
         </section>
 
     </main>
@@ -107,36 +103,71 @@
     </nav>
 
     <script>
-        // --- 1. CONFIGURACIÓN BASE DE DATOS ---
         const db = new Dexie('CerviCareDB');
-        db.version(1).stores({
-            registros: '++id, fecha, ejercicio, series, repeticiones, fase'
-        });
+        db.version(1).stores({ registros: '++id, fecha, ejercicio, series, repeticiones, fase' });
 
-        // --- 2. DATOS DE LOS EJERCICIOS ---
         const rutinaCervical = [
-            { id: "fase1_calor", fase: "Fase 1: Preparación", titulo: "Aplicación de Calor", imagen: null, instrucciones: "Aplica calor en la zona cervical para relajar la musculatura.", tipo: "temporizador" },
-            { id: "mov_flexion", fase: "Fase 2: Movilidad", titulo: "Flexión y Extensión", imagen: "flexion.jpg", instrucciones: "Flexione adelante y extienda atrás suavemente.", tipo: "contador" },
-            { id: "mov_inclinacion", fase: "Fase 2: Movilidad", titulo: "Inclinación Lateral", imagen: "inclinacion.jpg", instrucciones: "Incline la oreja al hombro de forma controlada.", tipo: "contador" },
-            { id: "mov_rotacion", fase: "Fase 2: Movilidad", titulo: "Rotación", imagen: "rotacion.jpg", instrucciones: "Gire la cabeza sobre el hombro hacia ambos lados.", tipo: "contador" },
-            { id: "mov_circulos", fase: "Fase 2: Movilidad", titulo: "Rotación Completa", imagen: "circulos.jpg", instrucciones: "Realice círculos completos y suaves con la cabeza.", tipo: "contador" },
-            { id: "mov_elevacion", fase: "Fase 2: Movilidad", titulo: "Elevación de Hombros", imagen: "elevacion.jpg", instrucciones: "Suba los hombros hacia las orejas, mantenga y relaje.", tipo: "contador" },
-            { id: "fort_resistencia1", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Frontal/Nuca", imagen: "resistencia1.jpg", instrucciones: "Empuje la cabeza contra sus manos sin generar movimiento.", tipo: "contador" },
-            { id: "fort_resistencia2", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Lateral", imagen: "resistencia2.jpg", instrucciones: "Empuje la cabeza lateralmente contra su mano sin mover el cuello.", tipo: "contador" },
-            { id: "est_traccion1", fase: "Fase 4: Estiramientos", titulo: "Tracción Abajo/Adelante", imagen: "traccion1.jpg", instrucciones: "Entrelace las manos en la nuca y traccione suavemente hacia abajo.", tipo: "contador" },
-            { id: "est_traccion2", fase: "Fase 4: Estiramientos", titulo: "Tracción Lateral", imagen: "traccion2.jpg", instrucciones: "Mano en la sien opuesta. Traccione lateralmente de forma suave.", tipo: "contador" },
-            { id: "fase5_electro", fase: "Fase 5: Recuperación", titulo: "Electroestimulación", imagen: null, instrucciones: "Coloque los parches (TENS). Ajuste intensidad sin que haya dolor.", tipo: "informativo" }
+            { 
+                id: "fase1_calor", fase: "Fase 1: Preparación", titulo: "Aplicación de Calor", imagen: null, tipo: "temporizador",
+                instrucciones: "<p><strong>Fundamento:</strong> El calor provoca vasodilatación, aumentando el flujo sanguíneo y relajando las fibras musculares antes del estiramiento.</p>" 
+            },
+            { 
+                id: "mov_flexion", fase: "Fase 2: Movilidad", titulo: "Flexión y Extensión", imagen: "flexion.jpg", tipo: "contador",
+                instrucciones: "<p><strong>Técnica:</strong> Siéntate recto. Exhala y lleva lentamente la barbilla hacia el pecho. Inhala y vuelve al centro, luego extiende la cabeza suavemente hacia atrás mirando al techo.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>No fuerces la extensión hacia atrás si sientes mareos o pellizcos articulares. El movimiento debe ser fluido.</p>" 
+            },
+            { 
+                id: "mov_inclinacion", fase: "Fase 2: Movilidad", titulo: "Inclinación Lateral", imagen: "inclinacion.jpg", tipo: "contador",
+                instrucciones: "<p><strong>Técnica:</strong> Intenta tocar el hombro con la oreja de forma controlada, sintiendo el estiramiento en el lado opuesto del cuello.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Es un error común levantar el hombro hacia la oreja. Para evitarlo, ancla la mano del lado que estás estirando debajo de tu muslo o agárrate a la silla.</p>" 
+            },
+            { 
+                id: "mov_rotacion", fase: "Fase 2: Movilidad", titulo: "Rotación", imagen: "rotacion.jpg", tipo: "contador",
+                instrucciones: "<p><strong>Técnica:</strong> Gira la cabeza lentamente para mirar por encima de tu hombro. Mantén la posición 2 segundos y cambia de lado.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Imagina una línea horizontal trazada desde tu nariz hasta la pared; evita que la cabeza cabecee hacia arriba o abajo durante el giro.</p>" 
+            },
+            { 
+                id: "mov_circulos", fase: "Fase 2: Movilidad", titulo: "Semicírculos", imagen: "circulos.jpg", tipo: "contador",
+                instrucciones: "<p><strong>Técnica:</strong> Deja caer la barbilla al pecho y traza un arco de movimiento de hombro a hombro, dibujando una 'U' pendular.</p><p class='mt-2 text-red-400 font-semibold'>⚠️ Advertencia Fisioterapéutica:</p><p>La rehabilitación moderna desaconseja hacer giros de 360 grados. Evita realizar el semicírculo por la parte de la espalda para no comprimir las vértebras ni las arterias vertebrales.</p>" 
+            },
+            { 
+                id: "mov_elevacion", fase: "Fase 2: Movilidad", titulo: "Elevación de Hombros", imagen: "elevacion.jpg", tipo: "contador",
+                instrucciones: "<p><strong>Técnica:</strong> Sube ambos hombros hacia las orejas encogiéndote. Mantén la tensión máxima durante 2-3 segundos.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>La clave de este ejercicio está en la bajada. Déjalos caer abruptamente soltando el aire de golpe para desactivar el tono muscular del trapecio superior.</p>" 
+            },
+            { 
+                id: "fort_resistencia1", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Frontal/Nuca", imagen: "resistencia1.jpg", tipo: "contador",
+                instrucciones: "<p><strong>Técnica:</strong> Coloca tus manos en la frente y empuja con la cabeza hacia delante, mientras tus manos resisten el movimiento (isométrico). Repite con las manos en la nuca empujando hacia atrás.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Aplica sólo un 20-30% de tu fuerza máxima. 'No rompas el huevo'. Mantén una respiración fluida y no aguantes el aire (evita la maniobra de Valsalva).</p>" 
+            },
+            { 
+                id: "fort_resistencia2", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Lateral", imagen: "resistencia2.jpg", tipo: "contador",
+                instrucciones: "<p><strong>Técnica:</strong> Coloca la mano en la sien y empuja la cabeza lateralmente sin permitir que haya desplazamiento.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Aplica una fuerza progresiva durante 5 segundos y relaja lentamente durante otros 5 segundos antes de la siguiente repetición.</p>" 
+            },
+            { 
+                id: "est_traccion1", fase: "Fase 4: Estiramientos", titulo: "Tracción Abajo/Adelante", imagen: "traccion1.jpg", tipo: "contador",
+                instrucciones: "<p><strong>Técnica:</strong> Entrelaza las manos detrás de la cabeza (no en la nuca) y deja caer la barbilla al pecho.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>No tires con fuerza hacia abajo. Simplemente deja que el peso libre de tus brazos relajados ejerza la tracción durante 15 segundos. Debe sentirse tensión agradable, nunca dolor punzante.</p>" 
+            },
+            { 
+                id: "est_traccion2", fase: "Fase 4: Estiramientos", titulo: "Tracción Lateral", imagen: "traccion2.jpg", tipo: "contador",
+                instrucciones: "<p><strong>Técnica:</strong> Pasa la mano por encima de la cabeza hasta tocar la oreja contraria e inclina suavemente.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Utiliza la respiración: en cada exhalación, permite que el músculo ceda un par de milímetros más, aumentando el estiramiento de forma natural.</p>" 
+            },
+            { 
+                id: "fase5_electro", fase: "Fase 5: Recuperación", titulo: "Electroestimulación (TENS/EMS)", imagen: null, tipo: "electro",
+                instrucciones: `
+                    <p><strong>Ubicación:</strong> Coloca los electrodos bilateralmente sobre los músculos trapecios o en la zona esplenia posterior.</p>
+                    <p class="text-red-400 font-bold mb-3 mt-1 text-sm border-l-2 border-red-500 pl-2">⚠️ NUNCA colocar en la parte delantera del cuello, garganta o arterias carótidas.</p>
+                    <div class="space-y-2 mt-2">
+                        <details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer">
+                            <summary class="font-semibold text-neonCyan outline-none">⚡ TENS (Alivio del Dolor)</summary>
+                            <p class="mt-1 text-xs text-gray-300"><strong>Parámetros:</strong> Frecuencia Alta (80-120 Hz).<br><strong>Sensación:</strong> Hormigueo constante y agradable, SIN provocar contracción muscular.<br><strong>Aplicación:</strong> 20-30 minutos para dolor agudo o fatiga excesiva.</p>
+                        </details>
+                        <details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer">
+                            <summary class="font-semibold text-neonCyan outline-none">💆 EMS (Masaje Descontracturante)</summary>
+                            <p class="mt-1 text-xs text-gray-300"><strong>Parámetros:</strong> Frecuencia Baja (2-10 Hz).<br><strong>Sensación:</strong> Intensidad hasta notar un bombeo o pequeñas sacudidas musculares relajantes.<br><strong>Aplicación:</strong> 15-20 minutos para aumentar el flujo sanguíneo tras el ejercicio.</p>
+                        </details>
+                    </div>` 
+            }
         ];
 
-        let miSwiper;
-        let chartInstancia = null;
-        let timerInterval;
+        let miSwiper, chartInstancia = null, timerInterval;
 
-        // --- 3. INICIALIZACIÓN Y RENDERIZADO ---
-        window.onload = () => {
-            renderizarRutina();
-            cargarHistorial();
-        };
+        window.onload = () => { renderizarRutina(); cargarHistorial(); };
 
         function renderizarRutina() {
             const contenedor = document.getElementById('contenedor-ejercicios');
@@ -144,7 +175,7 @@
                 let controlesHTML = '';
                 
                 if (ej.tipo === 'temporizador') {
-                    controlesHTML = `<button id="btn-timer" onclick="iniciarTemporizador(this)" class="w-full bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-[0_0_10px_rgba(45,212,191,0.3)]">Iniciar 15 Minutos</button>`;
+                    controlesHTML = `<button id="btn-timer" onclick="iniciarTemporizador(this)" class="w-full bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-md">Iniciar 15 Minutos</button>`;
                 } else if (ej.tipo === 'contador') {
                     controlesHTML = `
                         <div class="flex justify-between gap-3 mb-3">
@@ -161,37 +192,51 @@
                                 <button onclick="cambiarValor('reps-${ej.id}', 1)" class="text-neonCyan text-xl px-2 font-bold">+</button>
                             </div>
                         </div>
-                        <button onclick="guardarRegistro('${ej.id}', '${ej.titulo}', '${ej.fase}', this)" class="w-full bg-gray-700 text-white font-bold py-3 rounded-lg transition-colors">Guardar y Siguiente</button>
-                    `;
-                } else {
-                    controlesHTML = `<button onclick="miSwiper.slideTo(0)" class="w-full bg-neonCyan text-darkBg font-bold py-3 rounded-lg">Finalizar y Volver al Inicio</button>`;
+                        <button onclick="guardarRegistro('${ej.id}', '${ej.titulo}', '${ej.fase}', this)" class="w-full bg-gray-700 text-white font-bold py-3 rounded-lg transition-colors">Guardar y Siguiente</button>`;
+                } else if (ej.tipo === 'electro') {
+                    controlesHTML = `
+                        <div class="flex gap-2">
+                            <button onclick="guardarElectro(true, this)" class="w-1/2 bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-md transition-colors">Sí, Aplicada</button>
+                            <button onclick="guardarElectro(false, this)" class="w-1/2 bg-gray-700 text-white font-bold py-3 rounded-lg transition-colors">Saltar</button>
+                        </div>`;
                 }
 
                 const visualHTML = ej.imagen 
-                    ? `<img src="${ej.imagen}" alt="${ej.titulo}" class="w-full h-full object-contain p-2" onerror="this.src=''; this.alt='Imagen no encontrada: ${ej.imagen}'">`
-                    : `<div class="flex items-center justify-center h-full w-full"><span class="text-4xl font-bold text-neonCyan" id="display-${ej.id}">${ej.tipo === 'temporizador' ? '15:00' : '⚡'}</span></div>`;
+                    ? `<img src="${ej.imagen}" class="h-36 mx-auto object-contain p-1" onerror="this.src=''; this.alt='Imagen: ${ej.imagen}'">`
+                    : (ej.tipo === 'temporizador' 
+                        ? `<div class="flex items-center justify-center h-36"><span class="text-5xl font-bold text-neonCyan" id="display-${ej.id}">15:00</span></div>` 
+                        : `<div class="flex items-center justify-center h-20"><span class="text-4xl">⚡</span></div>`);
 
                 contenedor.innerHTML += `
                     <div class="swiper-slide flex flex-col items-center justify-center p-4 pt-2 pb-8">
-                        <div class="bg-cardBg w-full max-w-sm h-[75vh] rounded-2xl shadow-lg p-5 flex flex-col border border-gray-700">
+                        <div class="bg-cardBg w-full max-w-sm h-[78vh] rounded-2xl shadow-lg p-5 flex flex-col border border-gray-700">
                             <p class="text-neonCyan font-bold text-center text-xs uppercase tracking-wide mb-2">${ej.fase}</p>
                             <h3 class="text-white font-bold text-lg text-center mb-4 leading-tight">${ej.titulo}</h3>
-                            <div class="flex-1 flex items-center justify-center overflow-hidden rounded-xl bg-gray-800 mb-4 border border-gray-700 relative">
-                                ${visualHTML}
+                            
+                            <div class="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-3 pr-1">
+                                <div class="w-full bg-gray-800 rounded-xl border border-gray-700 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                                    ${visualHTML}
+                                </div>
+                                <details class="group bg-darkBg border border-gray-700 rounded-lg p-3">
+                                    <summary class="font-semibold text-gray-300 outline-none select-none cursor-pointer flex justify-between items-center text-sm">
+                                        Instrucciones de Fisioterapia
+                                        <span class="text-neonCyan font-bold text-xl group-open:rotate-180 transition-transform">▾</span>
+                                    </summary>
+                                    <div class="mt-3 text-sm text-gray-300 space-y-2 border-t border-gray-700 pt-2 pb-1">
+                                        ${ej.instrucciones}
+                                    </div>
+                                </details>
                             </div>
-                            <p class="text-gray-300 text-sm text-center mb-6 px-1 h-16 overflow-y-auto">${ej.instrucciones}</p>
-                            <div class="h-auto flex flex-col justify-end">${controlesHTML}</div>
+
+                            <div class="h-auto flex flex-col justify-end mt-4">${controlesHTML}</div>
                         </div>
                     </div>`;
             });
 
-            miSwiper = new Swiper(".mySwiper", {
-                spaceBetween: 15,
-                pagination: { el: ".swiper-pagination", dynamicBullets: true }
-            });
+            miSwiper = new Swiper(".mySwiper", { spaceBetween: 15, pagination: { el: ".swiper-pagination", dynamicBullets: true } });
         }
 
-        // --- 4. LÓGICA DE INTERACCIÓN ---
+        // --- LÓGICAS DE INTERACCIÓN ---
         function cambiarPestana(id) {
             ['rutina', 'estadisticas', 'ajustes'].forEach(p => {
                 document.getElementById(`vista-${p}`).classList.add('hidden');
@@ -214,22 +259,22 @@
         async function guardarRegistro(id, titulo, fase, btn) {
             const series = parseInt(document.getElementById(`series-${id}`).innerText);
             const repeticiones = parseInt(document.getElementById(`reps-${id}`).innerText);
-            const fecha = new Date().toISOString().slice(0,10);
-
-            await db.registros.add({ fecha, ejercicio: titulo, series, repeticiones, fase });
-
-            // Confirmación visual
-            const textoOriginal = btn.innerText;
+            await db.registros.add({ fecha: new Date().toISOString().slice(0,10), ejercicio: titulo, series, repeticiones, fase });
+            
+            const txtOriginal = btn.innerText;
             btn.innerText = "¡Guardado!";
             btn.classList.replace('bg-gray-700', 'bg-green-500');
             btn.classList.replace('text-white', 'text-darkBg');
+            setTimeout(() => { btn.innerText = txtOriginal; btn.classList.replace('bg-green-500', 'bg-gray-700'); btn.classList.replace('text-darkBg', 'text-white'); miSwiper.slideNext(); }, 600);
+        }
 
-            setTimeout(() => {
-                btn.innerText = textoOriginal;
-                btn.classList.replace('bg-green-500', 'bg-gray-700');
-                btn.classList.replace('text-darkBg', 'text-white');
-                miSwiper.slideNext();
-            }, 600);
+        async function guardarElectro(aplicada, btn) {
+            if (aplicada) {
+                await db.registros.add({ fecha: new Date().toISOString().slice(0,10), ejercicio: 'Electroestimulación Aplicada', series: 1, repeticiones: 1, fase: 'Fase 5' });
+                btn.innerText = "¡Registrado!";
+                btn.classList.replace('bg-neonCyan', 'bg-green-500');
+            }
+            setTimeout(() => miSwiper.slideTo(0), 800); // Vuelve al principio
         }
 
         function iniciarTemporizador(btn) {
@@ -241,137 +286,54 @@
             
             timerInterval = setInterval(() => {
                 tiempo--;
-                let m = Math.floor(tiempo / 60).toString().padStart(2, '0');
-                let s = (tiempo % 60).toString().padStart(2, '0');
-                display.innerText = `${m}:${s}`;
+                display.innerText = `${Math.floor(tiempo / 60).toString().padStart(2, '0')}:${(tiempo % 60).toString().padStart(2, '0')}`;
                 if (tiempo <= 0) {
-                    clearInterval(timerInterval);
-                    display.innerText = "¡Listo!";
-                    btn.innerText = "Siguiente Fase";
-                    btn.classList.replace('bg-gray-600', 'bg-neonCyan');
-                    btn.onclick = () => miSwiper.slideNext();
+                    clearInterval(timerInterval); display.innerText = "¡Listo!"; btn.innerText = "Siguiente Fase";
+                    btn.classList.replace('bg-gray-600', 'bg-neonCyan'); btn.onclick = () => miSwiper.slideNext();
                 }
             }, 1000);
         }
 
-        // --- 5. GRÁFICOS Y ESTADÍSTICAS ---
+        // --- CRUD Y GRÁFICOS ---
         async function renderizarGraficos() {
             const todos = await db.registros.toArray();
-            let totalSeries = 0;
-            let totalReps = 0;
-            const datosPorFecha = {};
-
+            let totalSeries = 0, totalReps = 0; const datosPorFecha = {};
             todos.forEach(reg => {
-                totalSeries += reg.series;
-                totalReps += reg.repeticiones;
+                totalSeries += reg.series; totalReps += reg.repeticiones;
                 if (!datosPorFecha[reg.fecha]) datosPorFecha[reg.fecha] = 0;
                 datosPorFecha[reg.fecha] += reg.repeticiones;
             });
-
-            document.getElementById('stat-series').innerText = totalSeries;
-            document.getElementById('stat-reps').innerText = totalReps;
-
-            const fechas = Object.keys(datosPorFecha).sort();
-            const repeticiones = fechas.map(f => datosPorFecha[f]);
-
+            document.getElementById('stat-series').innerText = totalSeries; document.getElementById('stat-reps').innerText = totalReps;
+            const fechas = Object.keys(datosPorFecha).sort(), repeticiones = fechas.map(f => datosPorFecha[f]);
             if (chartInstancia) chartInstancia.destroy();
-            const ctx = document.getElementById('grafico-volumen').getContext('2d');
-            chartInstancia = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: fechas,
-                    datasets: [{
-                        label: 'Repeticiones Diarias',
-                        data: repeticiones,
-                        backgroundColor: '#2dd4bf',
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } },
-                    plugins: { legend: { display: false } }
-                }
+            chartInstancia = new Chart(document.getElementById('grafico-volumen').getContext('2d'), {
+                type: 'bar', data: { labels: fechas, datasets: [{ label: 'Reps Diarias', data: repeticiones, backgroundColor: '#2dd4bf', borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
             });
         }
 
-        // --- 6. GESTIÓN DE DATOS (CRUD) ---
         async function cargarHistorial() {
             const todos = await db.registros.orderBy('id').reverse().limit(20).toArray();
-            const lista = document.getElementById('lista-registros');
-            lista.innerHTML = '';
-            
-            if (todos.length === 0) {
-                lista.innerHTML = '<p class="text-gray-400 text-sm">No hay registros todavía.</p>';
-                return;
-            }
-
-            todos.forEach(reg => {
-                lista.innerHTML += `
-                    <div class="bg-darkBg p-3 rounded border border-gray-700 flex justify-between items-center">
-                        <div>
-                            <p class="font-bold text-sm">${reg.ejercicio}</p>
-                            <p class="text-xs text-gray-400">${reg.fecha} - ${reg.series} Series / ${reg.repeticiones} Reps</p>
-                        </div>
-                        <button onclick="borrarRegistro(${reg.id})" class="text-red-500 text-xl px-2 py-1">🗑️</button>
-                    </div>`;
-            });
+            const lista = document.getElementById('lista-registros'); lista.innerHTML = '';
+            if (todos.length === 0) return lista.innerHTML = '<p class="text-gray-400 text-sm">No hay registros todavía.</p>';
+            todos.forEach(reg => lista.innerHTML += `<div class="bg-darkBg p-3 rounded border border-gray-700 flex justify-between items-center"><div><p class="font-bold text-sm text-neonCyan">${reg.ejercicio}</p><p class="text-xs text-gray-400">${reg.fecha} | ${reg.series} Series / ${reg.repeticiones} Reps</p></div><button onclick="borrarRegistro(${reg.id})" class="text-red-500 px-2 py-1">🗑️</button></div>`);
         }
-
-        async function borrarRegistro(id) {
-            if (confirm("¿Borrar este registro?")) {
-                await db.registros.delete(id);
-                cargarHistorial();
-            }
-        }
-
-        async function borrarTodosLosDatos() {
-            if (confirm("⚠️ ¿Estás seguro de borrar TODOS los datos? Esta acción no se puede deshacer.")) {
-                await db.registros.clear();
-                alert("Datos borrados.");
-                cargarHistorial();
-            }
-        }
-
+        async function borrarRegistro(id) { if (confirm("¿Borrar registro?")) { await db.registros.delete(id); cargarHistorial(); renderizarGraficos(); } }
+        async function borrarTodosLosDatos() { if (confirm("⚠️ ¿Borrar TODOS los datos?")) { await db.registros.clear(); alert("Borrados."); cargarHistorial(); } }
         async function exportarCSV() {
-            const datos = await db.registros.toArray();
-            if (datos.length === 0) return alert("No hay datos para exportar.");
-            let csv = "ID,Fecha,Fase,Ejercicio,Series,Repeticiones\n";
-            datos.forEach(d => { csv += `${d.id},${d.fecha},${d.fase},${d.ejercicio},${d.series},${d.repeticiones}\n`; });
+            const datos = await db.registros.toArray(); if (datos.length === 0) return alert("Sin datos.");
+            let csv = "ID,Fecha,Fase,Ejercicio,Series,Repeticiones\n"; datos.forEach(d => csv += `${d.id},${d.fecha},${d.fase},${d.ejercicio},${d.series},${d.repeticiones}\n`);
             descargarArchivo(csv, `cervicare_${new Date().toISOString().slice(0,10)}.csv`, 'text/csv');
         }
-
-        async function exportarBackup() {
-            const datos = await db.registros.toArray();
-            descargarArchivo(JSON.stringify(datos), `cervicare_backup_${new Date().toISOString().slice(0,10)}.json`, 'application/json');
-        }
-
+        async function exportarBackup() { descargarArchivo(JSON.stringify(await db.registros.toArray()), `cervicare_backup_${new Date().toISOString().slice(0,10)}.json`, 'application/json'); }
         function importarBackup(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
+            const file = e.target.files[0]; if (!file) return; const reader = new FileReader();
             reader.onload = async (evento) => {
-                try {
-                    const datos = JSON.parse(evento.target.result);
-                    await db.registros.clear();
-                    await db.registros.bulkAdd(datos);
-                    alert("Backup restaurado correctamente.");
-                    cargarHistorial();
-                } catch (error) { alert("Error al leer el archivo. Asegúrate de que es un backup válido."); }
-            };
-            reader.readAsText(file);
+                try { await db.registros.clear(); await db.registros.bulkAdd(JSON.parse(evento.target.result)); alert("Restaurado."); cargarHistorial(); } 
+                catch (error) { alert("Error al leer archivo."); }
+            }; reader.readAsText(file);
         }
-
-        function descargarArchivo(contenido, nombre, tipo) {
-            const blob = new Blob([contenido], { type: tipo });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = nombre;
-            a.click();
-            URL.revokeObjectURL(url);
-        }
+        function descargarArchivo(contenido, nombre, tipo) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([contenido], { type: tipo })); a.download = nombre; a.click(); }
     </script>
 </body>
 </html>
