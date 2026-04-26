@@ -7,6 +7,7 @@
     
     <meta name="theme-color" content="#111827">
     <link rel="icon" href="icono.jpg" type="image/jpeg">
+    <link rel="manifest" href="manifest.json">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -488,6 +489,15 @@
         async function exportarBackup() { descargarArchivo(JSON.stringify(await db.registros.toArray()),`cervicare.json`,'application/json'); }
         function importarBackup(e) { const r=new FileReader(); r.onload=async(ev)=>{ await db.registros.clear(); await db.registros.bulkAdd(JSON.parse(ev.target.result)); alert("Restaurado."); cargarHistorial(); actualizarVistasProgreso(); }; r.readAsText(e.target.files[0]); }
         function descargarArchivo(c, n, t) { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([c],{type:t})); a.download=n; a.click(); }
+
+        // --- REGISTRO DEL SERVICE WORKER PARA LA PWA ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registrado con éxito', reg))
+                    .catch(err => console.warn('Error al registrar el Service Worker', err));
+            });
+        }
     </script>
 </body>
 </html>
