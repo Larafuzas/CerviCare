@@ -31,7 +31,6 @@
     <style>
         body { -webkit-tap-highlight-color: transparent; user-select: none; }
         .swiper-pagination-bullet-active { background-color: #2dd4bf !important; }
-        /* Scrollbar personalizada oculta para tarjetas más limpias */
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
     </style>
@@ -165,7 +164,12 @@
             }
         ];
 
-        let miSwiper, chartInstancia = null, timerInterval;
+        let miSwiper, chartInstancia = null;
+        
+        // Variables de estado para el temporizador
+        let timerInterval;
+        let tiempoRestante = 15 * 60; // 15 minutos en segundos
+        let timerEstado = 'detenido'; // detenido, corriendo, pausado
 
         window.onload = () => { renderizarRutina(); cargarHistorial(); };
 
@@ -175,7 +179,11 @@
                 let controlesHTML = '';
                 
                 if (ej.tipo === 'temporizador') {
-                    controlesHTML = `<button id="btn-timer" onclick="iniciarTemporizador(this)" class="w-full bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-md">Iniciar 15 Minutos</button>`;
+                    controlesHTML = `
+                        <div class="flex gap-2 w-full">
+                            <button id="btn-timer-play" onclick="toggleTemporizador()" class="flex-1 bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-md transition-colors">Iniciar Calor</button>
+                            <button id="btn-timer-reset" onclick="resetTemporizador()" class="hidden px-4 bg-red-900 border border-red-500 text-red-200 font-bold py-3 rounded-lg shadow-md transition-colors">⏹️</button>
+                        </div>`;
                 } else if (ej.tipo === 'contador') {
                     controlesHTML = `
                         <div class="flex justify-between gap-3 mb-3">
@@ -256,6 +264,68 @@
             el.innerText = val;
         }
 
+        // --- LÓGICA DEL TEMPORIZADOR AVANZADO ---
+        function toggleTemporizador() {
+            const btnPlay = document.getElementById('btn-timer-play');
+            const btnReset = document.getElementById('btn-timer-reset');
+            
+            if (timerEstado === 'detenido' || timerEstado === 'pausado') {
+                // Iniciar o Reanudar
+                timerEstado = 'corriendo';
+                btnPlay.innerText = "Pausar";
+                btnPlay.classList.replace('bg-neonCyan', 'bg-amber-500');
+                btnPlay.classList.replace('text-darkBg', 'text-white');
+                btnReset.classList.remove('hidden'); // Mostrar botón de reset
+                
+                timerInterval = setInterval(() => {
+                    tiempoRestante--;
+                    actualizarDisplayTemporizador();
+                    
+                    if (tiempoRestante <= 0) {
+                        clearInterval(timerInterval);
+                        timerEstado = 'completado';
+                        document.getElementById('display-fase1_calor').innerText = "¡Listo!";
+                        btnPlay.innerText = "Siguiente Fase";
+                        btnPlay.classList.replace('bg-amber-500', 'bg-neonCyan');
+                        btnPlay.classList.replace('text-white', 'text-darkBg');
+                        btnPlay.onclick = () => miSwiper.slideNext();
+                        btnReset.classList.add('hidden');
+                    }
+                }, 1000);
+            } else if (timerEstado === 'corriendo') {
+                // Pausar
+                clearInterval(timerInterval);
+                timerEstado = 'pausado';
+                btnPlay.innerText = "Reanudar";
+                btnPlay.classList.replace('bg-amber-500', 'bg-neonCyan');
+                btnPlay.classList.replace('text-white', 'text-darkBg');
+            }
+        }
+
+        function resetTemporizador() {
+            clearInterval(timerInterval);
+            tiempoRestante = 15 * 60;
+            timerEstado = 'detenido';
+            actualizarDisplayTemporizador();
+            
+            const btnPlay = document.getElementById('btn-timer-play');
+            const btnReset = document.getElementById('btn-timer-reset');
+            
+            btnPlay.innerText = "Iniciar Calor";
+            btnPlay.classList.remove('bg-amber-500');
+            btnPlay.classList.add('bg-neonCyan');
+            btnPlay.classList.replace('text-white', 'text-darkBg');
+            btnPlay.onclick = toggleTemporizador; // Restaurar el evento click
+            
+            btnReset.classList.add('hidden'); // Ocultar botón de reset
+        }
+
+        function actualizarDisplayTemporizador() {
+            document.getElementById('display-fase1_calor').innerText = 
+                `${Math.floor(tiempoRestante / 60).toString().padStart(2, '0')}:${(tiempoRestante % 60).toString().padStart(2, '0')}`;
+        }
+
+        // --- REGISTRO DE DATOS ---
         async function guardarRegistro(id, titulo, fase, btn) {
             const series = parseInt(document.getElementById(`series-${id}`).innerText);
             const repeticiones = parseInt(document.getElementById(`reps-${id}`).innerText);
@@ -274,24 +344,11 @@
                 btn.innerText = "¡Registrado!";
                 btn.classList.replace('bg-neonCyan', 'bg-green-500');
             }
-            setTimeout(() => miSwiper.slideTo(0), 800); // Vuelve al principio
-        }
-
-        function iniciarTemporizador(btn) {
-            if (timerInterval) clearInterval(timerInterval);
-            let tiempo = 15 * 60;
-            const display = document.getElementById('display-fase1_calor');
-            btn.innerText = "En progreso...";
-            btn.classList.replace('bg-neonCyan', 'bg-gray-600');
-            
-            timerInterval = setInterval(() => {
-                tiempo--;
-                display.innerText = `${Math.floor(tiempo / 60).toString().padStart(2, '0')}:${(tiempo % 60).toString().padStart(2, '0')}`;
-                if (tiempo <= 0) {
-                    clearInterval(timerInterval); display.innerText = "¡Listo!"; btn.innerText = "Siguiente Fase";
-                    btn.classList.replace('bg-gray-600', 'bg-neonCyan'); btn.onclick = () => miSwiper.slideNext();
-                }
-            }, 1000);
+            setTimeout(() => {
+                miSwiper.slideTo(0); // Vuelve al principio
+                btn.innerText = "Sí, Aplicada"; // Resetea el botón para futuras vueltas
+                btn.classList.replace('bg-green-500', 'bg-neonCyan');
+            }, 800); 
         }
 
         // --- CRUD Y GRÁFICOS ---
