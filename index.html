@@ -70,8 +70,7 @@
                     <div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div>
                 </div>
                 
-                <div id="calendario-grid" class="grid grid-cols-7 gap-1 text-center">
-                    </div>
+                <div id="calendario-grid" class="grid grid-cols-7 gap-1 text-center"></div>
                 
                 <div class="flex flex-wrap gap-2 justify-center text-[10px] text-gray-300 mt-4 border-t border-gray-700 pt-3">
                     <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-tealDark rounded-full"></div> Algunos</div>
@@ -163,33 +162,76 @@
         const db = new Dexie('CerviCareDB');
         db.version(1).stores({ registros: '++id, fecha, ejercicio, series, repeticiones, fase' });
 
-        const RUTINA_TOTAL_EJERCICIOS = 9; // 5 mov + 2 fort + 2 estiramientos
+        const RUTINA_TOTAL_EJERCICIOS = 9;
 
         const rutinaCervical = [
-            { id: "fase1_calor", fase: "Fase 1: Preparación", titulo: "Aplicación de Calor", imagen: null, tipo: "temporizador", instrucciones: "<p><strong>Fundamento:</strong> Vasodilatación para relajar.</p>" },
-            { id: "mov_flexion", fase: "Fase 2: Movilidad", titulo: "Flexión y Extensión", imagen: "flexion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Barbilla al pecho y extensión atrás.</p>" },
-            { id: "mov_inclinacion", fase: "Fase 2: Movilidad", titulo: "Inclinación Lateral", imagen: "inclinacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Oreja al hombro.</p>" },
-            { id: "mov_rotacion", fase: "Fase 2: Movilidad", titulo: "Rotación", imagen: "rotacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Gira la cabeza lentamente.</p>" },
-            { id: "mov_circulos", fase: "Fase 2: Movilidad", titulo: "Semicírculos", imagen: "circulos.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Dibuja una 'U' pendular.</p>" },
-            { id: "mov_elevacion", fase: "Fase 2: Movilidad", titulo: "Elevación de Hombros", imagen: "elevacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Sube hombros y relaja de golpe.</p>" },
-            { id: "fort_resistencia1", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Frontal/Nuca", imagen: "resistencia1.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Empuje isométrico.</p>" },
-            { id: "fort_resistencia2", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Lateral", imagen: "resistencia2.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Empuje lateral isométrico.</p>" },
-            { id: "est_traccion1", fase: "Fase 4: Estiramientos", titulo: "Tracción Abajo/Adelante", imagen: "traccion1.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Peso muerto de brazos nuca.</p>" },
-            { id: "est_traccion2", fase: "Fase 4: Estiramientos", titulo: "Tracción Lateral", imagen: "traccion2.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Inclinación suave asistida.</p>" },
-            { id: "fase5_electro", fase: "Fase 5: Recuperación", titulo: "Electroestimulación", imagen: null, tipo: "electro", instrucciones: `<p>Colocar electrodos en trapecios/esplenios.</p>` }
+            { 
+                id: "fase1_calor", fase: "Fase 1: Preparación", titulo: "Aplicación de Calor", imagen: null, tipo: "temporizador",
+                instrucciones: "<p><strong>Fundamento:</strong> El calor provoca vasodilatación, aumentando el flujo sanguíneo y relajando las fibras musculares antes del estiramiento.</p>" 
+            },
+            { 
+                id: "mov_flexion", fase: "Fase 2: Movilidad", titulo: "Flexión y Extensión", imagen: "flexion.jpg", tipo: "contador",
+                instrucciones: "<p><strong>Técnica:</strong> Siéntate recto. Exhala y lleva lentamente la barbilla hacia el pecho. Inhala y vuelve al centro, luego extiende la cabeza suavemente hacia atrás mirando al techo.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>No fuerces la extensión hacia atrás si sientes mareos o pellizcos articulares. El movimiento debe ser fluido.</p>" 
+            },
+            { 
+                id: "mov_inclinacion", fase: "Fase 2: Movilidad", titulo: "Inclinación Lateral", imagen: "inclinacion.jpg", tipo: "contador",
+                instrucciones: "<p><strong>Técnica:</strong> Intenta tocar el hombro con la oreja de forma controlada, sintiendo el estiramiento en el lado opuesto del cuello.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Es un error común levantar el hombro hacia la oreja. Para evitarlo, ancla la mano del lado que estás estirando debajo de tu muslo o agárrate a la silla.</p>" 
+            },
+            { 
+                id: "mov_rotacion", fase: "Fase 2: Movilidad", titulo: "Rotación", imagen: "rotacion.jpg", tipo: "contador",
+                instrucciones: "<p><strong>Técnica:</strong> Gira la cabeza lentamente para mirar por encima de tu hombro. Mantén la posición 2 segundos y cambia de lado.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Imagina una línea horizontal trazada desde tu nariz hasta la pared; evita que la cabeza cabecee hacia arriba o abajo durante el giro.</p>" 
+            },
+            { 
+                id: "mov_circulos", fase: "Fase 2: Movilidad", titulo: "Semicírculos", imagen: "circulos.jpg", tipo: "contador",
+                instrucciones: "<p><strong>Técnica:</strong> Deja caer la barbilla al pecho y traza un arco de movimiento de hombro a hombro, dibujando una 'U' pendular.</p><p class='mt-2 text-red-400 font-semibold'>⚠️ Advertencia Fisioterapéutica:</p><p>La rehabilitación moderna desaconseja hacer giros de 360 grados. Evita realizar el semicírculo por la parte de la espalda para no comprimir las vértebras ni las arterias vertebrales.</p>" 
+            },
+            { 
+                id: "mov_elevacion", fase: "Fase 2: Movilidad", titulo: "Elevación de Hombros", imagen: "elevacion.jpg", tipo: "contador",
+                instrucciones: "<p><strong>Técnica:</strong> Sube ambos hombros hacia las orejas encogiéndote. Mantén la tensión máxima durante 2-3 segundos.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>La clave de este ejercicio está en la bajada. Déjalos caer abruptamente soltando el aire de golpe para desactivar el tono muscular del trapecio superior.</p>" 
+            },
+            { 
+                id: "fort_resistencia1", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Frontal/Nuca", imagen: "resistencia1.jpg", tipo: "contador",
+                instrucciones: "<p><strong>Técnica:</strong> Coloca tus manos en la frente y empuja con la cabeza hacia delante, mientras tus manos resisten el movimiento (isométrico). Repite con las manos en la nuca empujando hacia atrás.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Aplica sólo un 20-30% de tu fuerza máxima. 'No rompas el huevo'. Mantén una respiración fluida y no aguantes el aire (evita la maniobra de Valsalva).</p>" 
+            },
+            { 
+                id: "fort_resistencia2", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Lateral", imagen: "resistencia2.jpg", tipo: "contador",
+                instrucciones: "<p><strong>Técnica:</strong> Coloca la mano en la sien y empuja la cabeza lateralmente sin permitir que haya desplazamiento.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Aplica una fuerza progresiva durante 5 segundos y relaja lentamente durante otros 5 segundos antes de la siguiente repetición.</p>" 
+            },
+            { 
+                id: "est_traccion1", fase: "Fase 4: Estiramientos", titulo: "Tracción Abajo/Adelante", imagen: "traccion1.jpg", tipo: "contador",
+                instrucciones: "<p><strong>Técnica:</strong> Entrelaza las manos detrás de la cabeza (no en la nuca) y deja caer la barbilla al pecho.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>No tires con fuerza hacia abajo. Simplemente deja que el peso libre de tus brazos relajados ejerza la tracción durante 15 segundos. Debe sentirse tensión agradable, nunca dolor punzante.</p>" 
+            },
+            { 
+                id: "est_traccion2", fase: "Fase 4: Estiramientos", titulo: "Tracción Lateral", imagen: "traccion2.jpg", tipo: "contador",
+                instrucciones: "<p><strong>Técnica:</strong> Pasa la mano por encima de la cabeza hasta tocar la oreja contraria e inclina suavemente.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Utiliza la respiración: en cada exhalación, permite que el músculo ceda un par de milímetros más, aumentando el estiramiento de forma natural.</p>" 
+            },
+            { 
+                id: "fase5_electro", fase: "Fase 5: Recuperación", titulo: "Electroestimulación (TENS/EMS)", imagen: null, tipo: "electro",
+                instrucciones: `
+                    <p><strong>Ubicación:</strong> Coloca los electrodos bilateralmente sobre los músculos trapecios o en la zona esplenia posterior.</p>
+                    <p class="text-red-400 font-bold mb-3 mt-1 text-sm border-l-2 border-red-500 pl-2">⚠️ NUNCA colocar en la parte delantera del cuello, garganta o arterias carótidas.</p>
+                    <div class="space-y-2 mt-2">
+                        <details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer">
+                            <summary class="font-semibold text-neonCyan outline-none">⚡ TENS (Alivio del Dolor)</summary>
+                            <p class="mt-1 text-xs text-gray-300"><strong>Parámetros:</strong> Frecuencia Alta (80-120 Hz).<br><strong>Sensación:</strong> Hormigueo constante y agradable, SIN provocar contracción muscular.<br><strong>Aplicación:</strong> 20-30 minutos para dolor agudo o fatiga excesiva.</p>
+                        </details>
+                        <details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer">
+                            <summary class="font-semibold text-neonCyan outline-none">💆 EMS (Masaje Descontracturante)</summary>
+                            <p class="mt-1 text-xs text-gray-300"><strong>Parámetros:</strong> Frecuencia Baja (2-10 Hz).<br><strong>Sensación:</strong> Intensidad hasta notar un bombeo o pequeñas sacudidas musculares relajantes.<br><strong>Aplicación:</strong> 15-20 minutos para aumentar el flujo sanguíneo tras el ejercicio.</p>
+                        </details>
+                    </div>` 
+            }
         ];
 
         let miSwiper, chartTendencia = null, chartEquilibrio = null;
         let timerInterval, tiempoRestante = 15 * 60, timerEstado = 'detenido';
         
-        // Estado del Calendario
         let calMonth = new Date().getMonth();
         let calYear = new Date().getFullYear();
         const nombresMeses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
         window.onload = () => { renderizarRutina(); cargarHistorial(); };
 
-        // Helper para obtener YYYY-MM-DD local y seguro
         function getLocalDateStr(d = new Date()) {
             return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
         }
@@ -324,19 +366,14 @@
                 else evaluacionPorDia[r.fecha].ejercicios.add(r.ejercicio);
             });
 
-            // Lógica de generación del mes (Lunes como primer día)
             let primerDiaMes = new Date(calYear, calMonth, 1).getDay();
-            if (primerDiaMes === 0) primerDiaMes = 7; // Ajustar Domingo(0) a 7
+            if (primerDiaMes === 0) primerDiaMes = 7; 
             const diasEnMes = new Date(calYear, calMonth + 1, 0).getDate();
 
-            // Rellenar huecos vacíos antes del día 1
-            for (let i = 1; i < primerDiaMes; i++) {
-                container.innerHTML += `<div class="h-10"></div>`;
-            }
+            for (let i = 1; i < primerDiaMes; i++) container.innerHTML += `<div class="h-10"></div>`;
 
             const hoyStr = getLocalDateStr();
 
-            // Renderizar los días
             for (let day = 1; day <= diasEnMes; day++) {
                 const fechaStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
                 const datosDia = evaluacionPorDia[fechaStr];
@@ -350,10 +387,10 @@
                     const numEj = datosDia.ejercicios.size;
                     const esCompleta = numEj >= RUTINA_TOTAL_EJERCICIOS;
                     
-                    if (esCompleta && datosDia.calor) dotColor = 'bg-blueLight'; // Azul claro
-                    else if (esCompleta) dotColor = 'bg-blueDark'; // Azul Oscuro
-                    else if (numEj > 0 && datosDia.calor) dotColor = 'bg-tealLight'; // Turquesa Claro
-                    else if (numEj > 0 || datosDia.calor) dotColor = 'bg-tealDark'; // Turquesa Oscuro
+                    if (esCompleta && datosDia.calor) dotColor = 'bg-blueLight'; 
+                    else if (esCompleta) dotColor = 'bg-blueDark'; 
+                    else if (numEj > 0 && datosDia.calor) dotColor = 'bg-tealLight'; 
+                    else if (numEj > 0 || datosDia.calor) dotColor = 'bg-tealDark'; 
                     
                     if (datosDia.electro) clasesBorde = 'ring-1 ring-neonPurple';
                 }
