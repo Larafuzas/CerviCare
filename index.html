@@ -125,7 +125,7 @@
 
             <div class="bg-cardBg p-4 rounded-xl border border-gray-700 shadow-lg">
                 <h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Desempeño por Ejercicio</h3>
-                <p class="text-[10px] text-gray-400 mb-3 text-center">Ranking total de repeticiones (Ancho completo)</p>
+                <p class="text-[10px] text-gray-400 mb-3 text-center">Ranking total de repeticiones</p>
                 <div class="relative h-80 w-full"><canvas id="grafico-ejercicios"></canvas></div>
             </div>
         </section>
@@ -323,7 +323,6 @@
             if (per !== 'rango' && per !== 'dia_concreto') renderizarGraficos();
         }
 
-        function obtenerSemana(fechaStr) { const d = new Date(fechaStr); d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7)); const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1)); return `${d.getUTCFullYear()}-W${Math.ceil((((d-yearStart)/86400000)+1)/7).toString().padStart(2,'0')}`; }
         async function actualizarVistasProgreso() { await dibujarCalendarioMensual(); await renderizarGraficos(); }
         function cambiarMes(offset) { calMonth += offset; if(calMonth < 0) { calMonth = 11; calYear--; } if(calMonth > 11) { calMonth = 0; calYear++; } dibujarCalendarioMensual(); }
 
@@ -460,7 +459,7 @@
                 options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } }, tooltip: { callbacks: { label: function(context) { return ' ' + context.label + ': ' + context.parsed + ' medias/ej'; } } }, datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (value, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); if(sum === 0 || value === 0) return ''; return Math.round((value / sum) * 100) + '%'; } } } } 
             });
 
-            // GRÁFICO BARRAS (SIN PADDING IZQUIERDO Y NOMBRES AL INICIO MEDIANTE EJE Y)
+            // GRÁFICO BARRAS (ALINEADO ABSOLUTO A LA IZQUIERDA CON SCALE WIDTH = 0)
             if (chartEjercicios) chartEjercicios.destroy();
             const nombresEj = Object.keys(datosEjercicios).sort((a,b) => datosEjercicios[b] - datosEjercicios[a]);
             const valsEj = nombresEj.map(e => datosEjercicios[e]);
@@ -469,34 +468,56 @@
                 type: 'bar',
                 data: { labels: nombresEj, datasets: [{ label: 'Repeticiones Totales', data: valsEj, backgroundColor: '#2dd4bf', barThickness: 6, borderRadius: 3 }] },
                 options: { 
-                    indexAxis: 'y', responsive: true, maintainAspectRatio: false, 
-                    layout: { padding: { top: 25, right: 30, left: 0, bottom: 0 } },
+                    indexAxis: 'y', 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    layout: { padding: { top: 25, right: 30, left: 0, bottom: 0 } }, // Sin padding izquierdo
                     scales: { 
                         x: { display: false, beginAtZero: true }, 
                         y: { 
-                            display: true, grid: { display: false, drawBorder: false }, border: { display: false }, 
-                            ticks: { display: true, mirror: true, color: '#cbd5e1', font: { size: 11, weight: 'bold' }, padding: 0, labelOffset: -14, z: 10 } 
+                            display: true, 
+                            grid: { display: false, drawBorder: false }, 
+                            border: { display: false }, 
+                            ticks: { 
+                                display: true, 
+                                mirror: true, // Dibuja el texto dentro del área del gráfico
+                                crossAlign: 'near', // Fuerza alineación a la izquierda
+                                color: '#cbd5e1', 
+                                font: { size: 11, weight: 'bold' }, 
+                                padding: 0, 
+                                labelOffset: -12, // Sube el texto por encima de la barra
+                                z: 10 
+                            },
+                            afterFit: function(scale) {
+                                scale.width = 0; // ¡Magia! Elimina la reserva de espacio del eje Y
+                            }
                         } 
                     }, 
-                    plugins: { legend: { display: false }, tooltip: { enabled: false }, datalabels: { display: true, align: 'right', anchor: 'end', offset: 4, formatter: Math.round, color: '#2dd4bf', font: { weight: 'bold', size: 11 } } } 
+                    plugins: { 
+                        legend: { display: false }, 
+                        tooltip: { enabled: false }, 
+                        datalabels: { 
+                            display: true, 
+                            align: 'right', 
+                            anchor: 'end', 
+                            offset: 4, 
+                            formatter: Math.round, 
+                            color: '#2dd4bf', 
+                            font: { weight: 'bold', size: 11 } 
+                        } 
+                    } 
                 }
             });
         }
 
-        // --- SISTEMA DE NAVEGACIÓN DIARIA Y EDICIÓN ---
         function cambiarDiaHistorial(offset) {
-            let d = new Date(diaHistorialActual);
-            d.setDate(d.getDate() + offset);
+            let d = new Date(diaHistorialActual); d.setDate(d.getDate() + offset);
             diaHistorialActual = getLocalDateStr(d);
             document.getElementById('fecha-historial-input').value = diaHistorialActual;
             cargarHistorial();
         }
 
-        function seleccionarDiaHistorial(fechaStr) {
-            if(!fechaStr) return;
-            diaHistorialActual = fechaStr;
-            cargarHistorial();
-        }
+        function seleccionarDiaHistorial(fechaStr) { if(!fechaStr) return; diaHistorialActual = fechaStr; cargarHistorial(); }
 
         async function cargarHistorial() {
             const t = await db.registros.where('fecha').equals(diaHistorialActual).toArray();
@@ -529,27 +550,18 @@
             if (!r) return;
             
             const esTerapia = r.fase.includes('Fase 1') || r.fase.includes('Fase 5');
-            
-            if(esTerapia) {
-                alert("Las terapias de unidad (Calor / Electro) se contabilizan como sesión única. No es necesario editar series ni repeticiones.");
-                return;
-            }
+            if(esTerapia) { alert("Las terapias de unidad (Calor / Electro) se contabilizan como sesión única. No es necesario editar series ni repeticiones."); return; }
 
             let p1 = prompt(`Editando: ${r.ejercicio}\nIntroduce las nuevas SERIES:`, r.series);
             if (p1 === null) return; 
-            
             let p2 = prompt(`Introduce las nuevas REPETICIONES:`, r.repeticiones);
             if (p2 === null) return; 
             
-            let ns = parseInt(p1);
-            let nr = parseInt(p2);
-            
-            if (isNaN(ns) || ns < 1) ns = 1;
-            if (isNaN(nr) || nr < 1) nr = 1;
+            let ns = parseInt(p1); let nr = parseInt(p2);
+            if (isNaN(ns) || ns < 1) ns = 1; if (isNaN(nr) || nr < 1) nr = 1;
             
             await db.registros.update(id, { series: ns, repeticiones: nr });
-            cargarHistorial();
-            actualizarVistasProgreso();
+            cargarHistorial(); actualizarVistasProgreso();
         }
 
         async function borrarRegistro(id) { if(confirm("¿Seguro que quieres borrar este registro?")){ await db.registros.delete(id); cargarHistorial(); actualizarVistasProgreso(); } }
