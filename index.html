@@ -51,10 +51,7 @@
     <main id="app-container" class="flex-1 overflow-y-auto relative w-full flex flex-col">
         
         <section id="vista-rutina" class="h-full w-full flex flex-col relative">
-            
-            <div id="top-nav-pills" class="w-full flex gap-2 overflow-x-auto no-scrollbar p-3 bg-darkBg border-b border-gray-800 z-10 sticky top-0">
-                </div>
-
+            <div id="top-nav-pills" class="w-full flex gap-2 overflow-x-auto no-scrollbar p-3 bg-darkBg border-b border-gray-800 z-10 sticky top-0"></div>
             <div class="swiper mySwiper flex-1 w-full mt-2">
                 <div class="swiper-wrapper" id="contenedor-ejercicios"></div>
             </div>
@@ -73,7 +70,6 @@
                 <div class="grid grid-cols-7 text-center text-[10px] text-gray-400 mb-1 font-semibold uppercase">
                     <div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div>
                 </div>
-                
                 <div id="calendario-grid" class="grid grid-cols-7 gap-1 text-center"></div>
                 
                 <div class="flex flex-wrap gap-x-3 gap-y-2 justify-center text-[10px] text-gray-300 mt-4 border-t border-gray-700 pt-3">
@@ -88,23 +84,13 @@
             <div class="bg-cardBg p-3 rounded-xl border border-gray-700 mb-4 shadow-lg">
                 <div class="grid grid-cols-2 gap-2 mb-2">
                     <select id="filtro-agrupacion" onchange="renderizarGraficos()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none">
-                        <option value="dias">Por Días</option>
-                        <option value="semanas">Por Semanas</option>
-                        <option value="meses">Por Meses</option>
+                        <option value="dias">Por Días</option><option value="semanas">Por Semanas</option><option value="meses">Por Meses</option>
                     </select>
                     <select id="filtro-tipo" onchange="renderizarGraficos()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none">
-                        <option value="todos">Todos los Ejercicios</option>
-                        <option value="Movilidad">Solo Movilidad</option>
-                        <option value="Fortalecimiento">Solo Fortalecimiento</option>
-                        <option value="Estiramientos">Solo Estiramientos</option>
+                        <option value="todos">Todos los Ejercicios</option><option value="Movilidad">Solo Movilidad</option><option value="Fortalecimiento">Solo Fortalecimiento</option><option value="Estiramientos">Solo Estiramientos</option>
                     </select>
                     <select id="filtro-periodo" onchange="toggleFechasPersonalizadas()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none col-span-2">
-                        <option value="hoy">Hoy</option>
-                        <option value="dia_concreto">Día específico...</option>
-                        <option value="7">Últimos 7 días</option>
-                        <option value="30" selected>Últimos 30 días</option>
-                        <option value="todo">Desde el principio</option>
-                        <option value="rango">Rango de fechas...</option>
+                        <option value="hoy">Hoy</option><option value="dia_concreto">Día específico...</option><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="todo">Desde el principio</option><option value="rango">Rango de fechas...</option>
                     </select>
                 </div>
                 
@@ -113,14 +99,8 @@
                     <input type="date" id="fecha-unica" onchange="renderizarGraficos()" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1.5 text-white mt-1">
                 </div>
                 <div id="rango-fechas" class="hidden grid-cols-2 gap-2 mt-2 pt-2 border-t border-gray-700">
-                    <div>
-                        <label class="text-[10px] text-gray-400">Inicio</label>
-                        <input type="date" id="fecha-inicio" onchange="renderizarGraficos()" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1.5 text-white mt-1">
-                    </div>
-                    <div>
-                        <label class="text-[10px] text-gray-400">Fin</label>
-                        <input type="date" id="fecha-fin" onchange="renderizarGraficos()" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1.5 text-white mt-1">
-                    </div>
+                    <div><label class="text-[10px] text-gray-400">Inicio</label><input type="date" id="fecha-inicio" onchange="renderizarGraficos()" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1.5 text-white mt-1"></div>
+                    <div><label class="text-[10px] text-gray-400">Fin</label><input type="date" id="fecha-fin" onchange="renderizarGraficos()" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1.5 text-white mt-1"></div>
                 </div>
             </div>
 
@@ -173,20 +153,22 @@
 
         const rutinaCervical = [
             { id: "fase1_calor", short: "Calor", fase: "Fase 1: Preparación", titulo: "Aplicación de Calor", imagen: null, tipo: "temporizador", instrucciones: "<p><strong>Fundamento:</strong> El calor provoca vasodilatación, aumentando el flujo sanguíneo y relajando las fibras musculares antes del estiramiento.</p>" },
-            { id: "mov_flexion", short: "Flexión", fase: "Fase 2: Movilidad", titulo: "Flexión y Extensión", imagen: "flexion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Siéntate recto. Exhala y lleva lentamente la barbilla hacia el pecho. Inhala y vuelve al centro, luego extiende la cabeza suavemente hacia atrás mirando al techo.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>No fuerces la extensión hacia atrás si sientes mareos o pellizcos articulares. El movimiento debe ser fluido.</p>" },
-            { id: "mov_inclinacion", short: "Inclin.", fase: "Fase 2: Movilidad", titulo: "Inclinación Lateral", imagen: "inclinacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Intenta tocar el hombro con la oreja de forma controlada, sintiendo el estiramiento en el lado opuesto del cuello.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Es un error común levantar el hombro hacia la oreja. Para evitarlo, ancla la mano del lado que estás estirando debajo de tu muslo o agárrate a la silla.</p>" },
-            { id: "mov_rotacion", short: "Rotación", fase: "Fase 2: Movilidad", titulo: "Rotación", imagen: "rotacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Gira la cabeza lentamente para mirar por encima de tu hombro. Mantén la posición 2 segundos y cambia de lado.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Imagina una línea horizontal trazada desde tu nariz hasta la pared; evita que la cabeza cabecee hacia arriba o abajo durante el giro.</p>" },
-            { id: "mov_circulos", short: "Semicirc.", fase: "Fase 2: Movilidad", titulo: "Semicírculos", imagen: "circulos.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Deja caer la barbilla al pecho y traza un arco de movimiento de hombro a hombro, dibujando una 'U' pendular.</p><p class='mt-2 text-red-400 font-semibold'>⚠️ Advertencia:</p><p>La rehabilitación moderna desaconseja hacer giros de 360 grados. Evita realizar el semicírculo por la parte de la espalda para no comprimir las vértebras ni arterias.</p>" },
-            { id: "mov_elevacion", short: "Hombros", fase: "Fase 2: Movilidad", titulo: "Elevación de Hombros", imagen: "elevacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Sube ambos hombros hacia las orejas encogiéndote. Mantén la tensión máxima durante 2-3 segundos.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>La clave de este ejercicio está en la bajada. Déjalos caer abruptamente soltando el aire de golpe para desactivar el tono muscular del trapecio superior.</p>" },
-            { id: "fort_resistencia1", short: "Res.Front", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Frontal/Nuca", imagen: "resistencia1.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Coloca tus manos en la frente y empuja con la cabeza hacia delante, mientras tus manos resisten el movimiento (isométrico). Repite con las manos en la nuca empujando hacia atrás.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Aplica sólo un 20-30% de tu fuerza máxima. 'No rompas el huevo'. Mantén una respiración fluida y no aguantes el aire (evita la maniobra de Valsalva).</p>" },
-            { id: "fort_resistencia2", short: "Res.Lat", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Lateral", imagen: "resistencia2.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Coloca la mano en la sien y empuja la cabeza lateralmente sin permitir que haya desplazamiento.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Aplica una fuerza progresiva durante 5 segundos y relaja lentamente durante otros 5 segundos antes de la siguiente repetición.</p>" },
-            { id: "est_traccion1", short: "Trac.Front", fase: "Fase 4: Estiramientos", titulo: "Tracción Abajo/Adelante", imagen: "traccion1.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Entrelaza las manos detrás de la cabeza (no en la nuca) y deja caer la barbilla al pecho.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>No tires con fuerza hacia abajo. Simplemente deja que el peso libre de tus brazos relajados ejerza la tracción durante 15 segundos. Debe sentirse tensión agradable, nunca dolor punzante.</p>" },
-            { id: "est_traccion2", short: "Trac.Lat", fase: "Fase 4: Estiramientos", titulo: "Tracción Lateral", imagen: "traccion2.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Pasa la mano por encima de la cabeza hasta tocar la oreja contraria e inclina suavemente.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Utiliza la respiración: en cada exhalación, permite que el músculo ceda un par de milímetros más, aumentando el estiramiento de forma natural.</p>" },
-            { id: "fase5_electro", short: "Electro", fase: "Fase 5: Recuperación", titulo: "Electroestimulación", imagen: null, tipo: "electro", instrucciones: `<p><strong>Ubicación:</strong> Coloca los electrodos bilateralmente sobre los músculos trapecios o en la zona esplenia posterior.</p><p class="text-red-400 font-bold mb-3 mt-1 text-sm border-l-2 border-red-500 pl-2">⚠️ NUNCA colocar en la parte delantera del cuello, garganta o arterias carótidas.</p><div class="space-y-2 mt-2"><details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer"><summary class="font-semibold text-neonCyan outline-none">⚡ TENS (Alivio del Dolor)</summary><p class="mt-1 text-xs text-gray-300"><strong>Parámetros:</strong> Frecuencia Alta (80-120 Hz).<br><strong>Sensación:</strong> Hormigueo constante y agradable, SIN provocar contracción muscular.<br><strong>Aplicación:</strong> 20-30 minutos para dolor agudo.</p></details><details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer"><summary class="font-semibold text-neonCyan outline-none">💆 EMS (Masaje Descontracturante)</summary><p class="mt-1 text-xs text-gray-300"><strong>Parámetros:</strong> Frecuencia Baja (2-10 Hz).<br><strong>Sensación:</strong> Intensidad hasta notar un bombeo o pequeñas sacudidas musculares.<br><strong>Aplicación:</strong> 15-20 minutos para aumentar el flujo sanguíneo.</p></details></div>` }
+            { id: "mov_flexion", short: "Flexión", fase: "Fase 2: Movilidad", titulo: "Flexión y Extensión", imagen: "flexion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Siéntate recto. Exhala y lleva lentamente la barbilla hacia el pecho. Inhala y vuelve al centro, luego extiende la cabeza suavemente hacia atrás mirando al techo.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>No fuerces la extensión hacia atrás si sientes mareos o pellizcos articulares.</p>" },
+            { id: "mov_inclinacion", short: "Inclin.", fase: "Fase 2: Movilidad", titulo: "Inclinación Lateral", imagen: "inclinacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Intenta tocar el hombro con la oreja de forma controlada.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Es un error común levantar el hombro hacia la oreja. Ancla la mano del lado que estiras debajo de tu muslo.</p>" },
+            { id: "mov_rotacion", short: "Rotación", fase: "Fase 2: Movilidad", titulo: "Rotación", imagen: "rotacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Gira la cabeza lentamente para mirar por encima de tu hombro.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Imagina una línea horizontal trazada desde tu nariz hasta la pared; evita que la cabeza cabecee.</p>" },
+            { id: "mov_circulos", short: "Semicirc.", fase: "Fase 2: Movilidad", titulo: "Semicírculos", imagen: "circulos.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Deja caer la barbilla al pecho y traza un arco de hombro a hombro, dibujando una 'U'.</p><p class='mt-2 text-red-400 font-semibold'>⚠️ Advertencia:</p><p>Evita realizar el semicírculo por la espalda para no comprimir vértebras ni arterias.</p>" },
+            { id: "mov_elevacion", short: "Hombros", fase: "Fase 2: Movilidad", titulo: "Elevación de Hombros", imagen: "elevacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Sube hombros hacia las orejas encogiéndote. Mantén 2-3 segundos.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Déjalos caer abruptamente soltando el aire de golpe para desactivar el trapecio.</p>" },
+            { id: "fort_resistencia1", short: "Res.Front", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Frontal/Nuca", imagen: "resistencia1.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Manos en la frente, empuja la cabeza hacia delante (isométrico). Repite hacia atrás.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Aplica sólo un 20-30% de tu fuerza máxima. 'No rompas el huevo'.</p>" },
+            { id: "fort_resistencia2", short: "Res.Lat", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Lateral", imagen: "resistencia2.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Mano en la sien y empuja lateralmente sin permitir desplazamiento.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Fuerza progresiva durante 5s y relaja lentamente durante otros 5s.</p>" },
+            { id: "est_traccion1", short: "Trac.Front", fase: "Fase 4: Estiramientos", titulo: "Tracción Abajo", imagen: "traccion1.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Manos detrás de la cabeza, deja caer la barbilla al pecho.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>No tires con fuerza. Deja que el peso libre de tus brazos ejerza la tracción durante 15s.</p>" },
+            { id: "est_traccion2", short: "Trac.Lat", fase: "Fase 4: Estiramientos", titulo: "Tracción Lateral", imagen: "traccion2.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Pasa la mano sobre la cabeza hasta la oreja contraria e inclina suavemente.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Utiliza la respiración para ganar milímetros en cada exhalación.</p>" },
+            { id: "fase5_electro", short: "Electro", fase: "Fase 5: Recuperación", titulo: "Electroestimulación", imagen: null, tipo: "electro", instrucciones: `<p><strong>Ubicación:</strong> Electrodos sobre los músculos trapecios o zona esplenia.</p><p class="text-red-400 font-bold mb-3 mt-1 text-sm border-l-2 border-red-500 pl-2">⚠️ NUNCA colocar en la garganta o carótidas.</p><div class="space-y-2 mt-2"><details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer"><summary class="font-semibold text-neonCyan outline-none">⚡ TENS (Alivio)</summary><p class="mt-1 text-xs text-gray-300">Frecuencia Alta (80-120 Hz). Hormigueo constante 20-30 min.</p></details><details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer"><summary class="font-semibold text-neonCyan outline-none">💆 EMS (Masaje)</summary><p class="mt-1 text-xs text-gray-300">Frecuencia Baja (2-10 Hz). Pequeñas sacudidas 15-20 min.</p></details></div>` }
         ];
 
         let miSwiper, chartTendencia = null, chartEquilibrio = null;
         let timerInterval, tiempoRestante = 15 * 60, timerEstado = 'detenido';
+        let endTime = null; // Nuevo control de tiempo absoluto
+        
         let calMonth = new Date().getMonth(), calYear = new Date().getFullYear();
         const nombresMeses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
@@ -197,16 +179,10 @@
         function renderizarRutina() {
             const contenedor = document.getElementById('contenedor-ejercicios');
             const navPills = document.getElementById('top-nav-pills');
-            
-            contenedor.innerHTML = '';
-            navPills.innerHTML = '';
+            contenedor.innerHTML = ''; navPills.innerHTML = '';
 
             rutinaCervical.forEach((ej, index) => {
-                navPills.innerHTML += `
-                    <button id="pill-${index}" onclick="irADiapositiva(${index})" 
-                            class="chip flex-shrink-0 text-xs font-bold px-4 py-1.5 rounded-full border border-gray-600 bg-transparent text-gray-400">
-                        ${index + 1}. ${ej.short}
-                    </button>`;
+                navPills.innerHTML += `<button id="pill-${index}" onclick="irADiapositiva(${index})" class="chip flex-shrink-0 text-xs font-bold px-4 py-1.5 rounded-full border border-gray-600 bg-transparent text-gray-400">${index + 1}. ${ej.short}</button>`;
 
                 let controlesHTML = '';
                 if (ej.tipo === 'temporizador') {
@@ -219,48 +195,27 @@
                     controlesHTML = `
                         <div class="flex justify-between gap-3 mb-3">
                             <div class="flex items-center justify-between bg-darkBg px-3 py-2 rounded w-1/2 border border-gray-600">
-                                <span class="text-xs text-gray-400">Series</span>
-                                <button onclick="cambiarValor('series-${ej.id}', -1)" class="text-neonCyan text-xl px-2 font-bold">-</button>
-                                <span id="series-${ej.id}" class="font-bold text-lg">1</span>
-                                <button onclick="cambiarValor('series-${ej.id}', 1)" class="text-neonCyan text-xl px-2 font-bold">+</button>
+                                <span class="text-xs text-gray-400">Series</span><button onclick="cambiarValor('series-${ej.id}', -1)" class="text-neonCyan text-xl px-2 font-bold">-</button><span id="series-${ej.id}" class="font-bold text-lg">1</span><button onclick="cambiarValor('series-${ej.id}', 1)" class="text-neonCyan text-xl px-2 font-bold">+</button>
                             </div>
                             <div class="flex items-center justify-between bg-darkBg px-3 py-2 rounded w-1/2 border border-gray-600">
-                                <span class="text-xs text-gray-400">Reps</span>
-                                <button onclick="cambiarValor('reps-${ej.id}', -1)" class="text-neonCyan text-xl px-2 font-bold">-</button>
-                                <span id="reps-${ej.id}" class="font-bold text-lg">1</span>
-                                <button onclick="cambiarValor('reps-${ej.id}', 1)" class="text-neonCyan text-xl px-2 font-bold">+</button>
+                                <span class="text-xs text-gray-400">Reps</span><button onclick="cambiarValor('reps-${ej.id}', -1)" class="text-neonCyan text-xl px-2 font-bold">-</button><span id="reps-${ej.id}" class="font-bold text-lg">1</span><button onclick="cambiarValor('reps-${ej.id}', 1)" class="text-neonCyan text-xl px-2 font-bold">+</button>
                             </div>
                         </div>
                         <button onclick="guardarRegistro('${ej.id}', '${ej.titulo}', '${ej.fase}', this)" class="w-full bg-gray-700 text-white font-bold py-3 rounded-lg transition-colors">Guardar y Siguiente</button>`;
                 } else if (ej.tipo === 'electro') {
-                    controlesHTML = `
-                        <div class="flex gap-2">
-                            <button onclick="guardarElectro(true, this)" class="w-1/2 bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-md transition-colors">Sí, Aplicada</button>
-                            <button onclick="guardarElectro(false, this)" class="w-1/2 bg-gray-700 text-white font-bold py-3 rounded-lg transition-colors">Saltar</button>
-                        </div>`;
+                    controlesHTML = `<div class="flex gap-2"><button onclick="guardarElectro(true, this)" class="w-1/2 bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-md transition-colors">Sí, Aplicada</button><button onclick="guardarElectro(false, this)" class="w-1/2 bg-gray-700 text-white font-bold py-3 rounded-lg transition-colors">Saltar</button></div>`;
                 }
 
                 let visualHTML = '';
                 if (ej.imagen) {
-                    // Aumentado de h-32 a h-60
                     visualHTML = `<img src="${ej.imagen}" class="h-60 mx-auto object-contain p-1" onerror="this.src=''; this.alt='Imagen: ${ej.imagen}'">`;
                 } else if (ej.tipo === 'temporizador') {
-                    // Aumentado de h-32 a h-60
                     visualHTML = `<div class="flex items-center justify-center h-60"><span class="text-5xl font-bold text-neonCyan" id="display-${ej.id}">15:00</span></div>`;
                 } else if (ej.tipo === 'electro') {
-                    // Aumentado de h-32 a h-60 e icono SVG escalado
                     visualHTML = `
                         <div class="flex items-center justify-center h-60">
                             <svg class="w-24 h-24 text-neonCyan drop-shadow-[0_0_10px_rgba(45,212,191,0.4)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <rect x="8" y="4" width="8" height="12" rx="2" stroke-width="1.5"/>
-                                <rect x="10" y="6" width="4" height="3" rx="0.5" stroke-width="1.5"/>
-                                <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
-                                <path d="M12 4V2" stroke-width="1.5" stroke-linecap="round"/>
-                                <path d="M12 2 Q18 2 18 5" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                                <path d="M12 2 Q6 2 6 5" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                                <rect x="4" y="5" width="4" height="6" rx="1" stroke-width="1.5" fill="currentColor" fill-opacity="0.2"/>
-                                <rect x="16" y="5" width="4" height="6" rx="1" stroke-width="1.5" fill="currentColor" fill-opacity="0.2"/>
-                                <path d="M5.5 7.5L6.5 8.5M17.5 7.5L18.5 8.5" stroke-width="1" stroke-linecap="round"/>
+                                <rect x="8" y="4" width="8" height="12" rx="2" stroke-width="1.5"/><rect x="10" y="6" width="4" height="3" rx="0.5" stroke-width="1.5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><path d="M12 4V2" stroke-width="1.5" stroke-linecap="round"/><path d="M12 2 Q18 2 18 5" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M12 2 Q6 2 6 5" stroke-width="1.5" fill="none" stroke-linecap="round"/><rect x="4" y="5" width="4" height="6" rx="1" stroke-width="1.5" fill="currentColor" fill-opacity="0.2"/><rect x="16" y="5" width="4" height="6" rx="1" stroke-width="1.5" fill="currentColor" fill-opacity="0.2"/><path d="M5.5 7.5L6.5 8.5M17.5 7.5L18.5 8.5" stroke-width="1" stroke-linecap="round"/>
                             </svg>
                         </div>`;
                 }
@@ -282,56 +237,75 @@
                     </div>`;
             });
 
-            miSwiper = new Swiper(".mySwiper", { 
-                spaceBetween: 15,
-                on: { slideChange: function () { actualizarEstiloPills(this.activeIndex); } }
-            });
+            miSwiper = new Swiper(".mySwiper", { spaceBetween: 15, on: { slideChange: function () { actualizarEstiloPills(this.activeIndex); } } });
             actualizarEstiloPills(0);
         }
 
         function irADiapositiva(index) { if(miSwiper) miSwiper.slideTo(index); }
-
         function actualizarEstiloPills(activeIndex) {
-            const pills = document.querySelectorAll('.chip');
-            pills.forEach((pill, idx) => {
-                if (idx === activeIndex) {
-                    pill.classList.replace('bg-transparent', 'bg-neonCyan');
-                    pill.classList.replace('text-gray-400', 'text-darkBg');
-                    pill.classList.replace('border-gray-600', 'border-neonCyan');
-                    pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                } else {
-                    pill.classList.replace('bg-neonCyan', 'bg-transparent');
-                    pill.classList.replace('text-darkBg', 'text-gray-400');
-                    pill.classList.replace('border-neonCyan', 'border-gray-600');
-                }
+            document.querySelectorAll('.chip').forEach((pill, idx) => {
+                if (idx === activeIndex) { pill.classList.replace('bg-transparent', 'bg-neonCyan'); pill.classList.replace('text-gray-400', 'text-darkBg'); pill.classList.replace('border-gray-600', 'border-neonCyan'); pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); } 
+                else { pill.classList.replace('bg-neonCyan', 'bg-transparent'); pill.classList.replace('text-darkBg', 'text-gray-400'); pill.classList.replace('border-neonCyan', 'border-gray-600'); }
             });
         }
 
         function cambiarPestana(id) {
-            ['rutina', 'estadisticas', 'ajustes'].forEach(p => { 
-                document.getElementById(`vista-${p}`).classList.add('hidden'); 
-                document.getElementById(`nav-${p}`).classList.replace('text-neonCyan', 'text-gray-500'); 
-            });
-            document.getElementById(`vista-${id}`).classList.remove('hidden'); 
-            document.getElementById(`nav-${id}`).classList.replace('text-gray-500', 'text-neonCyan');
-            
+            ['rutina', 'estadisticas', 'ajustes'].forEach(p => { document.getElementById(`vista-${p}`).classList.add('hidden'); document.getElementById(`nav-${p}`).classList.replace('text-neonCyan', 'text-gray-500'); });
+            document.getElementById(`vista-${id}`).classList.remove('hidden'); document.getElementById(`nav-${id}`).classList.replace('text-gray-500', 'text-neonCyan');
             if (id === 'estadisticas') setTimeout(actualizarVistasProgreso, 50);
             if (id === 'ajustes') cargarHistorial();
         }
 
         function cambiarValor(id, inc) { let el = document.getElementById(id), v = parseInt(el.innerText) + inc; el.innerText = v < 1 ? 1 : v; }
 
+        // --- SISTEMA DE NOTIFICACIONES ---
+        async function solicitarPermisoNotificaciones() {
+            if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
+                await Notification.requestPermission();
+            }
+        }
+
+        function enviarNotificacion() {
+            if ("Notification" in window && Notification.permission === "granted") {
+                const title = "¡Tiempo de Calor Completado!";
+                const options = { body: "Han pasado los 15 minutos. Es hora de continuar con la rutina.", icon: "./icono.jpg", vibrate: [200, 100, 200, 100, 200, 100, 200], badge: "./icono.jpg" };
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.ready.then(reg => reg.showNotification(title, options));
+                } else { new Notification(title, options); }
+            }
+        }
+
+        // --- NUEVO TEMPORIZADOR A PRUEBA DE BLOQUEO DE PANTALLA ---
         function toggleTemporizador() {
             const bp = document.getElementById('btn-timer-play'), br = document.getElementById('btn-timer-reset');
             if (timerEstado === 'detenido' || timerEstado === 'pausado') {
+                solicitarPermisoNotificaciones();
                 timerEstado = 'corriendo'; bp.innerText = "Pausar"; bp.className = bp.className.replace('bg-neonCyan', 'bg-amber-500').replace('text-darkBg', 'text-white'); br.classList.remove('hidden');
+                
+                // Fijar hora de finalización absoluta en el futuro
+                endTime = Date.now() + (tiempoRestante * 1000);
+                
                 timerInterval = setInterval(() => {
-                    tiempoRestante--; document.getElementById('display-fase1_calor').innerText = `${Math.floor(tiempoRestante/60).toString().padStart(2,'0')}:${(tiempoRestante%60).toString().padStart(2,'0')}`;
-                    if (tiempoRestante <= 0) { clearInterval(timerInterval); timerEstado = 'completado'; document.getElementById('display-fase1_calor').innerText = "¡Listo!"; bp.innerText = "Siguiente Fase"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); bp.onclick = () => miSwiper.slideNext(); br.classList.add('hidden'); }
-                }, 1000);
-            } else if (timerEstado === 'corriendo') { clearInterval(timerInterval); timerEstado = 'pausado'; bp.innerText = "Reanudar"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); }
+                    // Calcular el tiempo real restante basándose en el reloj, no en los "ticks" del interval
+                    tiempoRestante = Math.round((endTime - Date.now()) / 1000);
+                    
+                    if (tiempoRestante <= 0) { 
+                        tiempoRestante = 0; clearInterval(timerInterval); timerEstado = 'completado'; 
+                        document.getElementById('display-fase1_calor').innerText = "¡Listo!"; 
+                        bp.innerText = "Siguiente Fase"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); bp.onclick = () => miSwiper.slideNext(); br.classList.add('hidden'); 
+                        enviarNotificacion();
+                    } else {
+                        document.getElementById('display-fase1_calor').innerText = `${Math.floor(tiempoRestante/60).toString().padStart(2,'0')}:${(tiempoRestante%60).toString().padStart(2,'0')}`;
+                    }
+                }, 500); // Comprobación más rápida para mayor precisión al despertar la pantalla
+            } else if (timerEstado === 'corriendo') { 
+                clearInterval(timerInterval); timerEstado = 'pausado'; bp.innerText = "Reanudar"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); 
+            }
         }
-        function resetTemporizador() { clearInterval(timerInterval); tiempoRestante = 15*60; timerEstado = 'detenido'; document.getElementById('display-fase1_calor').innerText = "15:00"; const bp = document.getElementById('btn-timer-play'); bp.innerText = "Iniciar Calor"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); bp.onclick = toggleTemporizador; document.getElementById('btn-timer-reset').classList.add('hidden'); }
+        function resetTemporizador() { 
+            clearInterval(timerInterval); tiempoRestante = 15*60; timerEstado = 'detenido'; endTime = null;
+            document.getElementById('display-fase1_calor').innerText = "15:00"; const bp = document.getElementById('btn-timer-play'); bp.innerText = "Iniciar Calor"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); bp.onclick = toggleTemporizador; document.getElementById('btn-timer-reset').classList.add('hidden'); 
+        }
 
         async function guardarRegistro(id, titulo, fase, btn) {
             await db.registros.add({ fecha: getLocalDateStr(), ejercicio: titulo, series: parseInt(document.getElementById(`series-${id}`).innerText), repeticiones: parseInt(document.getElementById(`reps-${id}`).innerText), fase });
@@ -345,150 +319,82 @@
 
         function toggleFechasPersonalizadas() {
             const per = document.getElementById('filtro-periodo').value;
-            document.getElementById('rango-fechas').classList.toggle('hidden', per !== 'rango');
-            document.getElementById('rango-fechas').classList.toggle('grid', per === 'rango');
-            document.getElementById('input-dia-concreto').classList.toggle('hidden', per !== 'dia_concreto');
+            document.getElementById('rango-fechas').classList.toggle('hidden', per !== 'rango'); document.getElementById('rango-fechas').classList.toggle('grid', per === 'rango'); document.getElementById('input-dia-concreto').classList.toggle('hidden', per !== 'dia_concreto');
             if (per !== 'rango' && per !== 'dia_concreto') renderizarGraficos();
         }
 
-        function obtenerSemana(fechaStr) {
-            const d = new Date(fechaStr);
-            d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
-            const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
-            return `${d.getUTCFullYear()}-W${Math.ceil((((d-yearStart)/86400000)+1)/7).toString().padStart(2,'0')}`;
-        }
-
-        async function actualizarVistasProgreso() {
-            await dibujarCalendarioMensual();
-            await renderizarGraficos();
-        }
-
-        function cambiarMes(offset) {
-            calMonth += offset;
-            if(calMonth < 0) { calMonth = 11; calYear--; }
-            if(calMonth > 11) { calMonth = 0; calYear++; }
-            dibujarCalendarioMensual();
-        }
+        function obtenerSemana(fechaStr) { const d = new Date(fechaStr); d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7)); const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1)); return `${d.getUTCFullYear()}-W${Math.ceil((((d-yearStart)/86400000)+1)/7).toString().padStart(2,'0')}`; }
+        async function actualizarVistasProgreso() { await dibujarCalendarioMensual(); await renderizarGraficos(); }
+        function cambiarMes(offset) { calMonth += offset; if(calMonth < 0) { calMonth = 11; calYear--; } if(calMonth > 11) { calMonth = 0; calYear++; } dibujarCalendarioMensual(); }
 
         async function dibujarCalendarioMensual() {
             document.getElementById('mes-actual-label').innerText = `${nombresMeses[calMonth]} ${calYear}`;
-            const container = document.getElementById('calendario-grid');
-            container.innerHTML = '';
-            
-            const todos = await db.registros.toArray();
-            const evaluacionPorDia = {};
+            const container = document.getElementById('calendario-grid'); container.innerHTML = '';
+            const todos = await db.registros.toArray(); const evaluacionPorDia = {};
             todos.forEach(r => {
                 if (!evaluacionPorDia[r.fecha]) evaluacionPorDia[r.fecha] = { ejercicios: new Set(), calor: false, electro: false };
                 if (r.fase.includes('Fase 1')) evaluacionPorDia[r.fecha].calor = true;
                 else if (r.fase.includes('Fase 5')) evaluacionPorDia[r.fecha].electro = true;
                 else evaluacionPorDia[r.fecha].ejercicios.add(r.ejercicio);
             });
-
-            let primerDiaMes = new Date(calYear, calMonth, 1).getDay();
-            if (primerDiaMes === 0) primerDiaMes = 7; 
+            let primerDiaMes = new Date(calYear, calMonth, 1).getDay(); if (primerDiaMes === 0) primerDiaMes = 7; 
             const diasEnMes = new Date(calYear, calMonth + 1, 0).getDate();
-
             for (let i = 1; i < primerDiaMes; i++) container.innerHTML += `<div class="h-10"></div>`;
-
             const hoyStr = getLocalDateStr();
-
             for (let day = 1; day <= diasEnMes; day++) {
                 const fechaStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
                 const datosDia = evaluacionPorDia[fechaStr];
-                
-                let dotColor = 'bg-transparent';
-                let shadowClass = '';
-                let clasesBorde = 'border border-transparent';
-                let tieneDatos = false;
-
+                let dotColor = 'bg-transparent', shadowClass = '', clasesBorde = 'border border-transparent', tieneDatos = false;
                 if (datosDia) {
-                    tieneDatos = true;
-                    const numEj = datosDia.ejercicios.size;
-                    const esCompleta = numEj >= RUTINA_TOTAL_EJERCICIOS;
-                    
+                    tieneDatos = true; const numEj = datosDia.ejercicios.size; const esCompleta = numEj >= RUTINA_TOTAL_EJERCICIOS;
                     if (esCompleta && datosDia.calor) { dotColor = 'bg-neonPurple'; shadowClass = 'shadow-[0_0_8px_rgba(192,132,252,0.6)]'; }
                     else if (esCompleta) { dotColor = 'bg-neonGreen'; shadowClass = 'shadow-[0_0_8px_rgba(74,222,128,0.6)]'; }
                     else if (numEj > 0 && datosDia.calor) { dotColor = 'bg-neonOrange'; shadowClass = 'shadow-[0_0_8px_rgba(251,146,60,0.6)]'; }
                     else if (numEj > 0 || datosDia.calor) { dotColor = 'bg-neonYellow'; shadowClass = 'shadow-[0_0_8px_rgba(250,204,21,0.6)]'; }
-                    
                     if (datosDia.electro) clasesBorde = 'ring-2 ring-neonCyan'; 
                 }
-
                 const bgCelda = fechaStr === hoyStr ? 'bg-gray-800' : 'bg-transparent';
                 const textDay = tieneDatos ? 'text-white font-bold' : 'text-gray-400';
-
-                container.innerHTML += `
-                    <div class="h-10 flex flex-col items-center justify-center rounded-lg ${bgCelda} ${clasesBorde} cursor-pointer hover:bg-gray-700 transition" 
-                         onclick="document.getElementById('filtro-periodo').value='dia_concreto'; document.getElementById('fecha-unica').value='${fechaStr}'; toggleFechasPersonalizadas(); renderizarGraficos();">
-                        <span class="text-xs ${textDay}">${day}</span>
-                        <div class="w-1.5 h-1.5 rounded-full mt-0.5 ${dotColor} ${shadowClass}"></div>
-                    </div>`;
+                container.innerHTML += `<div class="h-10 flex flex-col items-center justify-center rounded-lg ${bgCelda} ${clasesBorde} cursor-pointer hover:bg-gray-700 transition" onclick="document.getElementById('filtro-periodo').value='dia_concreto'; document.getElementById('fecha-unica').value='${fechaStr}'; toggleFechasPersonalizadas(); renderizarGraficos();"><span class="text-xs ${textDay}">${day}</span><div class="w-1.5 h-1.5 rounded-full mt-0.5 ${dotColor} ${shadowClass}"></div></div>`;
             }
         }
 
         async function renderizarGraficos() {
-            const todos = await db.registros.toArray();
-            const fPeriodo = document.getElementById('filtro-periodo').value;
-            let fInicioStr = null, fFinStr = null;
-            const hoyStr = getLocalDateStr();
-
+            const todos = await db.registros.toArray(); const fPeriodo = document.getElementById('filtro-periodo').value;
+            let fInicioStr = null, fFinStr = null; const hoyStr = getLocalDateStr();
             if (fPeriodo === 'hoy') { fInicioStr = hoyStr; fFinStr = hoyStr; }
             else if (fPeriodo === 'dia_concreto') { const d = document.getElementById('fecha-unica').value; if(d) { fInicioStr = d; fFinStr = d; } }
             else if (fPeriodo === '7') { const d = new Date(); d.setDate(d.getDate()-7); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
             else if (fPeriodo === '30') { const d = new Date(); d.setDate(d.getDate()-30); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
             else if (fPeriodo === 'rango') { fInicioStr = document.getElementById('fecha-inicio').value; fFinStr = document.getElementById('fecha-fin').value; }
 
-            const datosFiltradosTemp = todos.filter(r => {
-                if (fInicioStr && r.fecha < fInicioStr) return false;
-                if (fFinStr && r.fecha > fFinStr) return false;
-                return true;
-            });
-
-            const fTipo = document.getElementById('filtro-tipo').value;
-            const fAgrupacion = document.getElementById('filtro-agrupacion').value;
-            const datosTendencia = {};
-            const datosEquilibrio = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 };
+            const datosFiltradosTemp = todos.filter(r => { if (fInicioStr && r.fecha < fInicioStr) return false; if (fFinStr && r.fecha > fFinStr) return false; return true; });
+            const fTipo = document.getElementById('filtro-tipo').value, fAgrupacion = document.getElementById('filtro-agrupacion').value;
+            const datosTendencia = {}, datosEquilibrio = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 };
 
             datosFiltradosTemp.forEach(reg => {
-                const esCalor = reg.fase.includes('Fase 1');
-                const esElectro = reg.fase.includes('Fase 5');
-                
+                const esCalor = reg.fase.includes('Fase 1'), esElectro = reg.fase.includes('Fase 5');
                 if (!esCalor && !esElectro) {
                     if (reg.fase.includes('Movilidad')) datosEquilibrio['Movilidad'] += reg.repeticiones;
                     if (reg.fase.includes('Fortalecimiento')) datosEquilibrio['Fortalecimiento'] += reg.repeticiones;
                     if (reg.fase.includes('Estiramientos')) datosEquilibrio['Estiramientos'] += reg.repeticiones;
                 }
-
                 if (fTipo !== 'todos' && !reg.fase.includes(fTipo)) return;
                 if (fTipo === 'todos' && (esCalor || esElectro)) return; 
-
                 let claveStr = reg.fecha;
                 if (fAgrupacion === 'semanas') claveStr = obtenerSemana(reg.fecha);
                 if (fAgrupacion === 'meses') claveStr = reg.fecha.substring(0, 7);
-
-                if (!datosTendencia[claveStr]) datosTendencia[claveStr] = 0;
-                datosTendencia[claveStr] += reg.repeticiones;
+                if (!datosTendencia[claveStr]) datosTendencia[claveStr] = 0; datosTendencia[claveStr] += reg.repeticiones;
             });
 
-            if (chartTendencia) chartTendencia.destroy();
-            const fechas = Object.keys(datosTendencia).sort();
-            chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), {
-                type: 'line', 
-                data: { labels: fechas, datasets: [{ label: 'Reps', data: fechas.map(f => datosTendencia[f]), borderColor: '#2dd4bf', backgroundColor: 'rgba(45, 212, 191, 0.2)', fill: true, tension: 0.4 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } }
-            });
-
+            if (chartTendencia) chartTendencia.destroy(); const fechas = Object.keys(datosTendencia).sort();
+            chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), { type: 'line', data: { labels: fechas, datasets: [{ label: 'Reps', data: fechas.map(f => datosTendencia[f]), borderColor: '#2dd4bf', backgroundColor: 'rgba(45, 212, 191, 0.2)', fill: true, tension: 0.4 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: false } } } });
             if (chartEquilibrio) chartEquilibrio.destroy();
-            chartEquilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), {
-                type: 'doughnut',
-                data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'], borderWidth: 0 }] },
-                options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right', labels: { color: '#cbd5e1' } } } }
-            });
+            chartEquilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), { type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '75%', plugins: { legend: { position: 'right', labels: { color: '#cbd5e1' } } } } });
         }
 
         async function cargarHistorial() {
-            const t = await db.registros.orderBy('id').reverse().limit(20).toArray();
-            const l = document.getElementById('lista-registros'); l.innerHTML = '';
+            const t = await db.registros.orderBy('id').reverse().limit(20).toArray(); const l = document.getElementById('lista-registros'); l.innerHTML = '';
             if (t.length===0) return l.innerHTML = '<p class="text-gray-400 text-sm">No hay registros.</p>';
             t.forEach(r => l.innerHTML += `<div class="bg-darkBg p-3 rounded border border-gray-700 flex justify-between items-center"><div><p class="font-bold text-sm text-neonCyan">${r.ejercicio}</p><p class="text-xs text-gray-400">${r.fecha} | ${r.series} Ser / ${r.repeticiones} Reps</p></div><button onclick="borrarRegistro(${r.id})" class="text-red-500 px-2">🗑️</button></div>`);
         }
@@ -499,13 +405,7 @@
         function importarBackup(e) { const r=new FileReader(); r.onload=async(ev)=>{ await db.registros.clear(); await db.registros.bulkAdd(JSON.parse(ev.target.result)); alert("Restaurado."); cargarHistorial(); actualizarVistasProgreso(); }; r.readAsText(e.target.files[0]); }
         function descargarArchivo(c, n, t) { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([c],{type:t})); a.download=n; a.click(); }
 
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('SW registrado', reg))
-                    .catch(err => console.warn('Error SW', err));
-            });
-        }
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(err => console.warn('Error SW', err)); }); }
     </script>
 </body>
 </html>
