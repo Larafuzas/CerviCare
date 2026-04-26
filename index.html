@@ -167,7 +167,7 @@
 
         let miSwiper, chartTendencia = null, chartEquilibrio = null;
         let timerInterval, tiempoRestante = 15 * 60, timerEstado = 'detenido';
-        let endTime = null; // Nuevo control de tiempo absoluto
+        let endTime = null; 
         
         let calMonth = new Date().getMonth(), calYear = new Date().getFullYear();
         const nombresMeses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
@@ -258,7 +258,6 @@
 
         function cambiarValor(id, inc) { let el = document.getElementById(id), v = parseInt(el.innerText) + inc; el.innerText = v < 1 ? 1 : v; }
 
-        // --- SISTEMA DE NOTIFICACIONES ---
         async function solicitarPermisoNotificaciones() {
             if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
                 await Notification.requestPermission();
@@ -269,35 +268,35 @@
             if ("Notification" in window && Notification.permission === "granted") {
                 const title = "¡Tiempo de Calor Completado!";
                 const options = { body: "Han pasado los 15 minutos. Es hora de continuar con la rutina.", icon: "./icono.jpg", vibrate: [200, 100, 200, 100, 200, 100, 200], badge: "./icono.jpg" };
-                if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.ready.then(reg => reg.showNotification(title, options));
-                } else { new Notification(title, options); }
+                if ('serviceWorker' in navigator) { navigator.serviceWorker.ready.then(reg => reg.showNotification(title, options)); } 
+                else { new Notification(title, options); }
             }
         }
 
-        // --- NUEVO TEMPORIZADOR A PRUEBA DE BLOQUEO DE PANTALLA ---
+        async function guardarCalorAuto() {
+            await db.registros.add({ fecha: getLocalDateStr(), ejercicio: 'Aplicación de Calor', series: 1, repeticiones: 1, fase: 'Fase 1: Preparación' });
+            actualizarVistasProgreso();
+        }
+
         function toggleTemporizador() {
             const bp = document.getElementById('btn-timer-play'), br = document.getElementById('btn-timer-reset');
             if (timerEstado === 'detenido' || timerEstado === 'pausado') {
                 solicitarPermisoNotificaciones();
                 timerEstado = 'corriendo'; bp.innerText = "Pausar"; bp.className = bp.className.replace('bg-neonCyan', 'bg-amber-500').replace('text-darkBg', 'text-white'); br.classList.remove('hidden');
-                
-                // Fijar hora de finalización absoluta en el futuro
                 endTime = Date.now() + (tiempoRestante * 1000);
                 
                 timerInterval = setInterval(() => {
-                    // Calcular el tiempo real restante basándose en el reloj, no en los "ticks" del interval
                     tiempoRestante = Math.round((endTime - Date.now()) / 1000);
-                    
                     if (tiempoRestante <= 0) { 
                         tiempoRestante = 0; clearInterval(timerInterval); timerEstado = 'completado'; 
                         document.getElementById('display-fase1_calor').innerText = "¡Listo!"; 
                         bp.innerText = "Siguiente Fase"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); bp.onclick = () => miSwiper.slideNext(); br.classList.add('hidden'); 
                         enviarNotificacion();
+                        guardarCalorAuto();
                     } else {
                         document.getElementById('display-fase1_calor').innerText = `${Math.floor(tiempoRestante/60).toString().padStart(2,'0')}:${(tiempoRestante%60).toString().padStart(2,'0')}`;
                     }
-                }, 500); // Comprobación más rápida para mayor precisión al despertar la pantalla
+                }, 500); 
             } else if (timerEstado === 'corriendo') { 
                 clearInterval(timerInterval); timerEstado = 'pausado'; bp.innerText = "Reanudar"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); 
             }
