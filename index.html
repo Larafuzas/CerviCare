@@ -29,8 +29,10 @@
     </script>
 
     <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     
@@ -107,7 +109,7 @@
 
             <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg">
                 <h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Tendencia de Esfuerzo</h3>
-                <p class="text-[10px] text-gray-400 mb-3 text-center">Media de repeticiones (Sin solapamientos)</p>
+                <p class="text-[10px] text-gray-400 mb-3 text-center">Media de reps por ejercicio (Líneas Paralelas)</p>
                 <div class="relative h-48 w-full"><canvas id="grafico-tendencia"></canvas></div>
             </div>
 
@@ -119,8 +121,8 @@
 
             <div class="bg-cardBg p-4 rounded-xl border border-gray-700 shadow-lg">
                 <h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Desempeño por Ejercicio</h3>
-                <p class="text-[10px] text-gray-400 mb-3 text-center">Ranking del periodo seleccionado</p>
-                <div class="relative h-72 w-full"><canvas id="grafico-ejercicios"></canvas></div>
+                <p class="text-[10px] text-gray-400 mb-3 text-center">Ranking total de repeticiones (Filtro aplicado)</p>
+                <div class="relative h-80 w-full"><canvas id="grafico-ejercicios"></canvas></div>
             </div>
         </section>
 
@@ -155,9 +157,9 @@
     </nav>
 
     <script>
-        // Registramos el plugin Datalabels de forma global pero lo desactivamos por defecto
+        // CONFIGURACIÓN GLOBAL DEL PLUGIN DE ETIQUETAS
         Chart.register(ChartDataLabels);
-        Chart.defaults.plugins.datalabels.display = false;
+        Chart.defaults.plugins.datalabels.display = false; // Desactivado por defecto, activado localmente
 
         const db = new Dexie('CerviCareDB');
         db.version(1).stores({ registros: '++id, fecha, ejercicio, series, repeticiones, fase' });
@@ -358,14 +360,10 @@
             const datosEjercicios = {}; 
             const fechasSet = new Set();
 
-            // Filtrado y Acumulación
             datosFiltradosTemp.forEach(reg => {
                 const esCalor = reg.fase.includes('Fase 1'), esElectro = reg.fase.includes('Fase 5');
                 
-                // Acumular para Dónut y Barras horizontales (siempre que no sea fase 1 o 5)
-                // Se acumula ANTES del filtro específico de categoría para que funcione en "todos" o filtrado
                 if (!esCalor && !esElectro) {
-                    // Solo sumar a datosEjercicios y datosEquilibrio si pasa el filtro de tipo
                     if (fTipo === 'todos' || reg.fase.includes(fTipo)) {
                         if (reg.fase.includes('Movilidad')) datosEquilibrio['Movilidad'] += reg.repeticiones;
                         if (reg.fase.includes('Fortalecimiento')) datosEquilibrio['Fortalecimiento'] += reg.repeticiones;
@@ -376,7 +374,6 @@
                     }
                 }
 
-                // Filtro para el gráfico de Tendencia Temporal (Líneas con Jitter)
                 if (fTipo !== 'todos' && !reg.fase.includes(fTipo)) return;
                 if (fTipo === 'todos' && (esCalor || esElectro)) return; 
                 
@@ -414,12 +411,12 @@
             
             if (fTipo === 'todos') {
                 datasetsLinea = [
-                    { label: 'Movilidad', data: fechas.map(f => datosTendenciaCat['Movilidad'][f] || 0), borderColor: '#2dd4bf', backgroundColor: 'rgba(45, 212, 191, 0.1)', fill: true, tension: 0.4 },
-                    { label: 'Fortalecimiento', data: fechas.map(f => datosTendenciaCat['Fortalecimiento'][f] || 0), borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4 },
-                    { label: 'Estiramientos', data: fechas.map(f => datosTendenciaCat['Estiramientos'][f] || 0), borderColor: '#c084fc', backgroundColor: 'rgba(192, 132, 252, 0.1)', fill: true, tension: 0.4 }
+                    { label: 'Movilidad', data: fechas.map(f => datosTendenciaCat['Movilidad'][f] || 0), borderColor: '#2dd4bf', backgroundColor: 'rgba(45, 212, 191, 0.1)', fill: false, tension: 0.4 },
+                    { label: 'Fortalecimiento', data: fechas.map(f => datosTendenciaCat['Fortalecimiento'][f] || 0), borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: false, tension: 0.4 },
+                    { label: 'Estiramientos', data: fechas.map(f => datosTendenciaCat['Estiramientos'][f] || 0), borderColor: '#c084fc', backgroundColor: 'rgba(192, 132, 252, 0.1)', fill: false, tension: 0.4 }
                 ];
 
-                // ALGORITMO JITTER: Micro-desplazamiento vertical para evitar solapamiento exacto de puntos
+                // ALGORITMO JITTER PARA LÍNEAS EN PARALELO
                 for (let i = 0; i < fechas.length; i++) {
                     let mapVal = {};
                     datasetsLinea.forEach((ds, dsIdx) => {
@@ -432,8 +429,8 @@
                     Object.keys(mapVal).forEach(v => {
                         let indices = mapVal[v];
                         if(indices.length > 1) {
-                            let offset = -0.04 * (indices.length - 1);
-                            indices.forEach(idx => { datasetsLinea[idx].data[i] = parseFloat(v) + offset; offset += 0.08; });
+                            let offset = -0.15 * (indices.length - 1) / 2; 
+                            indices.forEach(idx => { datasetsLinea[idx].data[i] = parseFloat(v) + offset; offset += 0.15; });
                         }
                     });
                 }
@@ -444,35 +441,18 @@
                 datasetsLinea = [{ label: fTipo, data: fechas.map(f => datosTendenciaCat[fTipo][f] || 0), borderColor: color, backgroundColor: bg, fill: true, tension: 0.4 }];
             }
 
-            // 1. Gráfico Tendencia
             if (chartTendencia) chartTendencia.destroy(); 
             chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), { 
                 type: 'line', data: { labels: fechas, datasets: datasetsLinea }, 
-                options: { 
-                    responsive: true, maintainAspectRatio: false, 
-                    scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, 
-                    plugins: { legend: { display: fTipo === 'todos', labels: { color: '#cbd5e1', boxWidth: 12 } }, tooltip: { callbacks: { label: function(context) { let realVal = Math.round(context.raw * 10) / 10; return context.dataset.label + ': ' + realVal.toFixed(1) + ' medias/ej'; } } } } 
-                } 
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: fTipo === 'todos', labels: { color: '#cbd5e1', boxWidth: 12 } }, tooltip: { callbacks: { label: function(context) { let realVal = Math.round(context.raw * 10) / 10; return context.dataset.label + ': ' + realVal.toFixed(1) + ' medias/ej'; } } } } } 
             });
             
-            // 2. Gráfico Dónut (Con porcentajes matemáticos centrados en los gajos)
             if (chartEquilibrio) chartEquilibrio.destroy();
             chartEquilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), { 
                 type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'], borderWidth: 0 }] }, 
-                options: { 
-                    responsive: true, maintainAspectRatio: false, cutout: '65%', 
-                    plugins: { 
-                        legend: { display: false }, 
-                        tooltip: { callbacks: { label: function(context) { return ' ' + context.label + ': ' + context.parsed + ' medias/ej'; } } },
-                        datalabels: { 
-                            color: '#fff', font: { weight: 'bold', size: 14 }, 
-                            formatter: (value, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); if(sum === 0 || value === 0) return ''; return Math.round((value / sum) * 100) + '%'; } 
-                        } 
-                    } 
-                }
+                options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } }, tooltip: { callbacks: { label: function(context) { return ' ' + context.label + ': ' + context.parsed + ' medias/ej'; } } }, datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (value, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); if(sum === 0 || value === 0) return ''; return Math.round((value / sum) * 100) + '%'; } } } } 
             });
 
-            // 3. Nuevo Gráfico Ejercicios (Barras horizontales, estilizadas, sin eje Y, texto superior)
             if (chartEjercicios) chartEjercicios.destroy();
             const nombresEj = Object.keys(datosEjercicios).sort((a,b) => datosEjercicios[b] - datosEjercicios[a]);
             const valsEj = nombresEj.map(e => datosEjercicios[e]);
@@ -482,17 +462,9 @@
                 data: { labels: nombresEj, datasets: [{ label: 'Repeticiones Totales', data: valsEj, backgroundColor: '#2dd4bf', barThickness: 6, borderRadius: 3 }] },
                 options: { 
                     indexAxis: 'y', responsive: true, maintainAspectRatio: false, 
-                    layout: { padding: { top: 20, right: 30, left: 10 } },
-                    scales: { x: { display: false, beginAtZero: true }, y: { display: false } }, 
-                    plugins: { 
-                        legend: { display: false }, tooltip: { enabled: false },
-                        datalabels: { 
-                            labels: {
-                                nombre: { align: 'top', anchor: 'start', offset: 2, formatter: (v, ctx) => ctx.chart.data.labels[ctx.dataIndex], color: '#cbd5e1', font: { size: 10 } },
-                                valor: { align: 'end', anchor: 'end', offset: 4, formatter: Math.round, color: '#2dd4bf', font: { weight: 'bold', size: 11 } }
-                            }
-                        } 
-                    } 
+                    layout: { padding: { top: 15, right: 30, left: 0, bottom: 0 } },
+                    scales: { x: { display: false, beginAtZero: true }, y: { display: true, grid: { display: false, drawBorder: false }, border: { display: false }, ticks: { color: '#cbd5e1', font: { size: 11 }, mirror: true, padding: 0, labelOffset: -12, z: 10 } } }, 
+                    plugins: { legend: { display: false }, tooltip: { enabled: false }, datalabels: { display: true, align: 'right', anchor: 'end', offset: 4, formatter: Math.round, color: '#2dd4bf', font: { weight: 'bold', size: 11 } } } 
                 }
             });
         }
