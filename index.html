@@ -7,15 +7,16 @@
     
     <meta name="theme-color" content="#111827">
     <link rel="icon" href="icono.jpg" type="image/jpeg">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        darkBg: '#0f172a',    /* Fondo oscuro */
-                        cardBg: '#1e293b',    /* Fondo de tarjetas */
-                        neonCyan: '#2dd4bf',  /* Acento del icono */
+                        darkBg: '#0f172a',
+                        cardBg: '#1e293b',
+                        neonCyan: '#2dd4bf',
                     }
                 }
             }
@@ -24,53 +25,353 @@
 
     <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    
+    <style>
+        /* Ajustes para evitar selecciones accidentales en móvil */
+        body { -webkit-tap-highlight-color: transparent; user-select: none; }
+        .swiper-pagination-bullet-active { background-color: #2dd4bf !important; }
+    </style>
 </head>
 <body class="bg-darkBg text-white font-sans antialiased h-screen flex flex-col overflow-hidden">
 
-    <header class="p-4 border-b border-gray-800 flex justify-center items-center shadow-md z-10">
-        <h1 class="text-2xl font-bold text-neonCyan tracking-wider flex items-center gap-2">
-            CerviCare
-        </h1>
+    <header class="p-4 border-b border-gray-800 flex justify-center items-center shadow-md z-10 bg-darkBg">
+        <h1 class="text-2xl font-bold text-neonCyan tracking-wider">CerviCare</h1>
     </header>
 
-    <main id="app-container" class="flex-1 overflow-y-auto relative">
+    <main id="app-container" class="flex-1 overflow-y-auto relative w-full">
         
-        <section id="vista-rutina" class="h-full w-full flex flex-col items-center justify-center p-4">
-            <div class="bg-cardBg w-full max-w-sm h-full rounded-2xl shadow-[0_0_15px_rgba(45,212,191,0.2)] p-6 flex flex-col items-center border border-gray-700">
-                <p class="text-neonCyan font-semibold mb-2">Fase 1: Calentamiento</p>
-                <div class="flex-1 flex items-center justify-center">
-                    <div class="w-48 h-48 rounded-full border-4 border-neonCyan flex items-center justify-center text-4xl font-bold">
-                        15:00
+        <section id="vista-rutina" class="h-full w-full">
+            <div class="swiper mySwiper h-full w-full">
+                <div class="swiper-wrapper" id="contenedor-ejercicios">
                     </div>
-                </div>
-                <button class="w-full bg-neonCyan text-darkBg font-bold py-3 rounded-lg mt-4 shadow-[0_0_10px_rgba(45,212,191,0.5)]">
-                    Iniciar Calor
-                </button>
+                <div class="swiper-pagination mb-12"></div>
             </div>
         </section>
 
-        <section id="vista-estadisticas" class="hidden h-full w-full p-4 overflow-y-auto pb-20">
-            </section>
+        <section id="vista-estadisticas" class="hidden h-full w-full p-4 overflow-y-auto pb-24">
+            <h2 class="text-xl font-bold text-white mb-4">Tu Progreso</h2>
+            
+            <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg">
+                <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Volumen de Ejercicio</h3>
+                <canvas id="grafico-volumen" class="w-full h-48"></canvas>
+            </div>
+
+            <div class="bg-cardBg p-4 rounded-xl border border-gray-700 shadow-lg">
+                <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Estadísticas Generales</h3>
+                <div class="grid grid-cols-2 gap-4 text-center mt-4" id="resumen-stats">
+                    <div class="bg-darkBg p-3 rounded border border-gray-600">
+                        <p class="text-xs text-gray-400">Total Series</p>
+                        <p class="text-2xl font-bold text-neonCyan" id="stat-series">0</p>
+                    </div>
+                    <div class="bg-darkBg p-3 rounded border border-gray-600">
+                        <p class="text-xs text-gray-400">Total Reps</p>
+                        <p class="text-2xl font-bold text-neonCyan" id="stat-reps">0</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="vista-ajustes" class="hidden h-full w-full p-4 overflow-y-auto pb-24">
+            <h2 class="text-xl font-bold text-white mb-4">Ajustes y Datos</h2>
+            
+            <div class="grid grid-cols-2 gap-3 mb-6">
+                <button onclick="exportarCSV()" class="bg-cardBg border border-neonCyan text-neonCyan py-2 rounded text-sm font-semibold">Exportar CSV</button>
+                <button onclick="exportarBackup()" class="bg-cardBg border border-neonCyan text-neonCyan py-2 rounded text-sm font-semibold">Backup JSON</button>
+                <button onclick="document.getElementById('import-file').click()" class="bg-cardBg border border-gray-500 text-gray-300 py-2 rounded text-sm font-semibold">Restaurar JSON</button>
+                <input type="file" id="import-file" class="hidden" accept=".json" onchange="importarBackup(event)">
+                <button onclick="borrarTodosLosDatos()" class="bg-red-900 border border-red-500 text-red-200 py-2 rounded text-sm font-semibold">Borrar Todo</button>
+            </div>
+
+            <h3 class="text-neonCyan font-semibold mb-3 text-sm uppercase tracking-wide">Últimos Registros</h3>
+            <div id="lista-registros" class="space-y-2 mb-8">
+                </div>
+        </section>
 
     </main>
 
-    <nav class="bg-cardBg border-t border-gray-800 flex justify-around p-3 pb-safe z-10">
-        <button id="btn-nav-rutina" class="text-neonCyan flex flex-col items-center p-2">
+    <nav class="bg-cardBg border-t border-gray-800 flex justify-around p-2 pb-safe z-10 fixed bottom-0 w-full h-16">
+        <button id="nav-rutina" class="nav-btn text-neonCyan flex flex-col items-center justify-center w-1/3" onclick="cambiarPestana('rutina')">
+            <span class="text-xl">📋</span>
             <span class="text-xs font-bold mt-1">Rutina</span>
         </button>
-        <button id="btn-nav-estadisticas" class="text-gray-400 hover:text-neonCyan flex flex-col items-center p-2 transition-colors">
+        <button id="nav-estadisticas" class="nav-btn text-gray-500 hover:text-neonCyan flex flex-col items-center justify-center w-1/3 transition-colors" onclick="cambiarPestana('estadisticas')">
+            <span class="text-xl">📈</span>
             <span class="text-xs font-bold mt-1">Progreso</span>
+        </button>
+        <button id="nav-ajustes" class="nav-btn text-gray-500 hover:text-neonCyan flex flex-col items-center justify-center w-1/3 transition-colors" onclick="cambiarPestana('ajustes')">
+            <span class="text-xl">⚙️</span>
+            <span class="text-xs font-bold mt-1">Ajustes</span>
         </button>
     </nav>
 
     <script>
-        // Inicialización de la Base de Datos Dexie
+        // --- 1. CONFIGURACIÓN BASE DE DATOS ---
         const db = new Dexie('CerviCareDB');
         db.version(1).stores({
             registros: '++id, fecha, ejercicio, series, repeticiones, fase'
         });
 
-        // La lógica de la aplicación se desarrollará aquí
+        // --- 2. DATOS DE LOS EJERCICIOS ---
+        const rutinaCervical = [
+            { id: "fase1_calor", fase: "Fase 1: Preparación", titulo: "Aplicación de Calor", imagen: null, instrucciones: "Aplica calor en la zona cervical para relajar la musculatura.", tipo: "temporizador" },
+            { id: "mov_flexion", fase: "Fase 2: Movilidad", titulo: "Flexión y Extensión", imagen: "flexion.jpg", instrucciones: "Flexione adelante y extienda atrás suavemente.", tipo: "contador" },
+            { id: "mov_inclinacion", fase: "Fase 2: Movilidad", titulo: "Inclinación Lateral", imagen: "inclinacion.jpg", instrucciones: "Incline la oreja al hombro de forma controlada.", tipo: "contador" },
+            { id: "mov_rotacion", fase: "Fase 2: Movilidad", titulo: "Rotación", imagen: "rotacion.jpg", instrucciones: "Gire la cabeza sobre el hombro hacia ambos lados.", tipo: "contador" },
+            { id: "mov_circulos", fase: "Fase 2: Movilidad", titulo: "Rotación Completa", imagen: "circulos.jpg", instrucciones: "Realice círculos completos y suaves con la cabeza.", tipo: "contador" },
+            { id: "mov_elevacion", fase: "Fase 2: Movilidad", titulo: "Elevación de Hombros", imagen: "elevacion.jpg", instrucciones: "Suba los hombros hacia las orejas, mantenga y relaje.", tipo: "contador" },
+            { id: "fort_resistencia1", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Frontal/Nuca", imagen: "resistencia1.jpg", instrucciones: "Empuje la cabeza contra sus manos sin generar movimiento.", tipo: "contador" },
+            { id: "fort_resistencia2", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Lateral", imagen: "resistencia2.jpg", instrucciones: "Empuje la cabeza lateralmente contra su mano sin mover el cuello.", tipo: "contador" },
+            { id: "est_traccion1", fase: "Fase 4: Estiramientos", titulo: "Tracción Abajo/Adelante", imagen: "traccion1.jpg", instrucciones: "Entrelace las manos en la nuca y traccione suavemente hacia abajo.", tipo: "contador" },
+            { id: "est_traccion2", fase: "Fase 4: Estiramientos", titulo: "Tracción Lateral", imagen: "traccion2.jpg", instrucciones: "Mano en la sien opuesta. Traccione lateralmente de forma suave.", tipo: "contador" },
+            { id: "fase5_electro", fase: "Fase 5: Recuperación", titulo: "Electroestimulación", imagen: null, instrucciones: "Coloque los parches (TENS). Ajuste intensidad sin que haya dolor.", tipo: "informativo" }
+        ];
+
+        let miSwiper;
+        let chartInstancia = null;
+        let timerInterval;
+
+        // --- 3. INICIALIZACIÓN Y RENDERIZADO ---
+        window.onload = () => {
+            renderizarRutina();
+            cargarHistorial();
+        };
+
+        function renderizarRutina() {
+            const contenedor = document.getElementById('contenedor-ejercicios');
+            rutinaCervical.forEach(ej => {
+                let controlesHTML = '';
+                
+                if (ej.tipo === 'temporizador') {
+                    controlesHTML = `<button id="btn-timer" onclick="iniciarTemporizador(this)" class="w-full bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-[0_0_10px_rgba(45,212,191,0.3)]">Iniciar 15 Minutos</button>`;
+                } else if (ej.tipo === 'contador') {
+                    controlesHTML = `
+                        <div class="flex justify-between gap-3 mb-3">
+                            <div class="flex items-center justify-between bg-darkBg px-3 py-2 rounded w-1/2 border border-gray-600">
+                                <span class="text-xs text-gray-400">Series</span>
+                                <button onclick="cambiarValor('series-${ej.id}', -1)" class="text-neonCyan text-xl px-2 font-bold">-</button>
+                                <span id="series-${ej.id}" class="font-bold text-lg">1</span>
+                                <button onclick="cambiarValor('series-${ej.id}', 1)" class="text-neonCyan text-xl px-2 font-bold">+</button>
+                            </div>
+                            <div class="flex items-center justify-between bg-darkBg px-3 py-2 rounded w-1/2 border border-gray-600">
+                                <span class="text-xs text-gray-400">Reps</span>
+                                <button onclick="cambiarValor('reps-${ej.id}', -1)" class="text-neonCyan text-xl px-2 font-bold">-</button>
+                                <span id="reps-${ej.id}" class="font-bold text-lg">1</span>
+                                <button onclick="cambiarValor('reps-${ej.id}', 1)" class="text-neonCyan text-xl px-2 font-bold">+</button>
+                            </div>
+                        </div>
+                        <button onclick="guardarRegistro('${ej.id}', '${ej.titulo}', '${ej.fase}', this)" class="w-full bg-gray-700 text-white font-bold py-3 rounded-lg transition-colors">Guardar y Siguiente</button>
+                    `;
+                } else {
+                    controlesHTML = `<button onclick="miSwiper.slideTo(0)" class="w-full bg-neonCyan text-darkBg font-bold py-3 rounded-lg">Finalizar y Volver al Inicio</button>`;
+                }
+
+                const visualHTML = ej.imagen 
+                    ? `<img src="${ej.imagen}" alt="${ej.titulo}" class="w-full h-full object-contain p-2" onerror="this.src=''; this.alt='Imagen no encontrada: ${ej.imagen}'">`
+                    : `<div class="flex items-center justify-center h-full w-full"><span class="text-4xl font-bold text-neonCyan" id="display-${ej.id}">${ej.tipo === 'temporizador' ? '15:00' : '⚡'}</span></div>`;
+
+                contenedor.innerHTML += `
+                    <div class="swiper-slide flex flex-col items-center justify-center p-4 pt-2 pb-8">
+                        <div class="bg-cardBg w-full max-w-sm h-[75vh] rounded-2xl shadow-lg p-5 flex flex-col border border-gray-700">
+                            <p class="text-neonCyan font-bold text-center text-xs uppercase tracking-wide mb-2">${ej.fase}</p>
+                            <h3 class="text-white font-bold text-lg text-center mb-4 leading-tight">${ej.titulo}</h3>
+                            <div class="flex-1 flex items-center justify-center overflow-hidden rounded-xl bg-gray-800 mb-4 border border-gray-700 relative">
+                                ${visualHTML}
+                            </div>
+                            <p class="text-gray-300 text-sm text-center mb-6 px-1 h-16 overflow-y-auto">${ej.instrucciones}</p>
+                            <div class="h-auto flex flex-col justify-end">${controlesHTML}</div>
+                        </div>
+                    </div>`;
+            });
+
+            miSwiper = new Swiper(".mySwiper", {
+                spaceBetween: 15,
+                pagination: { el: ".swiper-pagination", dynamicBullets: true }
+            });
+        }
+
+        // --- 4. LÓGICA DE INTERACCIÓN ---
+        function cambiarPestana(id) {
+            ['rutina', 'estadisticas', 'ajustes'].forEach(p => {
+                document.getElementById(`vista-${p}`).classList.add('hidden');
+                document.getElementById(`nav-${p}`).classList.replace('text-neonCyan', 'text-gray-500');
+            });
+            document.getElementById(`vista-${id}`).classList.remove('hidden');
+            document.getElementById(`nav-${id}`).classList.replace('text-gray-500', 'text-neonCyan');
+
+            if (id === 'estadisticas') renderizarGraficos();
+            if (id === 'ajustes') cargarHistorial();
+        }
+
+        function cambiarValor(elementId, incremento) {
+            const el = document.getElementById(elementId);
+            let val = parseInt(el.innerText) + incremento;
+            if (val < 1) val = 1;
+            el.innerText = val;
+        }
+
+        async function guardarRegistro(id, titulo, fase, btn) {
+            const series = parseInt(document.getElementById(`series-${id}`).innerText);
+            const repeticiones = parseInt(document.getElementById(`reps-${id}`).innerText);
+            const fecha = new Date().toISOString().slice(0,10);
+
+            await db.registros.add({ fecha, ejercicio: titulo, series, repeticiones, fase });
+
+            // Confirmación visual
+            const textoOriginal = btn.innerText;
+            btn.innerText = "¡Guardado!";
+            btn.classList.replace('bg-gray-700', 'bg-green-500');
+            btn.classList.replace('text-white', 'text-darkBg');
+
+            setTimeout(() => {
+                btn.innerText = textoOriginal;
+                btn.classList.replace('bg-green-500', 'bg-gray-700');
+                btn.classList.replace('text-darkBg', 'text-white');
+                miSwiper.slideNext();
+            }, 600);
+        }
+
+        function iniciarTemporizador(btn) {
+            if (timerInterval) clearInterval(timerInterval);
+            let tiempo = 15 * 60;
+            const display = document.getElementById('display-fase1_calor');
+            btn.innerText = "En progreso...";
+            btn.classList.replace('bg-neonCyan', 'bg-gray-600');
+            
+            timerInterval = setInterval(() => {
+                tiempo--;
+                let m = Math.floor(tiempo / 60).toString().padStart(2, '0');
+                let s = (tiempo % 60).toString().padStart(2, '0');
+                display.innerText = `${m}:${s}`;
+                if (tiempo <= 0) {
+                    clearInterval(timerInterval);
+                    display.innerText = "¡Listo!";
+                    btn.innerText = "Siguiente Fase";
+                    btn.classList.replace('bg-gray-600', 'bg-neonCyan');
+                    btn.onclick = () => miSwiper.slideNext();
+                }
+            }, 1000);
+        }
+
+        // --- 5. GRÁFICOS Y ESTADÍSTICAS ---
+        async function renderizarGraficos() {
+            const todos = await db.registros.toArray();
+            let totalSeries = 0;
+            let totalReps = 0;
+            const datosPorFecha = {};
+
+            todos.forEach(reg => {
+                totalSeries += reg.series;
+                totalReps += reg.repeticiones;
+                if (!datosPorFecha[reg.fecha]) datosPorFecha[reg.fecha] = 0;
+                datosPorFecha[reg.fecha] += reg.repeticiones;
+            });
+
+            document.getElementById('stat-series').innerText = totalSeries;
+            document.getElementById('stat-reps').innerText = totalReps;
+
+            const fechas = Object.keys(datosPorFecha).sort();
+            const repeticiones = fechas.map(f => datosPorFecha[f]);
+
+            if (chartInstancia) chartInstancia.destroy();
+            const ctx = document.getElementById('grafico-volumen').getContext('2d');
+            chartInstancia = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: fechas,
+                    datasets: [{
+                        label: 'Repeticiones Diarias',
+                        data: repeticiones,
+                        backgroundColor: '#2dd4bf',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // --- 6. GESTIÓN DE DATOS (CRUD) ---
+        async function cargarHistorial() {
+            const todos = await db.registros.orderBy('id').reverse().limit(20).toArray();
+            const lista = document.getElementById('lista-registros');
+            lista.innerHTML = '';
+            
+            if (todos.length === 0) {
+                lista.innerHTML = '<p class="text-gray-400 text-sm">No hay registros todavía.</p>';
+                return;
+            }
+
+            todos.forEach(reg => {
+                lista.innerHTML += `
+                    <div class="bg-darkBg p-3 rounded border border-gray-700 flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-sm">${reg.ejercicio}</p>
+                            <p class="text-xs text-gray-400">${reg.fecha} - ${reg.series} Series / ${reg.repeticiones} Reps</p>
+                        </div>
+                        <button onclick="borrarRegistro(${reg.id})" class="text-red-500 text-xl px-2 py-1">🗑️</button>
+                    </div>`;
+            });
+        }
+
+        async function borrarRegistro(id) {
+            if (confirm("¿Borrar este registro?")) {
+                await db.registros.delete(id);
+                cargarHistorial();
+            }
+        }
+
+        async function borrarTodosLosDatos() {
+            if (confirm("⚠️ ¿Estás seguro de borrar TODOS los datos? Esta acción no se puede deshacer.")) {
+                await db.registros.clear();
+                alert("Datos borrados.");
+                cargarHistorial();
+            }
+        }
+
+        async function exportarCSV() {
+            const datos = await db.registros.toArray();
+            if (datos.length === 0) return alert("No hay datos para exportar.");
+            let csv = "ID,Fecha,Fase,Ejercicio,Series,Repeticiones\n";
+            datos.forEach(d => { csv += `${d.id},${d.fecha},${d.fase},${d.ejercicio},${d.series},${d.repeticiones}\n`; });
+            descargarArchivo(csv, `cervicare_${new Date().toISOString().slice(0,10)}.csv`, 'text/csv');
+        }
+
+        async function exportarBackup() {
+            const datos = await db.registros.toArray();
+            descargarArchivo(JSON.stringify(datos), `cervicare_backup_${new Date().toISOString().slice(0,10)}.json`, 'application/json');
+        }
+
+        function importarBackup(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async (evento) => {
+                try {
+                    const datos = JSON.parse(evento.target.result);
+                    await db.registros.clear();
+                    await db.registros.bulkAdd(datos);
+                    alert("Backup restaurado correctamente.");
+                    cargarHistorial();
+                } catch (error) { alert("Error al leer el archivo. Asegúrate de que es un backup válido."); }
+            };
+            reader.readAsText(file);
+        }
+
+        function descargarArchivo(contenido, nombre, tipo) {
+            const blob = new Blob([contenido], { type: tipo });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = nombre;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
     </script>
 </body>
 </html>
