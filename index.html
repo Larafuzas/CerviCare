@@ -33,6 +33,7 @@
     <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     
@@ -218,7 +219,6 @@
         Chart.register(ChartDataLabels);
         Chart.defaults.plugins.datalabels.display = false;
 
-        // PLUGIN PARA FORZAR FONDO BLANCO EN LA EXTRACCIÓN A JPEG DE LAS GRÁFICAS
         const whiteBgPlugin = {
             id: 'customCanvasBackgroundColor',
             beforeDraw: (chart, args, options) => {
@@ -268,7 +268,31 @@
                 if (ej.tipo === 'temporizador') { controlesHTML = `<div class="flex gap-2 w-full"><button id="btn-timer-play" onclick="toggleTemporizador()" class="flex-1 bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-[0_0_10px_rgba(45,212,191,0.3)] transition-colors">Iniciar Calor</button><button id="btn-timer-reset" onclick="resetTemporizador()" class="hidden px-4 bg-red-900 border border-red-500 text-red-200 font-bold py-3 rounded-lg transition-colors">⏹️</button></div>`; } 
                 else if (ej.tipo === 'contador') { controlesHTML = `<div class="flex justify-between gap-3 mb-3"><div class="flex items-center justify-between bg-darkBg px-3 py-2 rounded w-1/2 border border-gray-600"><span class="text-xs text-gray-400">Series</span><button onclick="cambiarValor('series-${ej.id}', -1)" class="text-neonCyan text-xl px-2 font-bold">-</button><span id="series-${ej.id}" class="font-bold text-lg">1</span><button onclick="cambiarValor('series-${ej.id}', 1)" class="text-neonCyan text-xl px-2 font-bold">+</button></div><div class="flex items-center justify-between bg-darkBg px-3 py-2 rounded w-1/2 border border-gray-600"><span class="text-xs text-gray-400">Reps</span><button onclick="cambiarValor('reps-${ej.id}', -1)" class="text-neonCyan text-xl px-2 font-bold">-</button><span id="reps-${ej.id}" class="font-bold text-lg">1</span><button onclick="cambiarValor('reps-${ej.id}', 1)" class="text-neonCyan text-xl px-2 font-bold">+</button></div></div><button onclick="guardarRegistro('${ej.id}', '${ej.titulo}', '${ej.fase}', this)" class="w-full bg-gray-700 text-white font-bold py-3 rounded-lg transition-colors">Guardar y Siguiente</button>`; } 
                 else if (ej.tipo === 'electro') { controlesHTML = `<div class="flex gap-2"><button onclick="guardarElectro(true, this)" class="w-1/2 bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-md transition-colors">Sí, Aplicada</button><button onclick="guardarElectro(false, this)" class="w-1/2 bg-gray-700 text-white font-bold py-3 rounded-lg transition-colors">Saltar</button></div>`; }
-                let visualHTML = ej.imagen ? `<img src="${ej.imagen}" class="h-60 mx-auto object-contain p-1" onerror="this.src=''; this.alt='Imagen: ${ej.imagen}'">` : (ej.tipo === 'temporizador' ? `<div class="flex items-center justify-center h-60"><span class="text-5xl font-bold text-neonCyan" id="display-${ej.id}">15:00</span></div>` : `<div class="flex items-center justify-center h-60"><svg class="w-24 h-24 text-neonCyan drop-shadow-[0_0_10px_rgba(45,212,191,0.4)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="8" y="4" width="8" height="12" rx="2" stroke-width="1.5"/><rect x="10" y="6" width="4" height="3" rx="0.5" stroke-width="1.5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><path d="M12 4V2" stroke-width="1.5" stroke-linecap="round"/><path d="M12 2 Q18 2 18 5" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M12 2 Q6 2 6 5" stroke-width="1.5" fill="none" stroke-linecap="round"/><rect x="4" y="5" width="4" height="6" rx="1" stroke-width="1.5" fill="currentColor" fill-opacity="0.2"/><rect x="16" y="5" width="4" height="6" rx="1" stroke-width="1.5" fill="currentColor" fill-opacity="0.2"/><path d="M5.5 7.5L6.5 8.5M17.5 7.5L18.5 8.5" stroke-width="1" stroke-linecap="round"/></svg></div>`);
+                
+                let visualHTML = '';
+                if (ej.imagen) { visualHTML = `<img src="${ej.imagen}" class="h-60 mx-auto object-contain p-1" onerror="this.src=''; this.alt='Imagen: ${ej.imagen}'">`; }
+                else if (ej.tipo === 'temporizador') { visualHTML = `<div class="flex items-center justify-center h-60"><span class="text-5xl font-bold text-neonCyan" id="display-${ej.id}">15:00</span></div>`; }
+                else if (ej.tipo === 'electro') {
+                    // SVG NUEVO BEURER EM49 TRAZO FINO
+                    visualHTML = `<div class="flex items-center justify-center h-60">
+                        <svg width="180" height="180" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.2" class="text-neonCyan drop-shadow-[0_0_10px_rgba(45,212,191,0.4)]">
+                            <rect x="35" y="45" width="30" height="50" rx="5" />
+                            <circle cx="50" cy="62" r="10" />
+                            <circle cx="50" cy="62" r="7" stroke-dasharray="2 2" />
+                            <circle cx="43" cy="80" r="2" />
+                            <circle cx="50" cy="80" r="2" />
+                            <circle cx="57" cy="80" r="2" />
+                            <path d="M45 45 C45 35, 20 40, 15 25" stroke-linecap="round" />
+                            <path d="M45 45 C45 25, 10 30, 5 15" stroke-linecap="round" />
+                            <path d="M55 45 C55 35, 80 40, 85 25" stroke-linecap="round" />
+                            <path d="M55 45 C55 25, 90 30, 95 15" stroke-linecap="round" />
+                            <rect x="11" y="21" width="8" height="8" rx="1.5" fill="currentColor" fill-opacity="0.1" />
+                            <rect x="1" y="11" width="8" height="8" rx="1.5" fill="currentColor" fill-opacity="0.1" />
+                            <rect x="81" y="21" width="8" height="8" rx="1.5" fill="currentColor" fill-opacity="0.1" />
+                            <rect x="91" y="11" width="8" height="8" rx="1.5" fill="currentColor" fill-opacity="0.1" />
+                        </svg>
+                    </div>`;
+                }
                 contenedor.innerHTML += `<div class="swiper-slide flex flex-col items-center justify-start p-4 pt-0 pb-6"><div class="bg-cardBg w-full max-w-sm h-[70vh] rounded-2xl shadow-lg p-5 flex flex-col border border-gray-700"><p class="text-neonCyan font-bold text-center text-xs uppercase tracking-wide mb-2">${ej.fase}</p><h3 class="text-white font-bold text-lg text-center mb-3 leading-tight">${ej.titulo}</h3><div class="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-3 pr-1"><div class="w-full bg-gray-800 rounded-xl border border-gray-700 flex-shrink-0 flex items-center justify-center overflow-hidden">${visualHTML}</div><details class="group bg-darkBg border border-gray-700 rounded-lg p-3"><summary class="font-semibold text-gray-300 outline-none select-none cursor-pointer flex justify-between items-center text-sm">Instrucciones Clínicas <span class="text-neonCyan font-bold text-xl group-open:rotate-180 transition-transform">▾</span></summary><div class="mt-3 text-sm text-gray-300 space-y-2 border-t border-gray-700 pt-2 pb-1">${ej.instrucciones}</div></details></div><div class="h-auto flex flex-col justify-end mt-4">${controlesHTML}</div></div></div>`;
             });
             miSwiper = new Swiper(".mySwiper", { spaceBetween: 15, on: { slideChange: function () { actualizarEstiloPills(this.activeIndex); } } });
@@ -333,154 +357,45 @@
                 const fechaStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
                 const datosDia = evaluacionPorDia[fechaStr];
                 let dotColor = 'bg-transparent', shadowClass = '', clasesBorde = 'border border-transparent', tieneDatos = false;
-                if (datosDia) {
-                    tieneDatos = true; const numEj = datosDia.ejercicios.size; const esCompleta = numEj >= RUTINA_TOTAL_EJERCICIOS;
-                    if (esCompleta && datosDia.calor) { dotColor = 'bg-neonPurple'; shadowClass = 'shadow-[0_0_8px_rgba(192,132,252,0.6)]'; }
-                    else if (esCompleta) { dotColor = 'bg-neonGreen'; shadowClass = 'shadow-[0_0_8px_rgba(74,222,128,0.6)]'; }
-                    else if (numEj > 0 && datosDia.calor) { dotColor = 'bg-neonOrange'; shadowClass = 'shadow-[0_0_8px_rgba(251,146,60,0.6)]'; }
-                    else if (numEj > 0 || datosDia.calor) { dotColor = 'bg-neonYellow'; shadowClass = 'shadow-[0_0_8px_rgba(250,204,21,0.6)]'; }
-                    if (datosDia.electro) clasesBorde = 'ring-2 ring-neonCyan'; 
-                }
+                if (datosDia) { tieneDatos = true; const numEj = datosDia.ejercicios.size; const esCompleta = numEj >= RUTINA_TOTAL_EJERCICIOS; if (esCompleta && datosDia.calor) { dotColor = 'bg-neonPurple'; shadowClass = 'shadow-[0_0_8px_rgba(192,132,252,0.6)]'; } else if (esCompleta) { dotColor = 'bg-neonGreen'; shadowClass = 'shadow-[0_0_8px_rgba(74,222,128,0.6)]'; } else if (numEj > 0 && datosDia.calor) { dotColor = 'bg-neonOrange'; shadowClass = 'shadow-[0_0_8px_rgba(251,146,60,0.6)]'; } else if (numEj > 0 || datosDia.calor) { dotColor = 'bg-neonYellow'; shadowClass = 'shadow-[0_0_8px_rgba(250,204,21,0.6)]'; } if (datosDia.electro) clasesBorde = 'ring-2 ring-neonCyan'; }
                 const bgCelda = fechaStr === hoyStr ? 'bg-gray-800' : 'bg-transparent';
-                const textDay = tieneDatos ? 'text-white font-bold' : 'text-gray-400';
-                container.innerHTML += `<div class="h-10 flex flex-col items-center justify-center rounded-lg ${bgCelda} ${clasesBorde} cursor-pointer hover:bg-gray-700 transition" onclick="document.getElementById('filtro-periodo').value='dia_concreto'; document.getElementById('fecha-unica').value='${fechaStr}'; toggleFechasPersonalizadas(); renderizarGraficos();"><span class="text-xs ${textDay}">${day}</span><div class="w-1.5 h-1.5 rounded-full mt-0.5 ${dotColor} ${shadowClass}"></div></div>`;
+                container.innerHTML += `<div class="h-10 flex flex-col items-center justify-center rounded-lg ${bgCelda} ${clasesBorde} cursor-pointer hover:bg-gray-700 transition" onclick="document.getElementById('filtro-periodo').value='dia_concreto'; document.getElementById('fecha-unica').value='${fechaStr}'; toggleFechasPersonalizadas(); renderizarGraficos();"><span class="text-xs ${tieneDatos?'text-white font-bold':'text-gray-400'}">${day}</span><div class="w-1.5 h-1.5 rounded-full mt-0.5 ${dotColor} ${shadowClass}"></div></div>`;
             }
         }
 
         async function renderizarGraficos() {
             const todos = await db.registros.toArray(); const fPeriodo = document.getElementById('filtro-periodo').value;
             let fInicioStr = null, fFinStr = null; const hoyStr = getLocalDateStr();
-            
             if (fPeriodo === 'hoy') { fInicioStr = hoyStr; fFinStr = hoyStr; }
-            else if (fPeriodo === 'dia_concreto') { const d = document.getElementById('fecha-unica').value; if(d) { fInicioStr = d; fFinStr = d; } }
-            else if (fPeriodo === '7') { const d = new Date(); d.setDate(d.getDate()-7); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
-            else if (fPeriodo === '30') { const d = new Date(); d.setDate(d.getDate()-30); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
+            else if (fPeriodo === 'dia_concreto') { fInicioStr = document.getElementById('fecha-unica').value; fFinStr = fInicioStr; }
+            else if (fPeriodo === '7') { let d = new Date(); d.setDate(d.getDate()-7); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
+            else if (fPeriodo === '30') { let d = new Date(); d.setDate(d.getDate()-30); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
             else if (fPeriodo === 'rango') { fInicioStr = document.getElementById('fecha-inicio').value; fFinStr = document.getElementById('fecha-fin').value; }
-
             const datosFiltradosTemp = todos.filter(r => { if (fInicioStr && r.fecha < fInicioStr) return false; if (fFinStr && r.fecha > fFinStr) return false; return true; });
             const fTipo = document.getElementById('filtro-tipo').value;
-            
-            const datosEquilibrio = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 };
-            const datosTendenciaCat = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} };
-            const datosEjercicios = {}; 
-            const fechasSet = new Set();
-
-            datosFiltradosTemp.forEach(reg => {
-                const esCalor = reg.fase.includes('Fase 1'), esElectro = reg.fase.includes('Fase 5');
-                
-                if (!esCalor && !esElectro) {
-                    if (fTipo === 'todos' || reg.fase.includes(fTipo)) {
-                        if (reg.fase.includes('Movilidad')) datosEquilibrio['Movilidad'] += reg.repeticiones;
-                        if (reg.fase.includes('Fortalecimiento')) datosEquilibrio['Fortalecimiento'] += reg.repeticiones;
-                        if (reg.fase.includes('Estiramientos')) datosEquilibrio['Estiramientos'] += reg.repeticiones;
-                        if (!datosEjercicios[reg.ejercicio]) datosEjercicios[reg.ejercicio] = 0;
-                        datosEjercicios[reg.ejercicio] += reg.repeticiones;
-                    }
-                }
-
-                if (fTipo !== 'todos' && !reg.fase.includes(fTipo)) return;
-                if (fTipo === 'todos' && (esCalor || esElectro)) return; 
-                
-                let claveStr = reg.fecha;
-                fechasSet.add(claveStr);
-
-                if (!esCalor && !esElectro) {
-                    let cat = '';
-                    if (reg.fase.includes('Movilidad')) cat = 'Movilidad';
-                    else if (reg.fase.includes('Fortalecimiento')) cat = 'Fortalecimiento';
-                    else if (reg.fase.includes('Estiramientos')) cat = 'Estiramientos';
-
-                    if (cat) {
-                        if (!datosTendenciaCat[cat][claveStr]) datosTendenciaCat[cat][claveStr] = 0;
-                        datosTendenciaCat[cat][claveStr] += reg.repeticiones;
-                    }
-                }
-            });
-
-            datosEquilibrio.Movilidad = +(datosEquilibrio.Movilidad / PESO_CATEGORIA.Movilidad).toFixed(1);
-            datosEquilibrio.Fortalecimiento = +(datosEquilibrio.Fortalecimiento / PESO_CATEGORIA.Fortalecimiento).toFixed(1);
-            datosEquilibrio.Estiramientos = +(datosEquilibrio.Estiramientos / PESO_CATEGORIA.Estiramientos).toFixed(1);
-
-            Object.keys(datosTendenciaCat).forEach(cat => {
-                Object.keys(datosTendenciaCat[cat]).forEach(fecha => {
-                    datosTendenciaCat[cat][fecha] = +(datosTendenciaCat[cat][fecha] / PESO_CATEGORIA[cat]).toFixed(1);
-                });
-            });
-
-            if (chartTendencia) chartTendencia.destroy(); 
+            const datosEquilibrio = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 }, datosTendenciaCat = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} }, datosEjercicios = {}, fechasSet = new Set();
+            datosFiltradosTemp.forEach(reg => { const esCalor = reg.fase.includes('Fase 1'), esElectro = reg.fase.includes('Fase 5'); if (!esCalor && !esElectro) { if (fTipo === 'todos' || reg.fase.includes(fTipo)) { if (reg.fase.includes('Movilidad')) datosEquilibrio['Movilidad'] += reg.repeticiones; if (reg.fase.includes('Fortalecimiento')) datosEquilibrio['Fortalecimiento'] += reg.repeticiones; if (reg.fase.includes('Estiramientos')) datosEquilibrio['Estiramientos'] += reg.repeticiones; if (!datosEjercicios[reg.ejercicio]) datosEjercicios[reg.ejercicio] = 0; datosEjercicios[reg.ejercicio] += reg.repeticiones; } } if (fTipo !== 'todos' && !reg.fase.includes(fTipo)) return; if (fTipo === 'todos' && (esCalor || esElectro)) return;  fechasSet.add(reg.fecha); if (!esCalor && !esElectro) { let cat = reg.fase.includes('Movilidad')?'Movilidad':(reg.fase.includes('Fortalecimiento')?'Fortalecimiento':'Estiramientos'); if (!datosTendenciaCat[cat][reg.fecha]) datosTendenciaCat[cat][reg.fecha] = 0; datosTendenciaCat[cat][reg.fecha] += reg.repeticiones; } });
+            datosEquilibrio.Movilidad = +(datosEquilibrio.Movilidad / PESO_CATEGORIA.Movilidad).toFixed(1); datosEquilibrio.Fortalecimiento = +(datosEquilibrio.Fortalecimiento / PESO_CATEGORIA.Fortalecimiento).toFixed(1); datosEquilibrio.Estiramientos = +(datosEquilibrio.Estiramientos / PESO_CATEGORIA.Estiramientos).toFixed(1);
+            Object.keys(datosTendenciaCat).forEach(cat => { Object.keys(datosTendenciaCat[cat]).forEach(f => { datosTendenciaCat[cat][f] = +(datosTendenciaCat[cat][f] / PESO_CATEGORIA[cat]).toFixed(1); }); });
             const fechas = Array.from(fechasSet).sort();
-            let datasetsLinea = [];
-            
-            if (fTipo === 'todos') {
-                datasetsLinea = [
-                    { label: 'Movilidad', pointStyle: 'circle', pointRadius: 5, pointHoverRadius: 7, data: fechas.map(f => datosTendenciaCat['Movilidad'][f] || 0), borderColor: '#2dd4bf', backgroundColor: 'rgba(45, 212, 191, 0.1)', fill: false, tension: 0.4 },
-                    { label: 'Fortalecimiento', pointStyle: 'rect', pointRadius: 5, pointHoverRadius: 7, data: fechas.map(f => datosTendenciaCat['Fortalecimiento'][f] || 0), borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: false, tension: 0.4 },
-                    { label: 'Estiramientos', pointStyle: 'triangle', pointRadius: 6, pointHoverRadius: 8, data: fechas.map(f => datosTendenciaCat['Estiramientos'][f] || 0), borderColor: '#c084fc', backgroundColor: 'rgba(192, 132, 252, 0.1)', fill: false, tension: 0.4 }
-                ];
-
-                for (let i = 0; i < fechas.length; i++) {
-                    let mapVal = {};
-                    datasetsLinea.forEach((ds, dsIdx) => { let v = ds.data[i]; if (v > 0) { if(!mapVal[v]) mapVal[v] = []; mapVal[v].push(dsIdx); } });
-                    Object.keys(mapVal).forEach(v => {
-                        let indices = mapVal[v];
-                        if(indices.length > 1) {
-                            let offset = -0.05 * (indices.length - 1) / 2; 
-                            indices.forEach(idx => { datasetsLinea[idx].data[i] = parseFloat(v) + offset; offset += 0.05; });
-                        }
-                    });
-                }
-            } else {
-                let color = '#2dd4bf', bg = 'rgba(45, 212, 191, 0.2)', pStyle = 'circle';
-                if (fTipo === 'Fortalecimiento') { color = '#3b82f6'; bg = 'rgba(59, 130, 246, 0.2)'; pStyle = 'rect'; }
-                if (fTipo === 'Estiramientos') { color = '#c084fc'; bg = 'rgba(192, 132, 252, 0.2)'; pStyle = 'triangle'; }
-                datasetsLinea = [{ label: fTipo, pointStyle: pStyle, pointRadius: 5, pointHoverRadius: 7, data: fechas.map(f => datosTendenciaCat[fTipo][f] || 0), borderColor: color, backgroundColor: bg, fill: true, tension: 0.4 }];
-            }
-
-            chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), { 
-                type: 'line', data: { labels: fechas, datasets: datasetsLinea }, 
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: fTipo === 'todos', labels: { usePointStyle: true, color: '#cbd5e1', boxWidth: 10 } }, tooltip: { callbacks: { label: function(context) { let realVal = Math.round(context.raw * 10) / 10; return context.dataset.label + ': ' + realVal.toFixed(1) + ' medias/ej'; } } }, datalabels: { display: false } } } 
-            });
-            
-            if (chartEquilibrio) chartEquilibrio.destroy();
-            chartEquilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), { 
-                type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'], borderWidth: 0 }] }, 
-                options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } }, tooltip: { callbacks: { label: function(context) { return ' ' + context.label + ': ' + context.parsed + ' medias/ej'; } } }, datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (value, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); if(sum === 0 || value === 0) return ''; return Math.round((value / sum) * 100) + '%'; } } } } 
-            });
-
-            if (chartEjercicios) chartEjercicios.destroy();
-            const nombresEj = Object.keys(datosEjercicios).sort((a,b) => datosEjercicios[b] - datosEjercicios[a]);
-            const valsEj = nombresEj.map(e => datosEjercicios[e]);
-
-            chartEjercicios = new Chart(document.getElementById('grafico-ejercicios').getContext('2d'), {
-                type: 'bar',
-                data: { labels: nombresEj, datasets: [{ label: 'Repeticiones Totales', data: valsEj, backgroundColor: '#2dd4bf', barThickness: 6, borderRadius: 3 }] },
-                options: { 
-                    indexAxis: 'y', 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    layout: { padding: { top: 25, right: 30, left: 0, bottom: 0 } }, 
-                    scales: { 
-                        x: { display: false, beginAtZero: true }, 
-                        y: { display: true, grid: { display: false, drawBorder: false }, border: { display: false }, ticks: { display: true, mirror: true, crossAlign: 'near', color: '#cbd5e1', font: { size: 11, weight: 'bold' }, padding: 0, labelOffset: -14, z: 10 }, afterFit: function(scale) { scale.width = 0; } } 
-                    }, 
-                    plugins: { legend: { display: false }, tooltip: { enabled: false }, datalabels: { display: true, align: 'right', anchor: 'end', offset: 4, formatter: Math.round, color: '#2dd4bf', font: { weight: 'bold', size: 11 } } } 
-                }
-            });
+            let datasetsLinea = (fTipo === 'todos') ? [ { label: 'Movilidad', pointStyle: 'circle', pointRadius: 5, data: fechas.map(f => datosTendenciaCat['Movilidad'][f] || 0), borderColor: '#2dd4bf', tension: 0.4 }, { label: 'Fortalecimiento', pointStyle: 'rect', pointRadius: 5, data: fechas.map(f => datosTendenciaCat['Fortalecimiento'][f] || 0), borderColor: '#3b82f6', tension: 0.4 }, { label: 'Estiramientos', pointStyle: 'triangle', pointRadius: 6, data: fechas.map(f => datosTendenciaCat['Estiramientos'][f] || 0), borderColor: '#c084fc', tension: 0.4 } ] : [ { label: fTipo, data: fechas.map(f => datosTendenciaCat[fTipo][f] || 0), borderColor: fTipo==='Fortalecimiento'?'#3b82f6':(fTipo==='Estiramientos'?'#c084fc':'#2dd4bf'), fill: true, tension: 0.4 } ];
+            if (fTipo === 'todos') { for (let i = 0; i < fechas.length; i++) { let mapVal = {}; datasetsLinea.forEach((ds, dsIdx) => { let v = ds.data[i]; if (v > 0) { if(!mapVal[v]) mapVal[v] = []; mapVal[v].push(dsIdx); } }); Object.keys(mapVal).forEach(v => { let indices = mapVal[v]; if(indices.length > 1) { let offset = -0.05 * (indices.length - 1) / 2; indices.forEach(idx => { datasetsLinea[idx].data[i] = parseFloat(v) + offset; offset += 0.05; }); } }); } }
+            if (chartTendencia) chartTendencia.destroy(); chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), { type: 'line', data: { labels: fechas, datasets: datasetsLinea }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: fTipo === 'todos', labels: { usePointStyle: true, color: '#cbd5e1' } }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + (Math.round(c.raw*10)/10).toFixed(1) + ' media' } } } } });
+            if (chartEquilibrio) chartEquilibrio.destroy(); chartEquilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), { type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } }, datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (v, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); return sum>0 ? Math.round((v/sum)*100)+'%' : ''; } } } } });
+            if (chartEjercicios) chartEjercicios.destroy(); const nombresEj = Object.keys(datosEjercicios).sort((a,b) => datosEjercicios[b] - datosEjercicios[a]);
+            chartEjercicios = new Chart(document.getElementById('grafico-ejercicios').getContext('2d'), { type: 'bar', data: { labels: nombresEj, datasets: [{ data: nombresEj.map(e => datosEjercicios[e]), backgroundColor: '#2dd4bf', barThickness: 6, borderRadius: 3 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { top: 15, right: 30, left: 0 } }, scales: { x: { display: false }, y: { ticks: { mirror: true, crossAlign: 'near', color: '#cbd5e1', font: { size: 11, weight: 'bold' }, labelOffset: -14 }, afterFit: s => s.width = 0, grid: { display: false }, border: { display: false } } }, plugins: { legend: false, tooltip: false, datalabels: { display: true, align: 'right', anchor: 'end', offset: 4, formatter: Math.round, color: '#2dd4bf', font: { weight: 'bold', size: 11 } } } } });
         }
 
-        // --- SISTEMA PDF NATIVO (jsPDF) ---
+        // --- SISTEMA PDF NATIVO ---
         function toggleFiltroDiaPDF() { document.getElementById('pdf-input-dia').classList.toggle('hidden', document.getElementById('pdf-rango').value !== 'especifico'); }
         function abrirModalPDF() { document.getElementById('modal-pdf').classList.remove('hidden'); }
         function cerrarModalPDF() { document.getElementById('modal-pdf').classList.add('hidden'); }
 
         async function ejecutarGeneracionPDF() {
-            const btn = document.getElementById('btn-generar-pdf'); const originalText = btn.innerText;
-            btn.innerText = "Generando..."; btn.disabled = true;
-            
+            cerrarModalPDF(); document.getElementById('pdf-loading-overlay').classList.remove('hidden');
             try {
                 const rangoVal = document.getElementById('pdf-rango').value;
                 let fInicio = null, fFin = getLocalDateStr();
-                
                 if (rangoVal === 'hoy') { fInicio = fFin; }
                 else if (rangoVal === 'especifico') { fInicio = document.getElementById('pdf-fecha-valor').value; fFin = fInicio; }
                 else if (rangoVal !== 'todo') { let d = new Date(); d.setDate(d.getDate() - parseInt(rangoVal)); fInicio = getLocalDateStr(d); }
@@ -488,78 +403,49 @@
                 const todos = await db.registros.toArray();
                 const filtrados = todos.filter(r => (!fInicio || r.fecha >= fInicio) && (!fFin || r.fecha <= fFin));
                 
-                // Procesar datos para gráficas invisibles
-                const dEq = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 }, dTen = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} }, fechasSet = new Set();
-                filtrados.forEach(r => { const esT = r.fase.includes('Fase 1')||r.fase.includes('Fase 5'); if(!esT) { let cat = r.fase.includes('Movilidad')?'Movilidad':(r.fase.includes('Fortalecimiento')?'Fortalecimiento':'Estiramientos'); dEq[cat] += r.repeticiones; if(!dTen[cat][r.fecha]) dTen[cat][r.fecha]=0; dTen[cat][r.fecha]+=r.repeticiones; fechasSet.add(r.fecha); } });
-                dEq.Movilidad = +(dEq.Movilidad/5).toFixed(1); dEq.Fortalecimiento = +(dEq.Fortalecimiento/2).toFixed(1); dEq.Estiramientos = +(dEq.Estiramientos/2).toFixed(1);
-                Object.keys(dTen).forEach(cat => { Object.keys(dTen[cat]).forEach(f => { dTen[cat][f] = +(dTen[cat][f]/PESO_CATEGORIA[cat]).toFixed(1); }); });
-                const fList = Array.from(fechasSet).sort();
-
-                // Renderizar a Canvas Oculto
+                // Renderizar gráficas PDF en Canvas invisible
+                const dEq = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 }, dTen = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} }, fSet = new Set();
+                filtrados.forEach(r => { const esT = r.fase.includes('Fase 1')||r.fase.includes('Fase 5'); if(!esT) { let cat = r.fase.includes('Movilidad')?'Movilidad':(r.fase.includes('Fortalecimiento')?'Fortalecimiento':'Estiramientos'); dEq[cat] += r.repeticiones; if(!dTen[cat][r.fecha]) dTen[cat][r.fecha]=0; dTen[cat][r.fecha]+=r.repeticiones; fSet.add(r.fecha); } });
+                const fList = Array.from(fSet).sort();
+                
                 if(pdfChart1) pdfChart1.destroy();
-                pdfChart1 = new Chart(document.getElementById('pdf-canvas-tendencia').getContext('2d'), { type: 'line', data: { labels: fList, datasets: [ { label: 'Movilidad', pointStyle:'circle', data: fList.map(f => dTen['Movilidad'][f]||0), borderColor: '#2dd4bf', tension: 0.4 }, { label: 'Fortalecimiento', pointStyle:'rect', data: fList.map(f => dTen['Fortalecimiento'][f]||0), borderColor: '#3b82f6', tension: 0.4 }, { label: 'Estiramientos', pointStyle:'triangle', data: fList.map(f => dTen['Estiramientos'][f]||0), borderColor: '#c084fc', tension: 0.4 } ] }, options: { animation: false, responsive: false, plugins: { datalabels: {display:false}, legend: { labels: { usePointStyle: true, color: '#333' } }, customCanvasBackgroundColor: { color: 'white'} }, scales: { y: { beginAtZero: true } } }, plugins: [whiteBgPlugin] });
+                pdfChart1 = new Chart(document.getElementById('pdf-canvas-tendencia').getContext('2d'), { type: 'line', data: { labels: fList, datasets: [ { label: 'Movilidad', data: fList.map(f => (dTen['Movilidad'][f]||0)/5), borderColor: '#2dd4bf', tension: 0.4 }, { label: 'Fortalecimiento', data: fList.map(f => (dTen['Fortalecimiento'][f]||0)/2), borderColor: '#3b82f6', tension: 0.4 }, { label: 'Estiramientos', data: fList.map(f => (dTen['Estiramientos'][f]||0)/2), borderColor: '#c084fc', tension: 0.4 } ] }, options: { animation: false, responsive: false, plugins: { datalabels: {display:false}, customCanvasBackgroundColor: {color:'white'} } }, plugins: [whiteBgPlugin] });
                 
                 if(pdfChart2) pdfChart2.destroy();
-                pdfChart2 = new Chart(document.getElementById('pdf-canvas-equilibrio').getContext('2d'), { type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [dEq.Movilidad, dEq.Fortalecimiento, dEq.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'] }] }, options: { animation: false, responsive: false, plugins: { datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (v, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); return sum>0 ? Math.round((v/sum)*100)+'%' : ''; } }, legend: { position: 'bottom', labels: { color: '#333' } }, customCanvasBackgroundColor: { color: 'white'} } }, plugins: [whiteBgPlugin, ChartDataLabels] });
+                pdfChart2 = new Chart(document.getElementById('pdf-canvas-equilibrio').getContext('2d'), { type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [dEq.Movilidad/5, dEq.Fortalecimiento/2, dEq.Estiramientos/2], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'] }] }, options: { animation: false, responsive: false, plugins: { datalabels: {display:true, color:'#000', formatter: (v, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); return sum>0 ? Math.round((v/sum)*100)+'%' : ''; }}, customCanvasBackgroundColor: {color:'white'} } }, plugins: [whiteBgPlugin, ChartDataLabels] });
 
-                // Esperar un milisegundo para asegurar que los canvas tienen las imágenes pintadas
-                await new Promise(r => setTimeout(r, 200));
+                await new Promise(r => setTimeout(r, 400));
+                const img1 = document.getElementById('pdf-canvas-tendencia').toDataURL('image/jpeg', 1.0);
+                const img2 = document.getElementById('pdf-canvas-equilibrio').toDataURL('image/jpeg', 1.0);
 
-                const imgTen = document.getElementById('pdf-canvas-tendencia').toDataURL('image/jpeg', 1.0);
-                const imgEq = document.getElementById('pdf-canvas-equilibrio').toDataURL('image/jpeg', 1.0);
-
-                // Crear PDF con jsPDF nativo
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
-                
                 doc.setFontSize(22); doc.setTextColor(15, 118, 110); doc.text("CerviCare - Informe Clínico", 14, 20);
-                doc.setFontSize(11); doc.setTextColor(100, 100, 100); doc.text(`Periodo evaluado: ${fInicio || 'Inicio'} al ${fFin}`, 14, 28);
+                doc.setFontSize(11); doc.setTextColor(100, 100, 100); doc.text(`Periodo: ${fInicio || 'Inicio'} al ${fFin}`, 14, 28);
+                doc.addImage(img1, 'JPEG', 14, 35, 90, 50); doc.addImage(img2, 'JPEG', 110, 35, 60, 60);
 
-                doc.setFontSize(10); doc.setTextColor(150, 150, 150); doc.text("Tendencia de Esfuerzo (Reps/Ej)", 14, 40);
-                doc.addImage(imgTen, 'JPEG', 14, 45, 90, 52);
-                
-                doc.text("Equilibrio Relativo", 110, 40);
-                doc.addImage(imgEq, 'JPEG', 110, 45, 75, 75);
-
-                let finalY = 110;
-
-                // Generar Tabla de registros
-                const tableBody = [];
-                const agrupados = {}; filtrados.forEach(r => { if(!agrupados[r.fecha]) agrupados[r.fecha] = []; agrupados[r.fecha].push(r); });
-                Object.keys(agrupados).sort().reverse().forEach(f => {
-                    tableBody.push([{ content: f, colSpan: 3, styles: { fillColor: [240, 240, 240], textColor: [0, 0, 0], fontStyle: 'bold' } }]);
-                    agrupados[f].forEach(r => {
-                        const esTerapia = r.fase.includes('Fase 1')||r.fase.includes('Fase 5');
-                        tableBody.push(['', r.ejercicio, esTerapia ? 'Terapia única' : r.series + ' x ' + r.repeticiones]);
-                    });
-                });
-
-                if (tableBody.length > 0) {
-                    doc.autoTable({ startY: finalY, head: [['Fecha', 'Ejercicio / Actividad', 'Volumen']], body: tableBody, theme: 'grid', styles: { fontSize: 9 }, headStyles: { fillColor: [15, 118, 110] } });
-                } else {
-                    doc.text("No hay registros en el periodo seleccionado.", 14, finalY);
-                }
-
-                doc.save(`CerviCare_Reporte_${fFin}.pdf`);
-
-            } catch (e) { console.error(e); alert("Error al compilar el PDF."); }
-            btn.innerText = originalText; btn.disabled = false; cerrarModalPDF();
+                const body = []; const ag = {}; filtrados.forEach(r => { if(!ag[r.fecha]) ag[r.fecha] = []; ag[r.fecha].push(r); });
+                Object.keys(ag).sort().reverse().forEach(f => { body.push([{ content: f, colSpan: 2, styles: { fillColor: [240, 240, 240], fontStyle: 'bold' } }]); ag[f].forEach(r => body.push([r.ejercicio, r.fase.includes('Fase 1')||r.fase.includes('Fase 5') ? '1 sesión' : r.series+'x'+r.repeticiones])); });
+                doc.autoTable({ startY: 100, head: [['Ejercicio', 'Volumen']], body, theme: 'grid', headStyles: { fillColor: [15, 118, 110] } });
+                doc.save(`CerviCare_${fFin}.pdf`);
+            } catch (e) { console.error(e); alert("Error al generar PDF."); }
+            document.getElementById('pdf-loading-overlay').classList.add('hidden');
         }
 
         // --- HISTORIAL ---
-        function cambiarDiaHistorial(offset) { let d = new Date(diaHistorialActual); d.setDate(d.getDate() + offset); diaHistorialActual = getLocalDateStr(d); document.getElementById('fecha-historial-input').value = diaHistorialActual; cargarHistorial(); }
+        function cambiarDiaHistorial(o) { let d = new Date(diaHistorialActual); d.setDate(d.getDate() + o); diaHistorialActual = getLocalDateStr(d); document.getElementById('fecha-historial-input').value = diaHistorialActual; cargarHistorial(); }
         function seleccionarDiaHistorial(v) { if(!v) return; diaHistorialActual = v; cargarHistorial(); }
         async function cargarHistorial() {
             const t = await db.registros.where('fecha').equals(diaHistorialActual).toArray(); t.reverse(); 
             const l = document.getElementById('lista-registros'); l.innerHTML = t.length === 0 ? '<p class="text-gray-400 text-sm text-center py-6 border border-dashed border-gray-800 rounded-lg">Sin actividad este día.</p>' : '';
-            t.forEach(r => l.innerHTML += `<div class="bg-darkBg p-3 rounded-lg border border-gray-700 flex justify-between items-center shadow-md"><div><p class="font-bold text-sm text-neonCyan">${r.ejercicio}</p><p class="text-xs text-gray-400 mt-1">${r.fase.includes('Fase 1')||r.fase.includes('Fase 5') ? 'Terapia única' : r.series+'x'+r.repeticiones}</p></div><div class="flex gap-1"><button onclick="editarRegistro(${r.id})" class="text-neonCyan p-2 hover:bg-neonCyan/20 rounded"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-width="2"/></svg></button><button onclick="borrarRegistro(${r.id})" class="text-red-500 p-2 hover:bg-red-900/30 rounded"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="2"/></svg></button></div></div>`);
+            t.forEach(r => l.innerHTML += `<div class="bg-darkBg p-3 rounded-lg border border-gray-700 flex justify-between items-center shadow-md"><div><p class="font-bold text-sm text-neonCyan">${r.ejercicio}</p><p class="text-xs text-gray-400 mt-1">${r.fase.includes('Fase 1')||r.fase.includes('Fase 5') ? 'Terapia única' : r.series+'x'+r.repeticiones}</p></div><div class="flex gap-1"><button onclick="editarRegistro(${r.id})" class="text-neonCyan p-2 hover:bg-neonCyan/20 rounded"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-width="1.5"/></svg></button><button onclick="borrarRegistro(${r.id})" class="text-red-500 p-2 hover:bg-red-900/30 rounded"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="1.5"/></svg></button></div></div>`);
         }
         async function editarRegistro(id) { const r = await db.registros.get(id); if(r.fase.includes('Fase 1')||r.fase.includes('Fase 5')) return alert("Terapias no editables."); let ns = prompt("Nuevas SERIES:", r.series), nr = prompt("Nuevas REPETICIONES:", r.repeticiones); if(ns&&nr) { await db.registros.update(id, { series: parseInt(ns), repeticiones: parseInt(nr) }); cargarHistorial(); actualizarVistasProgreso(); } }
         async function borrarRegistro(id) { if(confirm("¿Borrar?")){ await db.registros.delete(id); cargarHistorial(); actualizarVistasProgreso(); } }
         async function borrarTodosLosDatos() { if(confirm("⚠️ ¿BORRAR TODO?")){ await db.registros.clear(); location.reload(); } }
         async function exportarCSV() { const d = await db.registros.toArray(); let c="Fecha,Ejercicio,Series,Reps\n"; d.forEach(r=>c+=`${r.fecha},${r.ejercicio},${r.series},${r.repeticiones}\n`); descargarArchivo(c,`cervicare.csv`,'text/csv'); }
         async function exportarBackup() { descargarArchivo(JSON.stringify(await db.registros.toArray()),`cervicare_backup.json`,'application/json'); }
-        function importarBackup(e) { const r=new FileReader(); r.onload=async(ev)=>{ await db.registros.clear(); await db.registros.bulkAdd(JSON.parse(ev.target.result)); alert("Éxito."); location.reload(); }; r.readAsText(e.target.files[0]); }
+        function importarBackup(e) { const r=new FileReader(); r.onload=async(ev)=>{ await db.registros.bulkAdd(JSON.parse(ev.target.result)); alert("Éxito."); location.reload(); }; r.readAsText(e.target.files[0]); }
         function descargarArchivo(c, n, t) { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([c],{type:t})); a.download=n; a.click(); }
 
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(err => console.warn('Error SW', err)); }); }
