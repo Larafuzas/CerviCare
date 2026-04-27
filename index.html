@@ -33,7 +33,6 @@
     <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     
@@ -118,19 +117,16 @@
 
             <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg">
                 <h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Tendencia de Esfuerzo</h3>
-                <p class="text-[10px] text-gray-400 mb-3 text-center">Media de reps por ejercicio (Figuras geométricas)</p>
                 <div class="relative h-48 w-full"><canvas id="grafico-tendencia"></canvas></div>
             </div>
 
             <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg">
                 <h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Equilibrio Relativo</h3>
-                <p class="text-[10px] text-gray-400 mb-3 text-center">Intensidad ajustada por categoría</p>
                 <div class="relative h-56 w-full flex justify-center"><canvas id="grafico-equilibrio"></canvas></div>
             </div>
 
             <div class="bg-cardBg p-4 rounded-xl border border-gray-700 shadow-lg">
                 <h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Desempeño por Ejercicio</h3>
-                <p class="text-[10px] text-gray-400 mb-3 text-center">Ranking total de repeticiones</p>
                 <div class="relative h-80 w-full"><canvas id="grafico-ejercicios"></canvas></div>
             </div>
         </section>
@@ -193,6 +189,13 @@
         <p class="text-sm text-gray-400 mt-2">Construyendo documento nativo.</p>
     </div>
 
+    <div id="visor-imagen" class="hidden fixed inset-0 bg-black/95 z-[9999] flex justify-center items-center p-4 opacity-0 transition-opacity duration-300" onclick="cerrarVisorImagen()">
+        <button class="absolute top-6 right-6 text-white bg-gray-800/50 hover:bg-gray-700 rounded-full p-2 transition-colors z-50" onclick="cerrarVisorImagen(event)">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        <img id="visor-imagen-src" src="" class="max-w-full max-h-full object-contain rounded-lg transform scale-95 transition-transform duration-300">
+    </div>
+
     <div style="position: absolute; left: -9999px; top: 0; width: 600px; height: 350px;">
         <canvas id="pdf-canvas-tendencia" width="600" height="350"></canvas>
     </div>
@@ -233,6 +236,7 @@
         const PESO_CATEGORIA = { 'Movilidad': 5, 'Fortalecimiento': 2, 'Estiramientos': 2 };
         const RUTINA_TOTAL_EJERCICIOS = 9;
 
+        // SUSTITUIDO SVG POR electrodos.png EN LA FASE 5
         const rutinaCervical = [
             { id: "fase1_calor", short: "Calor", fase: "Fase 1: Preparación", titulo: "Aplicación de Calor", imagen: null, tipo: "temporizador", instrucciones: "<p>Calor para vasodilatación antes del ejercicio.</p>" },
             { id: "mov_flexion", short: "Flexión", fase: "Fase 2: Movilidad", titulo: "Flexión y Extensión", imagen: "flexion.jpg", tipo: "contador", instrucciones: "<p>Barbilla al pecho y extensión suave.</p>" },
@@ -244,7 +248,7 @@
             { id: "fort_resistencia2", short: "Res.Lat", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Lateral", imagen: "resistencia2.jpg", tipo: "contador", instrucciones: "<p>Empuje lateral contra la mano.</p>" },
             { id: "est_traccion1", short: "Trac.Front", fase: "Fase 4: Estiramientos", titulo: "Tracción Abajo", imagen: "traccion1.jpg", tipo: "contador", instrucciones: "<p>Peso de los brazos sobre la cabeza.</p>" },
             { id: "est_traccion2", short: "Trac.Lat", fase: "Fase 4: Estiramientos", titulo: "Tracción Lateral", imagen: "traccion2.jpg", tipo: "contador", instrucciones: "<p>Inclinación asistida con respiración.</p>" },
-            { id: "fase5_electro", short: "Electro", fase: "Fase 5: Recuperación", titulo: "Electroestimulación", imagen: null, tipo: "electro", instrucciones: `<p>Colocar TENS/EMS en trapecios para relajar.</p>` }
+            { id: "fase5_electro", short: "Electro", fase: "Fase 5: Recuperación", titulo: "Electroestimulación", imagen: "electrodos.png", tipo: "electro", instrucciones: `<p>Colocar TENS/EMS en trapecios para relajar.</p>` }
         ];
 
         let miSwiper, chartTendencia = null, chartEquilibrio = null, chartEjercicios = null;
@@ -258,6 +262,29 @@
 
         function getLocalDateStr(d = new Date()) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
 
+        // --- SISTEMA DE VISOR DE IMÁGENES A PANTALLA COMPLETA ---
+        function abrirVisorImagen(src) {
+            const visor = document.getElementById('visor-imagen');
+            const img = document.getElementById('visor-imagen-src');
+            img.src = src;
+            visor.classList.remove('hidden');
+            // Reflow para que actúe la animación
+            void visor.offsetWidth;
+            visor.classList.remove('opacity-0');
+            img.classList.remove('scale-95');
+            img.classList.add('scale-100');
+        }
+
+        function cerrarVisorImagen(e) {
+            if (e) e.stopPropagation();
+            const visor = document.getElementById('visor-imagen');
+            const img = document.getElementById('visor-imagen-src');
+            visor.classList.add('opacity-0');
+            img.classList.remove('scale-100');
+            img.classList.add('scale-95');
+            setTimeout(() => { visor.classList.add('hidden'); }, 300);
+        }
+
         function renderizarRutina() {
             const contenedor = document.getElementById('contenedor-ejercicios');
             const navPills = document.getElementById('top-nav-pills');
@@ -270,29 +297,12 @@
                 else if (ej.tipo === 'electro') { controlesHTML = `<div class="flex gap-2"><button onclick="guardarElectro(true, this)" class="w-1/2 bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-md transition-colors">Sí, Aplicada</button><button onclick="guardarElectro(false, this)" class="w-1/2 bg-gray-700 text-white font-bold py-3 rounded-lg transition-colors">Saltar</button></div>`; }
                 
                 let visualHTML = '';
-                if (ej.imagen) { visualHTML = `<img src="${ej.imagen}" class="h-60 mx-auto object-contain p-1" onerror="this.src=''; this.alt='Imagen: ${ej.imagen}'">`; }
-                else if (ej.tipo === 'temporizador') { visualHTML = `<div class="flex items-center justify-center h-60"><span class="text-5xl font-bold text-neonCyan" id="display-${ej.id}">15:00</span></div>`; }
-                else if (ej.tipo === 'electro') {
-                    // SVG NUEVO BEURER EM49 TRAZO FINO
-                    visualHTML = `<div class="flex items-center justify-center h-60">
-                        <svg width="180" height="180" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.2" class="text-neonCyan drop-shadow-[0_0_10px_rgba(45,212,191,0.4)]">
-                            <rect x="35" y="45" width="30" height="50" rx="5" />
-                            <circle cx="50" cy="62" r="10" />
-                            <circle cx="50" cy="62" r="7" stroke-dasharray="2 2" />
-                            <circle cx="43" cy="80" r="2" />
-                            <circle cx="50" cy="80" r="2" />
-                            <circle cx="57" cy="80" r="2" />
-                            <path d="M45 45 C45 35, 20 40, 15 25" stroke-linecap="round" />
-                            <path d="M45 45 C45 25, 10 30, 5 15" stroke-linecap="round" />
-                            <path d="M55 45 C55 35, 80 40, 85 25" stroke-linecap="round" />
-                            <path d="M55 45 C55 25, 90 30, 95 15" stroke-linecap="round" />
-                            <rect x="11" y="21" width="8" height="8" rx="1.5" fill="currentColor" fill-opacity="0.1" />
-                            <rect x="1" y="11" width="8" height="8" rx="1.5" fill="currentColor" fill-opacity="0.1" />
-                            <rect x="81" y="21" width="8" height="8" rx="1.5" fill="currentColor" fill-opacity="0.1" />
-                            <rect x="91" y="11" width="8" height="8" rx="1.5" fill="currentColor" fill-opacity="0.1" />
-                        </svg>
-                    </div>`;
+                // AÑADIDO EVENTO ONCLICK Y ESTILOS PARA INDICAR QUE ES AMPLIABLE (cursor-pointer)
+                if (ej.imagen) { 
+                    visualHTML = `<img src="${ej.imagen}" onclick="abrirVisorImagen('${ej.imagen}')" class="h-60 mx-auto object-contain p-1 cursor-pointer transition-transform hover:scale-105" onerror="this.src=''; this.alt='Imagen: ${ej.imagen}'" title="Tocar para ampliar">`; 
                 }
+                else if (ej.tipo === 'temporizador') { visualHTML = `<div class="flex items-center justify-center h-60"><span class="text-5xl font-bold text-neonCyan" id="display-${ej.id}">15:00</span></div>`; }
+                
                 contenedor.innerHTML += `<div class="swiper-slide flex flex-col items-center justify-start p-4 pt-0 pb-6"><div class="bg-cardBg w-full max-w-sm h-[70vh] rounded-2xl shadow-lg p-5 flex flex-col border border-gray-700"><p class="text-neonCyan font-bold text-center text-xs uppercase tracking-wide mb-2">${ej.fase}</p><h3 class="text-white font-bold text-lg text-center mb-3 leading-tight">${ej.titulo}</h3><div class="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-3 pr-1"><div class="w-full bg-gray-800 rounded-xl border border-gray-700 flex-shrink-0 flex items-center justify-center overflow-hidden">${visualHTML}</div><details class="group bg-darkBg border border-gray-700 rounded-lg p-3"><summary class="font-semibold text-gray-300 outline-none select-none cursor-pointer flex justify-between items-center text-sm">Instrucciones Clínicas <span class="text-neonCyan font-bold text-xl group-open:rotate-180 transition-transform">▾</span></summary><div class="mt-3 text-sm text-gray-300 space-y-2 border-t border-gray-700 pt-2 pb-1">${ej.instrucciones}</div></details></div><div class="h-auto flex flex-col justify-end mt-4">${controlesHTML}</div></div></div>`;
             });
             miSwiper = new Swiper(".mySwiper", { spaceBetween: 15, on: { slideChange: function () { actualizarEstiloPills(this.activeIndex); } } });
@@ -392,10 +402,13 @@
         function cerrarModalPDF() { document.getElementById('modal-pdf').classList.add('hidden'); }
 
         async function ejecutarGeneracionPDF() {
-            cerrarModalPDF(); document.getElementById('pdf-loading-overlay').classList.remove('hidden');
+            const btn = document.getElementById('btn-generar-pdf'); const originalText = btn.innerText;
+            btn.innerText = "Generando..."; btn.disabled = true;
+            
             try {
                 const rangoVal = document.getElementById('pdf-rango').value;
                 let fInicio = null, fFin = getLocalDateStr();
+                
                 if (rangoVal === 'hoy') { fInicio = fFin; }
                 else if (rangoVal === 'especifico') { fInicio = document.getElementById('pdf-fecha-valor').value; fFin = fInicio; }
                 else if (rangoVal !== 'todo') { let d = new Date(); d.setDate(d.getDate() - parseInt(rangoVal)); fInicio = getLocalDateStr(d); }
@@ -403,37 +416,66 @@
                 const todos = await db.registros.toArray();
                 const filtrados = todos.filter(r => (!fInicio || r.fecha >= fInicio) && (!fFin || r.fecha <= fFin));
                 
-                // Renderizar gráficas PDF en Canvas invisible
-                const dEq = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 }, dTen = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} }, fSet = new Set();
-                filtrados.forEach(r => { const esT = r.fase.includes('Fase 1')||r.fase.includes('Fase 5'); if(!esT) { let cat = r.fase.includes('Movilidad')?'Movilidad':(r.fase.includes('Fortalecimiento')?'Fortalecimiento':'Estiramientos'); dEq[cat] += r.repeticiones; if(!dTen[cat][r.fecha]) dTen[cat][r.fecha]=0; dTen[cat][r.fecha]+=r.repeticiones; fSet.add(r.fecha); } });
-                const fList = Array.from(fSet).sort();
-                
+                // Procesar datos para gráficas invisibles
+                const dEq = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 }, dTen = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} }, fechasSet = new Set();
+                filtrados.forEach(r => { const esT = r.fase.includes('Fase 1')||r.fase.includes('Fase 5'); if(!esT) { let cat = r.fase.includes('Movilidad')?'Movilidad':(r.fase.includes('Fortalecimiento')?'Fortalecimiento':'Estiramientos'); dEq[cat] += r.repeticiones; if(!dTen[cat][r.fecha]) dTen[cat][r.fecha]=0; dTen[cat][r.fecha]+=r.repeticiones; fechasSet.add(r.fecha); } });
+                dEq.Movilidad = +(dEq.Movilidad/5).toFixed(1); dEq.Fortalecimiento = +(dEq.Fortalecimiento/2).toFixed(1); dEq.Estiramientos = +(dEq.Estiramientos/2).toFixed(1);
+                Object.keys(dTen).forEach(cat => { Object.keys(dTen[cat]).forEach(f => { dTen[cat][f] = +(dTen[cat][f]/PESO_CATEGORIA[cat]).toFixed(1); }); });
+                const fList = Array.from(fechasSet).sort();
+
+                // Renderizar a Canvas Oculto
                 if(pdfChart1) pdfChart1.destroy();
-                pdfChart1 = new Chart(document.getElementById('pdf-canvas-tendencia').getContext('2d'), { type: 'line', data: { labels: fList, datasets: [ { label: 'Movilidad', data: fList.map(f => (dTen['Movilidad'][f]||0)/5), borderColor: '#2dd4bf', tension: 0.4 }, { label: 'Fortalecimiento', data: fList.map(f => (dTen['Fortalecimiento'][f]||0)/2), borderColor: '#3b82f6', tension: 0.4 }, { label: 'Estiramientos', data: fList.map(f => (dTen['Estiramientos'][f]||0)/2), borderColor: '#c084fc', tension: 0.4 } ] }, options: { animation: false, responsive: false, plugins: { datalabels: {display:false}, customCanvasBackgroundColor: {color:'white'} } }, plugins: [whiteBgPlugin] });
+                pdfChart1 = new Chart(document.getElementById('pdf-canvas-tendencia').getContext('2d'), { type: 'line', data: { labels: fList, datasets: [ { label: 'Movilidad', pointStyle:'circle', data: fList.map(f => dTen['Movilidad'][f]||0), borderColor: '#2dd4bf', tension: 0.4 }, { label: 'Fortalecimiento', pointStyle:'rect', data: fList.map(f => dTen['Fortalecimiento'][f]||0), borderColor: '#3b82f6', tension: 0.4 }, { label: 'Estiramientos', pointStyle:'triangle', data: fList.map(f => dTen['Estiramientos'][f]||0), borderColor: '#c084fc', tension: 0.4 } ] }, options: { animation: false, responsive: false, plugins: { datalabels: {display:false}, legend: { labels: { usePointStyle: true, color: '#333' } }, customCanvasBackgroundColor: { color: 'white'} }, scales: { y: { beginAtZero: true } } }, plugins: [whiteBgPlugin] });
                 
                 if(pdfChart2) pdfChart2.destroy();
-                pdfChart2 = new Chart(document.getElementById('pdf-canvas-equilibrio').getContext('2d'), { type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [dEq.Movilidad/5, dEq.Fortalecimiento/2, dEq.Estiramientos/2], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'] }] }, options: { animation: false, responsive: false, plugins: { datalabels: {display:true, color:'#000', formatter: (v, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); return sum>0 ? Math.round((v/sum)*100)+'%' : ''; }}, customCanvasBackgroundColor: {color:'white'} } }, plugins: [whiteBgPlugin, ChartDataLabels] });
+                pdfChart2 = new Chart(document.getElementById('pdf-canvas-equilibrio').getContext('2d'), { type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [dEq.Movilidad, dEq.Fortalecimiento, dEq.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'] }] }, options: { animation: false, responsive: false, plugins: { datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (v, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); return sum>0 ? Math.round((v/sum)*100)+'%' : ''; } }, legend: { position: 'bottom', labels: { color: '#333' } }, customCanvasBackgroundColor: { color: 'white'} } }, plugins: [whiteBgPlugin, ChartDataLabels] });
 
-                await new Promise(r => setTimeout(r, 400));
-                const img1 = document.getElementById('pdf-canvas-tendencia').toDataURL('image/jpeg', 1.0);
-                const img2 = document.getElementById('pdf-canvas-equilibrio').toDataURL('image/jpeg', 1.0);
+                // Esperar un milisegundo para asegurar que los canvas tienen las imágenes pintadas
+                await new Promise(r => setTimeout(r, 200));
 
+                const imgTen = document.getElementById('pdf-canvas-tendencia').toDataURL('image/jpeg', 1.0);
+                const imgEq = document.getElementById('pdf-canvas-equilibrio').toDataURL('image/jpeg', 1.0);
+
+                // Crear PDF con jsPDF nativo
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
+                
                 doc.setFontSize(22); doc.setTextColor(15, 118, 110); doc.text("CerviCare - Informe Clínico", 14, 20);
-                doc.setFontSize(11); doc.setTextColor(100, 100, 100); doc.text(`Periodo: ${fInicio || 'Inicio'} al ${fFin}`, 14, 28);
-                doc.addImage(img1, 'JPEG', 14, 35, 90, 50); doc.addImage(img2, 'JPEG', 110, 35, 60, 60);
+                doc.setFontSize(11); doc.setTextColor(100, 100, 100); doc.text(`Periodo evaluado: ${fInicio || 'Inicio'} al ${fFin}`, 14, 28);
 
-                const body = []; const ag = {}; filtrados.forEach(r => { if(!ag[r.fecha]) ag[r.fecha] = []; ag[r.fecha].push(r); });
-                Object.keys(ag).sort().reverse().forEach(f => { body.push([{ content: f, colSpan: 2, styles: { fillColor: [240, 240, 240], fontStyle: 'bold' } }]); ag[f].forEach(r => body.push([r.ejercicio, r.fase.includes('Fase 1')||r.fase.includes('Fase 5') ? '1 sesión' : r.series+'x'+r.repeticiones])); });
-                doc.autoTable({ startY: 100, head: [['Ejercicio', 'Volumen']], body, theme: 'grid', headStyles: { fillColor: [15, 118, 110] } });
-                doc.save(`CerviCare_${fFin}.pdf`);
-            } catch (e) { console.error(e); alert("Error al generar PDF."); }
-            document.getElementById('pdf-loading-overlay').classList.add('hidden');
+                doc.setFontSize(10); doc.setTextColor(150, 150, 150); doc.text("Tendencia de Esfuerzo (Reps/Ej)", 14, 40);
+                doc.addImage(imgTen, 'JPEG', 14, 45, 90, 52);
+                
+                doc.text("Equilibrio Relativo", 110, 40);
+                doc.addImage(imgEq, 'JPEG', 110, 45, 75, 75);
+
+                let finalY = 110;
+
+                // Generar Tabla de registros
+                const tableBody = [];
+                const agrupados = {}; filtrados.forEach(r => { if(!agrupados[r.fecha]) agrupados[r.fecha] = []; agrupados[r.fecha].push(r); });
+                Object.keys(agrupados).sort().reverse().forEach(f => {
+                    tableBody.push([{ content: f, colSpan: 3, styles: { fillColor: [240, 240, 240], textColor: [0, 0, 0], fontStyle: 'bold' } }]);
+                    agrupados[f].forEach(r => {
+                        const esTerapia = r.fase.includes('Fase 1')||r.fase.includes('Fase 5');
+                        tableBody.push(['', r.ejercicio, esTerapia ? 'Terapia única' : r.series + ' x ' + r.repeticiones]);
+                    });
+                });
+
+                if (tableBody.length > 0) {
+                    doc.autoTable({ startY: finalY, head: [['Fecha', 'Ejercicio / Actividad', 'Volumen']], body: tableBody, theme: 'grid', styles: { fontSize: 9 }, headStyles: { fillColor: [15, 118, 110] } });
+                } else {
+                    doc.text("No hay registros en el periodo seleccionado.", 14, finalY);
+                }
+
+                doc.save(`CerviCare_Reporte_${fFin}.pdf`);
+
+            } catch (e) { console.error(e); alert("Error al compilar el PDF."); }
+            btn.innerText = originalText; btn.disabled = false; cerrarModalPDF();
         }
 
         // --- HISTORIAL ---
-        function cambiarDiaHistorial(o) { let d = new Date(diaHistorialActual); d.setDate(d.getDate() + o); diaHistorialActual = getLocalDateStr(d); document.getElementById('fecha-historial-input').value = diaHistorialActual; cargarHistorial(); }
+        function cambiarDiaHistorial(offset) { let d = new Date(diaHistorialActual); d.setDate(d.getDate() + offset); diaHistorialActual = getLocalDateStr(d); document.getElementById('fecha-historial-input').value = diaHistorialActual; cargarHistorial(); }
         function seleccionarDiaHistorial(v) { if(!v) return; diaHistorialActual = v; cargarHistorial(); }
         async function cargarHistorial() {
             const t = await db.registros.where('fecha').equals(diaHistorialActual).toArray(); t.reverse(); 
@@ -445,7 +487,7 @@
         async function borrarTodosLosDatos() { if(confirm("⚠️ ¿BORRAR TODO?")){ await db.registros.clear(); location.reload(); } }
         async function exportarCSV() { const d = await db.registros.toArray(); let c="Fecha,Ejercicio,Series,Reps\n"; d.forEach(r=>c+=`${r.fecha},${r.ejercicio},${r.series},${r.repeticiones}\n`); descargarArchivo(c,`cervicare.csv`,'text/csv'); }
         async function exportarBackup() { descargarArchivo(JSON.stringify(await db.registros.toArray()),`cervicare_backup.json`,'application/json'); }
-        function importarBackup(e) { const r=new FileReader(); r.onload=async(ev)=>{ await db.registros.bulkAdd(JSON.parse(ev.target.result)); alert("Éxito."); location.reload(); }; r.readAsText(e.target.files[0]); }
+        function importarBackup(e) { const r=new FileReader(); r.onload=async(ev)=>{ await db.registros.clear(); await db.registros.bulkAdd(JSON.parse(ev.target.result)); alert("Éxito."); location.reload(); }; r.readAsText(e.target.files[0]); }
         function descargarArchivo(c, n, t) { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([c],{type:t})); a.download=n; a.click(); }
 
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(err => console.warn('Error SW', err)); }); }
