@@ -45,15 +45,16 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         .chip { transition: all 0.3s ease; }
         
-        /* FIX SAFARI iOS: Visible pero fuera de pantalla */
+        /* FIX iOS WEBKIT: El laboratorio ahora está oculto por clase, pero cuando se muestra, está en la posición absoluta 0,0 para que iOS lo renderice */
         #pdf-laboratorio {
-            position: fixed;
+            position: absolute;
             top: 0;
-            left: -9999px;
-            width: 800px;
+            left: 0;
+            width: 210mm;
+            min-height: 297mm;
             background-color: #ffffff;
             color: #000000;
-            z-index: -999;
+            z-index: 9998; /* Por debajo de la pantalla de carga */
         }
     </style>
 </head>
@@ -88,11 +89,11 @@
                 <div id="calendario-grid" class="grid grid-cols-7 gap-1 text-center"></div>
                 
                 <div class="flex flex-wrap gap-x-3 gap-y-2 justify-center text-[10px] text-gray-300 mt-4 border-t border-gray-700 pt-3">
-                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonYellow rounded-full"></div> Algunos</div>
-                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonOrange rounded-full"></div> + Calor</div>
-                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonGreen rounded-full"></div> Completa</div>
-                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonPurple rounded-full"></div> + Calor</div>
-                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 border border-neonCyan rounded-full"></div> Electro</div>
+                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonYellow rounded-full shadow-[0_0_5px_rgba(250,204,21,0.5)]"></div> Algunos</div>
+                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonOrange rounded-full shadow-[0_0_5px_rgba(251,146,60,0.5)]"></div> + Calor</div>
+                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonGreen rounded-full shadow-[0_0_5px_rgba(74,222,128,0.5)]"></div> Completa</div>
+                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonPurple rounded-full shadow-[0_0_5px_rgba(192,132,252,0.5)]"></div> + Calor</div>
+                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 border border-neonCyan rounded-full bg-transparent shadow-[0_0_5px_rgba(45,212,191,0.5)]"></div> Electro</div>
                 </div>
             </div>
 
@@ -181,7 +182,13 @@
         </div>
     </div>
 
-    <div id="pdf-laboratorio">
+    <div id="pdf-loading-overlay" class="hidden fixed inset-0 bg-darkBg z-[9999] flex flex-col justify-center items-center p-4 text-center">
+        <svg class="animate-spin h-12 w-12 text-blueLight mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+        <h2 class="text-2xl font-bold text-white">Generando Informe PDF...</h2>
+        <p class="text-sm text-gray-400 mt-2">Por favor, no cierres ni bloquees la aplicación. Este proceso dura unos segundos.</p>
+    </div>
+
+    <div id="pdf-laboratorio" class="hidden">
         <div style="padding: 40px; font-family: sans-serif; background-color: #ffffff; color: #000000; width: 100%; min-height: 297mm;">
             <h1 style="color: #0f766e; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 5px; font-size: 24px;">CerviCare - Informe Clínico</h1>
             <p id="pdf-fechas" style="font-size: 14px; color: #666; margin-bottom: 30px;"></p>
@@ -327,9 +334,17 @@
                 const fechaStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
                 const datosDia = evaluacionPorDia[fechaStr];
                 let dotColor = 'bg-transparent', shadowClass = '', clasesBorde = 'border border-transparent', tieneDatos = false;
-                if (datosDia) { tieneDatos = true; const numEj = datosDia.ejercicios.size; const esCompleta = numEj >= RUTINA_TOTAL_EJERCICIOS; if (esCompleta && datosDia.calor) { dotColor = 'bg-neonPurple'; shadowClass = 'shadow-[0_0_8px_rgba(192,132,252,0.6)]'; } else if (esCompleta) { dotColor = 'bg-neonGreen'; shadowClass = 'shadow-[0_0_8px_rgba(74,222,128,0.6)]'; } else if (numEj > 0 && datosDia.calor) { dotColor = 'bg-neonOrange'; shadowClass = 'shadow-[0_0_8px_rgba(251,146,60,0.6)]'; } else if (numEj > 0 || datosDia.calor) { dotColor = 'bg-neonYellow'; shadowClass = 'shadow-[0_0_8px_rgba(250,204,21,0.6)]'; } if (datosDia.electro) clasesBorde = 'ring-2 ring-neonCyan'; }
+                if (datosDia) {
+                    tieneDatos = true; const numEj = datosDia.ejercicios.size; const esCompleta = numEj >= RUTINA_TOTAL_EJERCICIOS;
+                    if (esCompleta && datosDia.calor) { dotColor = 'bg-neonPurple'; shadowClass = 'shadow-[0_0_8px_rgba(192,132,252,0.6)]'; }
+                    else if (esCompleta) { dotColor = 'bg-neonGreen'; shadowClass = 'shadow-[0_0_8px_rgba(74,222,128,0.6)]'; }
+                    else if (numEj > 0 && datosDia.calor) { dotColor = 'bg-neonOrange'; shadowClass = 'shadow-[0_0_8px_rgba(251,146,60,0.6)]'; }
+                    else if (numEj > 0 || datosDia.calor) { dotColor = 'bg-neonYellow'; shadowClass = 'shadow-[0_0_8px_rgba(250,204,21,0.6)]'; }
+                    if (datosDia.electro) clasesBorde = 'ring-2 ring-neonCyan'; 
+                }
                 const bgCelda = fechaStr === hoyStr ? 'bg-gray-800' : 'bg-transparent';
-                container.innerHTML += `<div class="h-10 flex flex-col items-center justify-center rounded-lg ${bgCelda} ${clasesBorde} cursor-pointer hover:bg-gray-700 transition" onclick="document.getElementById('filtro-periodo').value='dia_concreto'; document.getElementById('fecha-unica').value='${fechaStr}'; toggleFechasPersonalizadas(); renderizarGraficos();"><span class="text-xs ${tieneDatos?'text-white font-bold':'text-gray-400'}">${day}</span><div class="w-1.5 h-1.5 rounded-full mt-0.5 ${dotColor} ${shadowClass}"></div></div>`;
+                const textDay = tieneDatos ? 'text-white font-bold' : 'text-gray-400';
+                container.innerHTML += `<div class="h-10 flex flex-col items-center justify-center rounded-lg ${bgCelda} ${clasesBorde} cursor-pointer hover:bg-gray-700 transition" onclick="document.getElementById('filtro-periodo').value='dia_concreto'; document.getElementById('fecha-unica').value='${fechaStr}'; toggleFechasPersonalizadas(); renderizarGraficos();"><span class="text-xs ${textDay}">${day}</span><div class="w-1.5 h-1.5 rounded-full mt-0.5 ${dotColor} ${shadowClass}"></div></div>`;
             }
         }
 
@@ -356,14 +371,21 @@
             chartEjercicios = new Chart(document.getElementById('grafico-ejercicios').getContext('2d'), { type: 'bar', data: { labels: nombresEj, datasets: [{ data: nombresEj.map(e => datosEjercicios[e]), backgroundColor: '#2dd4bf', barThickness: 6, borderRadius: 3 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { top: 15, right: 30, left: 0 } }, scales: { x: { display: false }, y: { ticks: { mirror: true, crossAlign: 'near', color: '#cbd5e1', font: { size: 11, weight: 'bold' }, labelOffset: -14 }, afterFit: s => s.width = 0, grid: { display: false }, border: { display: false } } }, plugins: { legend: false, tooltip: false, datalabels: { display: true, align: 'right', anchor: 'end', offset: 4, formatter: Math.round, color: '#2dd4bf', font: { weight: 'bold', size: 11 } } } } });
         }
 
-        // --- SISTEMA PDF MEJORADO ---
+        // --- SISTEMA PDF MEJORADO PARA IOS WEBKIT ---
         function toggleFiltroDiaPDF() { document.getElementById('pdf-input-dia').classList.toggle('hidden', document.getElementById('pdf-rango').value !== 'especifico'); }
         function abrirModalPDF() { document.getElementById('modal-pdf').classList.remove('hidden'); }
         function cerrarModalPDF() { document.getElementById('modal-pdf').classList.add('hidden'); }
 
         async function ejecutarGeneracionPDF() {
-            const btn = document.getElementById('btn-generar-pdf'); const originalText = btn.innerText;
-            btn.innerText = "Generando..."; btn.disabled = true;
+            cerrarModalPDF();
+            
+            // 1. Mostrar pantalla de carga
+            const overlay = document.getElementById('pdf-loading-overlay');
+            overlay.classList.remove('hidden');
+            
+            // 2. Destruir restricciones de pantalla (overflow-hidden) que rompen html2canvas en iOS
+            document.body.classList.remove('overflow-hidden', 'h-screen');
+            window.scrollTo(0, 0);
             
             try {
                 const rangoVal = document.getElementById('pdf-rango').value;
@@ -385,23 +407,38 @@
                     tabla.innerHTML += html + `</ul></div>`;
                 });
 
+                // 3. Mostrar laboratorio y renderizar
+                const lab = document.getElementById('pdf-laboratorio');
+                lab.classList.remove('hidden');
+                
                 await renderizarGraficosPDF(filtrados);
 
-                // Esperamos un extra para asegurar renderizado interno
-                await new Promise(r => setTimeout(r, 800));
+                // Esperamos 1 segundo completo para garantizar que Chart.js dibuje en el Canvas sin animaciones
+                await new Promise(r => setTimeout(r, 1000));
 
-                const lab = document.getElementById('pdf-laboratorio');
                 const opt = { 
                     margin: 10, 
                     filename: `CerviCare_Reporte_${fFin}.pdf`, 
                     image: { type: 'jpeg', quality: 0.98 }, 
+                    // Reducimos scale a 1.5 para no sobrecargar la memoria de Safari iOS en modo privado
                     html2canvas: { scale: 1.5, useCORS: true, logging: false }, 
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
                 };
                 
                 await html2pdf().set(opt).from(lab).save();
-            } catch (e) { console.error(e); alert("Error al generar PDF. Si estás en modo incógnito, intenta en navegación normal."); }
-            btn.innerText = originalText; btn.disabled = false; cerrarModalPDF();
+                
+                // 4. Restaurar la App
+                lab.classList.add('hidden');
+                overlay.classList.add('hidden');
+                document.body.classList.add('overflow-hidden', 'h-screen');
+
+            } catch (e) { 
+                console.error(e); 
+                alert("Error al generar PDF. Tu navegador bloqueó la captura de imágenes."); 
+                document.getElementById('pdf-loading-overlay').classList.add('hidden');
+                document.getElementById('pdf-laboratorio').classList.add('hidden');
+                document.body.classList.add('overflow-hidden', 'h-screen');
+            }
         }
 
         async function renderizarGraficosPDF(filtrados) {
