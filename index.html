@@ -35,7 +35,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
     
     <style>
         body { -webkit-tap-highlight-color: transparent; user-select: none; }
@@ -44,16 +46,6 @@
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         .chip { transition: all 0.3s ease; }
-        
-        /* Laboratorio PDF: Solo texto, alta fiabilidad */
-        #pdf-laboratorio {
-            position: absolute;
-            left: -9999px;
-            top: 0;
-            width: 190mm; /* Ajustado para A4 con márgenes */
-            background: white;
-            color: black;
-        }
     </style>
 </head>
 <body class="bg-darkBg text-white font-sans antialiased h-screen flex flex-col overflow-hidden">
@@ -80,6 +72,7 @@
                     <h3 id="mes-actual-label" class="font-bold text-sm uppercase tracking-wide text-white">Mes Año</h3>
                     <button onclick="cambiarMes(1)" class="text-neonCyan p-1 px-3 bg-darkBg rounded hover:bg-gray-700 transition">&gt;</button>
                 </div>
+                
                 <div class="grid grid-cols-7 text-center text-[10px] text-gray-400 mb-1 font-semibold uppercase">
                     <div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div>
                 </div>
@@ -90,19 +83,28 @@
                     <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonOrange rounded-full shadow-[0_0_5px_rgba(251,146,60,0.5)]"></div> + Calor</div>
                     <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonGreen rounded-full shadow-[0_0_5px_rgba(74,222,128,0.5)]"></div> Completa</div>
                     <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonPurple rounded-full shadow-[0_0_5px_rgba(192,132,252,0.5)]"></div> + Calor</div>
-                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 border border-neonCyan rounded-full"></div> Electro</div>
+                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 border border-neonCyan rounded-full bg-transparent shadow-[0_0_5px_rgba(45,212,191,0.5)]"></div> Electro</div>
                 </div>
             </div>
 
             <div class="bg-cardBg p-3 rounded-xl border border-gray-700 mb-4 shadow-lg">
                 <div class="grid grid-cols-2 gap-2 mb-2">
                     <select id="filtro-tipo" onchange="renderizarGraficos()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none">
-                        <option value="todos">Todas las Categorías</option><option value="Movilidad">Solo Movilidad</option><option value="Fortalecimiento">Solo Fortalecimiento</option><option value="Estiramientos">Solo Estiramientos</option>
+                        <option value="todos">Todas las Categorías</option>
+                        <option value="Movilidad">Solo Movilidad</option>
+                        <option value="Fortalecimiento">Solo Fortalecimiento</option>
+                        <option value="Estiramientos">Solo Estiramientos</option>
                     </select>
                     <select id="filtro-periodo" onchange="toggleFechasPersonalizadas()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none">
-                        <option value="hoy">Hoy</option><option value="dia_concreto">Día específico...</option><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="todo">Desde el principio</option><option value="rango">Rango de fechas...</option>
+                        <option value="hoy">Hoy</option>
+                        <option value="dia_concreto">Día específico...</option>
+                        <option value="7">Últimos 7 días</option>
+                        <option value="30" selected>Últimos 30 días</option>
+                        <option value="todo">Desde el principio</option>
+                        <option value="rango">Rango de fechas...</option>
                     </select>
                 </div>
+                
                 <div id="input-dia-concreto" class="hidden mt-2 pt-2 border-t border-gray-700">
                     <label class="text-[10px] text-gray-400">Selecciona el día</label>
                     <input type="date" id="fecha-unica" onchange="renderizarGraficos()" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1.5 text-white mt-1">
@@ -115,34 +117,40 @@
 
             <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg">
                 <h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Tendencia de Esfuerzo</h3>
+                <p class="text-[10px] text-gray-400 mb-3 text-center">Media de reps por ejercicio (Figuras geométricas)</p>
                 <div class="relative h-48 w-full"><canvas id="grafico-tendencia"></canvas></div>
             </div>
+
             <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg">
                 <h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Equilibrio Relativo</h3>
+                <p class="text-[10px] text-gray-400 mb-3 text-center">Intensidad ajustada por categoría</p>
                 <div class="relative h-56 w-full flex justify-center"><canvas id="grafico-equilibrio"></canvas></div>
             </div>
+
             <div class="bg-cardBg p-4 rounded-xl border border-gray-700 shadow-lg">
                 <h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Desempeño por Ejercicio</h3>
+                <p class="text-[10px] text-gray-400 mb-3 text-center">Ranking total de repeticiones</p>
                 <div class="relative h-80 w-full"><canvas id="grafico-ejercicios"></canvas></div>
             </div>
         </section>
 
         <section id="vista-ajustes" class="hidden h-full w-full p-4 overflow-y-auto pb-24">
-            <h2 class="text-xl font-bold text-white mb-4">Ajustes y Datos</h2>
+            
+            <h2 class="text-xl font-bold text-white mb-4">Ajustes y Configuración</h2>
             
             <div class="bg-blueDark/20 p-4 rounded-xl border border-blueDark mb-6 shadow-lg">
-                <h3 class="text-blueLight font-semibold mb-2 text-sm uppercase tracking-wide">Informe de Datos (PDF)</h3>
-                <p class="text-xs text-gray-400 mb-3">Extrae el listado estructurado de ejercicios y terapias para revisión médica.</p>
-                <button onclick="abrirModalPDF()" class="w-full bg-blueDark text-white py-3 rounded-lg font-bold shadow-md">Generar PDF de Datos...</button>
+                <h3 class="text-blueLight font-semibold mb-2 text-sm uppercase tracking-wide">Exportación Clínica</h3>
+                <p class="text-xs text-gray-400 mb-3">Genera un informe en PDF con gráficas y el registro detallado para tu fisioterapeuta.</p>
+                <button onclick="abrirModalPDF()" class="w-full bg-blueDark text-white py-3 rounded-lg font-bold shadow-md hover:bg-blue-700 transition">Generar Informe PDF...</button>
             </div>
 
-            <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Copia de Seguridad</h3>
+            <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Gestión de Datos (Avanzado)</h3>
             <div class="grid grid-cols-2 gap-3 mb-6">
                 <button onclick="exportarCSV()" class="col-span-2 bg-cardBg border border-neonCyan text-neonCyan py-2.5 rounded-lg text-sm font-semibold shadow-md">📊 Exportar a CSV</button>
-                <button onclick="exportarBackup()" class="bg-cardBg border border-gray-600 text-gray-300 py-2 rounded-lg text-sm font-semibold shadow-md">💾 Backup JSON</button>
-                <button onclick="document.getElementById('import-file').click()" class="bg-cardBg border border-gray-600 text-gray-300 py-2 rounded-lg text-sm font-semibold shadow-md">📂 Restaurar JSON</button>
+                <button onclick="exportarBackup()" class="bg-cardBg border border-gray-600 text-gray-300 hover:text-white py-2 rounded-lg text-sm font-semibold shadow-md transition-colors">💾 Backup JSON</button>
+                <button onclick="document.getElementById('import-file').click()" class="bg-cardBg border border-gray-600 text-gray-300 hover:text-white py-2 rounded-lg text-sm font-semibold shadow-md transition-colors">📂 Restaurar JSON</button>
                 <input type="file" id="import-file" class="hidden" accept=".json" onchange="importarBackup(event)">
-                <button onclick="borrarTodosLosDatos()" class="col-span-2 bg-red-900/30 border border-red-500 text-red-300 py-2.5 rounded-lg text-sm font-semibold mt-1">⚠️ Borrar Todo</button>
+                <button onclick="borrarTodosLosDatos()" class="col-span-2 bg-red-900/30 border border-red-500 text-red-300 py-2.5 rounded-lg text-sm font-semibold shadow-md mt-1 hover:bg-red-800/50 transition-colors">⚠️ Borrar Todos los Datos de la App</button>
             </div>
 
             <h3 class="text-neonCyan font-semibold mb-3 text-sm uppercase tracking-wide">Registro Diario</h3>
@@ -153,45 +161,42 @@
             </div>
             <div id="lista-registros" class="space-y-2 mb-8"></div>
         </section>
+
     </main>
 
     <div id="modal-pdf" class="hidden fixed inset-0 bg-black/90 z-50 flex justify-center items-center p-4 backdrop-blur-sm">
         <div class="bg-cardBg p-6 rounded-xl border border-blueDark w-full max-w-sm shadow-2xl relative">
-            <h3 class="text-lg font-bold text-white mb-2">Exportar Informe</h3>
-            <p class="text-xs text-gray-400 mb-4">Elige el periodo de datos a extraer.</p>
+            <h3 class="text-lg font-bold text-white mb-2">Informe Clínico PDF</h3>
+            <p class="text-xs text-gray-400 mb-4">Selecciona el periodo del reporte.</p>
             <select id="pdf-rango" onchange="toggleFiltroDiaPDF()" class="w-full bg-darkBg border border-gray-600 text-sm rounded p-3 text-white outline-none mb-3">
-                <option value="hoy">Hoy</option>
-                <option value="especifico">Día concreto...</option>
+                <option value="hoy">Solo hoy</option>
+                <option value="especifico">Día específico...</option>
                 <option value="7">Últimos 7 días</option>
                 <option value="30" selected>Últimos 30 días</option>
-                <option value="todo">Todo el historial</option>
+                <option value="todo">Historial completo</option>
             </select>
             <div id="pdf-input-dia" class="hidden mb-4">
-                <input type="date" id="pdf-fecha-valor" class="w-full bg-darkBg border border-gray-600 text-sm rounded p-2 text-white">
+                <label class="text-[10px] text-gray-400">Fecha del informe</label>
+                <input type="date" id="pdf-fecha-valor" class="w-full bg-darkBg border border-gray-600 text-sm rounded p-2 text-white mt-1">
             </div>
             <div class="flex gap-3 mt-4">
                 <button onclick="cerrarModalPDF()" class="w-1/2 bg-gray-700 text-white font-bold py-2.5 rounded-lg transition-colors">Cancelar</button>
-                <button onclick="ejecutarGeneracionPDF()" id="btn-generar-pdf" class="w-1/2 bg-blueDark text-white font-bold py-2.5 rounded-lg shadow-md flex justify-center items-center">Exportar</button>
+                <button onclick="ejecutarGeneracionPDF()" id="btn-generar-pdf" class="w-1/2 bg-blueDark text-white font-bold py-2.5 rounded-lg shadow-md flex justify-center items-center">Generar</button>
             </div>
         </div>
     </div>
 
-    <div id="pdf-laboratorio">
-        <div style="padding: 40px; font-family: 'Helvetica', 'Arial', sans-serif;">
-            <div style="border-bottom: 3px solid #0f766e; padding-bottom: 10px; margin-bottom: 20px;">
-                <h1 style="color: #0f766e; margin: 0; font-size: 28px;">CerviCare</h1>
-                <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Informe de Seguimiento de Actividad</p>
-            </div>
-            
-            <p id="pdf-meta-info" style="font-size: 12px; color: #444; margin-bottom: 30px; background: #f4f4f4; padding: 10px; border-radius: 5px;"></p>
+    <div id="pdf-loading-overlay" class="hidden fixed inset-0 bg-darkBg z-[9999] flex flex-col justify-center items-center p-4 text-center">
+        <svg class="animate-spin h-12 w-12 text-blueLight mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+        <h2 class="text-2xl font-bold text-white">Generando Informe...</h2>
+        <p class="text-sm text-gray-400 mt-2">Construyendo documento nativo.</p>
+    </div>
 
-            <div id="pdf-contenido-datos">
-                </div>
-
-            <div style="margin-top: 50px; border-top: 1px solid #eee; padding-top: 10px; font-size: 10px; color: #999; text-align: center;">
-                Documento generado automáticamente por CerviCare App.
-            </div>
-        </div>
+    <div style="position: absolute; left: -9999px; top: 0; width: 600px; height: 350px;">
+        <canvas id="pdf-canvas-tendencia" width="600" height="350"></canvas>
+    </div>
+    <div style="position: absolute; left: -9999px; top: 400px; width: 400px; height: 400px;">
+        <canvas id="pdf-canvas-equilibrio" width="400" height="400"></canvas>
     </div>
 
     <nav class="bg-cardBg border-t border-gray-800 flex justify-around p-2 pb-safe z-10 fixed bottom-0 w-full h-16 shadow-[0_-5px_15px_rgba(0,0,0,0.3)]">
@@ -212,6 +217,15 @@
     <script>
         Chart.register(ChartDataLabels);
         Chart.defaults.plugins.datalabels.display = false;
+
+        // PLUGIN PARA FORZAR FONDO BLANCO EN LA EXTRACCIÓN A JPEG DE LAS GRÁFICAS
+        const whiteBgPlugin = {
+            id: 'customCanvasBackgroundColor',
+            beforeDraw: (chart, args, options) => {
+                const {ctx} = chart; ctx.save(); ctx.globalCompositeOperation = 'destination-over';
+                ctx.fillStyle = options.color || '#ffffff'; ctx.fillRect(0, 0, chart.width, chart.height); ctx.restore();
+            }
+        };
 
         const db = new Dexie('CerviCareDB');
         db.version(1).stores({ registros: '++id, fecha, ejercicio, series, repeticiones, fase' });
@@ -234,6 +248,7 @@
         ];
 
         let miSwiper, chartTendencia = null, chartEquilibrio = null, chartEjercicios = null;
+        let pdfChart1 = null, pdfChart2 = null;
         let timerInterval, tiempoRestante = 15 * 60, timerEstado = 'detenido', endTime = null; 
         let calMonth = new Date().getMonth(), calYear = new Date().getFullYear();
         let diaHistorialActual = getLocalDateStr();
@@ -261,7 +276,12 @@
         }
 
         function irADiapositiva(index) { if(miSwiper) miSwiper.slideTo(index); }
-        function actualizarEstiloPills(activeIndex) { document.querySelectorAll('.chip').forEach((pill, idx) => { if (idx === activeIndex) { pill.classList.replace('bg-transparent', 'bg-neonCyan'); pill.classList.replace('text-gray-400', 'text-darkBg'); pill.classList.replace('border-gray-600', 'border-neonCyan'); pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); } else { pill.classList.replace('bg-neonCyan', 'bg-transparent'); pill.classList.replace('text-darkBg', 'text-gray-400'); pill.classList.replace('border-neonCyan', 'border-gray-600'); } }); }
+        function actualizarEstiloPills(activeIndex) {
+            document.querySelectorAll('.chip').forEach((pill, idx) => {
+                if (idx === activeIndex) { pill.classList.replace('bg-transparent', 'bg-neonCyan'); pill.classList.replace('text-gray-400', 'text-darkBg'); pill.classList.replace('border-gray-600', 'border-neonCyan'); pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); } 
+                else { pill.classList.replace('bg-neonCyan', 'bg-transparent'); pill.classList.replace('text-darkBg', 'text-gray-400'); pill.classList.replace('border-neonCyan', 'border-gray-600'); }
+            });
+        }
 
         function cambiarPestana(id) {
             ['rutina', 'estadisticas', 'ajustes'].forEach(p => { document.getElementById(`vista-${p}`).classList.add('hidden'); document.getElementById(`nav-${p}`).classList.replace('text-neonCyan', 'text-gray-500'); });
@@ -313,43 +333,149 @@
                 const fechaStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
                 const datosDia = evaluacionPorDia[fechaStr];
                 let dotColor = 'bg-transparent', shadowClass = '', clasesBorde = 'border border-transparent', tieneDatos = false;
-                if (datosDia) { tieneDatos = true; const numEj = datosDia.ejercicios.size; const esCompleta = numEj >= RUTINA_TOTAL_EJERCICIOS; if (esCompleta && datosDia.calor) { dotColor = 'bg-neonPurple'; shadowClass = 'shadow-[0_0_8px_rgba(192,132,252,0.6)]'; } else if (esCompleta) { dotColor = 'bg-neonGreen'; shadowClass = 'shadow-[0_0_8px_rgba(74,222,128,0.6)]'; } else if (numEj > 0 && datosDia.calor) { dotColor = 'bg-neonOrange'; shadowClass = 'shadow-[0_0_8px_rgba(251,146,60,0.6)]'; } else if (numEj > 0 || datosDia.calor) { dotColor = 'bg-neonYellow'; shadowClass = 'shadow-[0_0_8px_rgba(250,204,21,0.6)]'; } if (datosDia.electro) clasesBorde = 'ring-2 ring-neonCyan'; }
+                if (datosDia) {
+                    tieneDatos = true; const numEj = datosDia.ejercicios.size; const esCompleta = numEj >= RUTINA_TOTAL_EJERCICIOS;
+                    if (esCompleta && datosDia.calor) { dotColor = 'bg-neonPurple'; shadowClass = 'shadow-[0_0_8px_rgba(192,132,252,0.6)]'; }
+                    else if (esCompleta) { dotColor = 'bg-neonGreen'; shadowClass = 'shadow-[0_0_8px_rgba(74,222,128,0.6)]'; }
+                    else if (numEj > 0 && datosDia.calor) { dotColor = 'bg-neonOrange'; shadowClass = 'shadow-[0_0_8px_rgba(251,146,60,0.6)]'; }
+                    else if (numEj > 0 || datosDia.calor) { dotColor = 'bg-neonYellow'; shadowClass = 'shadow-[0_0_8px_rgba(250,204,21,0.6)]'; }
+                    if (datosDia.electro) clasesBorde = 'ring-2 ring-neonCyan'; 
+                }
                 const bgCelda = fechaStr === hoyStr ? 'bg-gray-800' : 'bg-transparent';
-                container.innerHTML += `<div class="h-10 flex flex-col items-center justify-center rounded-lg ${bgCelda} ${clasesBorde} cursor-pointer hover:bg-gray-700 transition" onclick="document.getElementById('filtro-periodo').value='dia_concreto'; document.getElementById('fecha-unica').value='${fechaStr}'; toggleFechasPersonalizadas(); renderizarGraficos();"><span class="text-xs ${tieneDatos?'text-white font-bold':'text-gray-400'}">${day}</span><div class="w-1.5 h-1.5 rounded-full mt-0.5 ${dotColor} ${shadowClass}"></div></div>`;
+                const textDay = tieneDatos ? 'text-white font-bold' : 'text-gray-400';
+                container.innerHTML += `<div class="h-10 flex flex-col items-center justify-center rounded-lg ${bgCelda} ${clasesBorde} cursor-pointer hover:bg-gray-700 transition" onclick="document.getElementById('filtro-periodo').value='dia_concreto'; document.getElementById('fecha-unica').value='${fechaStr}'; toggleFechasPersonalizadas(); renderizarGraficos();"><span class="text-xs ${textDay}">${day}</span><div class="w-1.5 h-1.5 rounded-full mt-0.5 ${dotColor} ${shadowClass}"></div></div>`;
             }
         }
 
         async function renderizarGraficos() {
             const todos = await db.registros.toArray(); const fPeriodo = document.getElementById('filtro-periodo').value;
             let fInicioStr = null, fFinStr = null; const hoyStr = getLocalDateStr();
+            
             if (fPeriodo === 'hoy') { fInicioStr = hoyStr; fFinStr = hoyStr; }
-            else if (fPeriodo === 'dia_concreto') { fInicioStr = document.getElementById('fecha-unica').value; fFinStr = fInicioStr; }
-            else if (fPeriodo === '7') { let d = new Date(); d.setDate(d.getDate()-7); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
-            else if (fPeriodo === '30') { let d = new Date(); d.setDate(d.getDate()-30); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
+            else if (fPeriodo === 'dia_concreto') { const d = document.getElementById('fecha-unica').value; if(d) { fInicioStr = d; fFinStr = d; } }
+            else if (fPeriodo === '7') { const d = new Date(); d.setDate(d.getDate()-7); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
+            else if (fPeriodo === '30') { const d = new Date(); d.setDate(d.getDate()-30); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
             else if (fPeriodo === 'rango') { fInicioStr = document.getElementById('fecha-inicio').value; fFinStr = document.getElementById('fecha-fin').value; }
+
             const datosFiltradosTemp = todos.filter(r => { if (fInicioStr && r.fecha < fInicioStr) return false; if (fFinStr && r.fecha > fFinStr) return false; return true; });
             const fTipo = document.getElementById('filtro-tipo').value;
-            const datosEquilibrio = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 }, datosTendenciaCat = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} }, datosEjercicios = {}, fechasSet = new Set();
-            datosFiltradosTemp.forEach(reg => { const esCalor = reg.fase.includes('Fase 1'), esElectro = reg.fase.includes('Fase 5'); if (!esCalor && !esElectro) { if (fTipo === 'todos' || reg.fase.includes(fTipo)) { if (reg.fase.includes('Movilidad')) datosEquilibrio['Movilidad'] += reg.repeticiones; if (reg.fase.includes('Fortalecimiento')) datosEquilibrio['Fortalecimiento'] += reg.repeticiones; if (reg.fase.includes('Estiramientos')) datosEquilibrio['Estiramientos'] += reg.repeticiones; if (!datosEjercicios[reg.ejercicio]) datosEjercicios[reg.ejercicio] = 0; datosEjercicios[reg.ejercicio] += reg.repeticiones; } } if (fTipo !== 'todos' && !reg.fase.includes(fTipo)) return; if (fTipo === 'todos' && (esCalor || esElectro)) return;  fechasSet.add(reg.fecha); if (!esCalor && !esElectro) { let cat = reg.fase.includes('Movilidad')?'Movilidad':(reg.fase.includes('Fortalecimiento')?'Fortalecimiento':'Estiramientos'); if (!datosTendenciaCat[cat][reg.fecha]) datosTendenciaCat[cat][reg.fecha] = 0; datosTendenciaCat[cat][reg.fecha] += reg.repeticiones; } });
-            datosEquilibrio.Movilidad = +(datosEquilibrio.Movilidad / PESO_CATEGORIA.Movilidad).toFixed(1); datosEquilibrio.Fortalecimiento = +(datosEquilibrio.Fortalecimiento / PESO_CATEGORIA.Fortalecimiento).toFixed(1); datosEquilibrio.Estiramientos = +(datosEquilibrio.Estiramientos / PESO_CATEGORIA.Estiramientos).toFixed(1);
-            Object.keys(datosTendenciaCat).forEach(cat => { Object.keys(datosTendenciaCat[cat]).forEach(f => { datosTendenciaCat[cat][f] = +(datosTendenciaCat[cat][f] / PESO_CATEGORIA[cat]).toFixed(1); }); });
+            
+            const datosEquilibrio = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 };
+            const datosTendenciaCat = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} };
+            const datosEjercicios = {}; 
+            const fechasSet = new Set();
+
+            datosFiltradosTemp.forEach(reg => {
+                const esCalor = reg.fase.includes('Fase 1'), esElectro = reg.fase.includes('Fase 5');
+                
+                if (!esCalor && !esElectro) {
+                    if (fTipo === 'todos' || reg.fase.includes(fTipo)) {
+                        if (reg.fase.includes('Movilidad')) datosEquilibrio['Movilidad'] += reg.repeticiones;
+                        if (reg.fase.includes('Fortalecimiento')) datosEquilibrio['Fortalecimiento'] += reg.repeticiones;
+                        if (reg.fase.includes('Estiramientos')) datosEquilibrio['Estiramientos'] += reg.repeticiones;
+                        if (!datosEjercicios[reg.ejercicio]) datosEjercicios[reg.ejercicio] = 0;
+                        datosEjercicios[reg.ejercicio] += reg.repeticiones;
+                    }
+                }
+
+                if (fTipo !== 'todos' && !reg.fase.includes(fTipo)) return;
+                if (fTipo === 'todos' && (esCalor || esElectro)) return; 
+                
+                let claveStr = reg.fecha;
+                fechasSet.add(claveStr);
+
+                if (!esCalor && !esElectro) {
+                    let cat = '';
+                    if (reg.fase.includes('Movilidad')) cat = 'Movilidad';
+                    else if (reg.fase.includes('Fortalecimiento')) cat = 'Fortalecimiento';
+                    else if (reg.fase.includes('Estiramientos')) cat = 'Estiramientos';
+
+                    if (cat) {
+                        if (!datosTendenciaCat[cat][claveStr]) datosTendenciaCat[cat][claveStr] = 0;
+                        datosTendenciaCat[cat][claveStr] += reg.repeticiones;
+                    }
+                }
+            });
+
+            datosEquilibrio.Movilidad = +(datosEquilibrio.Movilidad / PESO_CATEGORIA.Movilidad).toFixed(1);
+            datosEquilibrio.Fortalecimiento = +(datosEquilibrio.Fortalecimiento / PESO_CATEGORIA.Fortalecimiento).toFixed(1);
+            datosEquilibrio.Estiramientos = +(datosEquilibrio.Estiramientos / PESO_CATEGORIA.Estiramientos).toFixed(1);
+
+            Object.keys(datosTendenciaCat).forEach(cat => {
+                Object.keys(datosTendenciaCat[cat]).forEach(fecha => {
+                    datosTendenciaCat[cat][fecha] = +(datosTendenciaCat[cat][fecha] / PESO_CATEGORIA[cat]).toFixed(1);
+                });
+            });
+
+            if (chartTendencia) chartTendencia.destroy(); 
             const fechas = Array.from(fechasSet).sort();
-            let datasetsLinea = (fTipo === 'todos') ? [ { label: 'Movilidad', pointStyle: 'circle', pointRadius: 5, data: fechas.map(f => datosTendenciaCat['Movilidad'][f] || 0), borderColor: '#2dd4bf', tension: 0.4 }, { label: 'Fortalecimiento', pointStyle: 'rect', pointRadius: 5, data: fechas.map(f => datosTendenciaCat['Fortalecimiento'][f] || 0), borderColor: '#3b82f6', tension: 0.4 }, { label: 'Estiramientos', pointStyle: 'triangle', pointRadius: 6, data: fechas.map(f => datosTendenciaCat['Estiramientos'][f] || 0), borderColor: '#c084fc', tension: 0.4 } ] : [ { label: fTipo, data: fechas.map(f => datosTendenciaCat[fTipo][f] || 0), borderColor: fTipo==='Fortalecimiento'?'#3b82f6':(fTipo==='Estiramientos'?'#c084fc':'#2dd4bf'), fill: true, tension: 0.4 } ];
-            if (fTipo === 'todos') { for (let i = 0; i < fechas.length; i++) { let mapVal = {}; datasetsLinea.forEach((ds, dsIdx) => { let v = ds.data[i]; if (v > 0) { if(!mapVal[v]) mapVal[v] = []; mapVal[v].push(dsIdx); } }); Object.keys(mapVal).forEach(v => { let indices = mapVal[v]; if(indices.length > 1) { let offset = -0.05 * (indices.length - 1) / 2; indices.forEach(idx => { datasetsLinea[idx].data[i] = parseFloat(v) + offset; offset += 0.05; }); } }); } }
-            if (chartTendencia) chartTendencia.destroy(); chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), { type: 'line', data: { labels: fechas, datasets: datasetsLinea }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: fTipo === 'todos', labels: { usePointStyle: true, color: '#cbd5e1' } }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + (Math.round(c.raw*10)/10).toFixed(1) + ' media' } } } } });
-            if (chartEquilibrio) chartEquilibrio.destroy(); chartEquilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), { type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } }, datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (v, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); return sum>0 ? Math.round((v/sum)*100)+'%' : ''; } } } } });
-            if (chartEjercicios) chartEjercicios.destroy(); const nombresEj = Object.keys(datosEjercicios).sort((a,b) => datosEjercicios[b] - datosEjercicios[a]);
-            chartEjercicios = new Chart(document.getElementById('grafico-ejercicios').getContext('2d'), { type: 'bar', data: { labels: nombresEj, datasets: [{ data: nombresEj.map(e => datosEjercicios[e]), backgroundColor: '#2dd4bf', barThickness: 6, borderRadius: 3 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { top: 15, right: 30, left: 0 } }, scales: { x: { display: false }, y: { ticks: { mirror: true, crossAlign: 'near', color: '#cbd5e1', font: { size: 11, weight: 'bold' }, labelOffset: -14 }, afterFit: s => s.width = 0, grid: { display: false }, border: { display: false } } }, plugins: { legend: false, tooltip: false, datalabels: { display: true, align: 'right', anchor: 'end', offset: 4, formatter: Math.round, color: '#2dd4bf', font: { weight: 'bold', size: 11 } } } } });
+            let datasetsLinea = [];
+            
+            if (fTipo === 'todos') {
+                datasetsLinea = [
+                    { label: 'Movilidad', pointStyle: 'circle', pointRadius: 5, pointHoverRadius: 7, data: fechas.map(f => datosTendenciaCat['Movilidad'][f] || 0), borderColor: '#2dd4bf', backgroundColor: 'rgba(45, 212, 191, 0.1)', fill: false, tension: 0.4 },
+                    { label: 'Fortalecimiento', pointStyle: 'rect', pointRadius: 5, pointHoverRadius: 7, data: fechas.map(f => datosTendenciaCat['Fortalecimiento'][f] || 0), borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: false, tension: 0.4 },
+                    { label: 'Estiramientos', pointStyle: 'triangle', pointRadius: 6, pointHoverRadius: 8, data: fechas.map(f => datosTendenciaCat['Estiramientos'][f] || 0), borderColor: '#c084fc', backgroundColor: 'rgba(192, 132, 252, 0.1)', fill: false, tension: 0.4 }
+                ];
+
+                for (let i = 0; i < fechas.length; i++) {
+                    let mapVal = {};
+                    datasetsLinea.forEach((ds, dsIdx) => { let v = ds.data[i]; if (v > 0) { if(!mapVal[v]) mapVal[v] = []; mapVal[v].push(dsIdx); } });
+                    Object.keys(mapVal).forEach(v => {
+                        let indices = mapVal[v];
+                        if(indices.length > 1) {
+                            let offset = -0.05 * (indices.length - 1) / 2; 
+                            indices.forEach(idx => { datasetsLinea[idx].data[i] = parseFloat(v) + offset; offset += 0.05; });
+                        }
+                    });
+                }
+            } else {
+                let color = '#2dd4bf', bg = 'rgba(45, 212, 191, 0.2)', pStyle = 'circle';
+                if (fTipo === 'Fortalecimiento') { color = '#3b82f6'; bg = 'rgba(59, 130, 246, 0.2)'; pStyle = 'rect'; }
+                if (fTipo === 'Estiramientos') { color = '#c084fc'; bg = 'rgba(192, 132, 252, 0.2)'; pStyle = 'triangle'; }
+                datasetsLinea = [{ label: fTipo, pointStyle: pStyle, pointRadius: 5, pointHoverRadius: 7, data: fechas.map(f => datosTendenciaCat[fTipo][f] || 0), borderColor: color, backgroundColor: bg, fill: true, tension: 0.4 }];
+            }
+
+            chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), { 
+                type: 'line', data: { labels: fechas, datasets: datasetsLinea }, 
+                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: fTipo === 'todos', labels: { usePointStyle: true, color: '#cbd5e1', boxWidth: 10 } }, tooltip: { callbacks: { label: function(context) { let realVal = Math.round(context.raw * 10) / 10; return context.dataset.label + ': ' + realVal.toFixed(1) + ' medias/ej'; } } }, datalabels: { display: false } } } 
+            });
+            
+            if (chartEquilibrio) chartEquilibrio.destroy();
+            chartEquilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), { 
+                type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'], borderWidth: 0 }] }, 
+                options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } }, tooltip: { callbacks: { label: function(context) { return ' ' + context.label + ': ' + context.parsed + ' medias/ej'; } } }, datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (value, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); if(sum === 0 || value === 0) return ''; return Math.round((value / sum) * 100) + '%'; } } } } 
+            });
+
+            if (chartEjercicios) chartEjercicios.destroy();
+            const nombresEj = Object.keys(datosEjercicios).sort((a,b) => datosEjercicios[b] - datosEjercicios[a]);
+            const valsEj = nombresEj.map(e => datosEjercicios[e]);
+
+            chartEjercicios = new Chart(document.getElementById('grafico-ejercicios').getContext('2d'), {
+                type: 'bar',
+                data: { labels: nombresEj, datasets: [{ label: 'Repeticiones Totales', data: valsEj, backgroundColor: '#2dd4bf', barThickness: 6, borderRadius: 3 }] },
+                options: { 
+                    indexAxis: 'y', 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    layout: { padding: { top: 25, right: 30, left: 0, bottom: 0 } }, 
+                    scales: { 
+                        x: { display: false, beginAtZero: true }, 
+                        y: { display: true, grid: { display: false, drawBorder: false }, border: { display: false }, ticks: { display: true, mirror: true, crossAlign: 'near', color: '#cbd5e1', font: { size: 11, weight: 'bold' }, padding: 0, labelOffset: -14, z: 10 }, afterFit: function(scale) { scale.width = 0; } } 
+                    }, 
+                    plugins: { legend: { display: false }, tooltip: { enabled: false }, datalabels: { display: true, align: 'right', anchor: 'end', offset: 4, formatter: Math.round, color: '#2dd4bf', font: { weight: 'bold', size: 11 } } } 
+                }
+            });
         }
 
-        // --- SISTEMA EXPORTACIÓN PDF (DATOS PUROS - ALTA FIABILIDAD) ---
+        // --- SISTEMA PDF NATIVO (jsPDF) ---
         function toggleFiltroDiaPDF() { document.getElementById('pdf-input-dia').classList.toggle('hidden', document.getElementById('pdf-rango').value !== 'especifico'); }
         function abrirModalPDF() { document.getElementById('modal-pdf').classList.remove('hidden'); }
         function cerrarModalPDF() { document.getElementById('modal-pdf').classList.add('hidden'); }
 
         async function ejecutarGeneracionPDF() {
-            const btn = document.getElementById('btn-generar-pdf');
-            btn.innerText = "Procesando..."; btn.disabled = true;
+            const btn = document.getElementById('btn-generar-pdf'); const originalText = btn.innerText;
+            btn.innerText = "Generando..."; btn.disabled = true;
             
             try {
                 const rangoVal = document.getElementById('pdf-rango').value;
@@ -361,47 +487,66 @@
 
                 const todos = await db.registros.toArray();
                 const filtrados = todos.filter(r => (!fInicio || r.fecha >= fInicio) && (!fFin || r.fecha <= fFin));
-                filtrados.sort((a,b) => b.fecha.localeCompare(a.fecha)); // De más nuevo a más viejo
-
-                document.getElementById('pdf-meta-info').innerText = `INFORME DE DATOS\nPeriodo: ${fInicio || 'Historial Completo'} hasta ${fFin}\nRegistros encontrados: ${filtrados.length}`;
                 
-                const contenedor = document.getElementById('pdf-contenido-datos');
-                contenedor.innerHTML = '';
+                // Procesar datos para gráficas invisibles
+                const dEq = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 }, dTen = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} }, fechasSet = new Set();
+                filtrados.forEach(r => { const esT = r.fase.includes('Fase 1')||r.fase.includes('Fase 5'); if(!esT) { let cat = r.fase.includes('Movilidad')?'Movilidad':(r.fase.includes('Fortalecimiento')?'Fortalecimiento':'Estiramientos'); dEq[cat] += r.repeticiones; if(!dTen[cat][r.fecha]) dTen[cat][r.fecha]=0; dTen[cat][r.fecha]+=r.repeticiones; fechasSet.add(r.fecha); } });
+                dEq.Movilidad = +(dEq.Movilidad/5).toFixed(1); dEq.Fortalecimiento = +(dEq.Fortalecimiento/2).toFixed(1); dEq.Estiramientos = +(dEq.Estiramientos/2).toFixed(1);
+                Object.keys(dTen).forEach(cat => { Object.keys(dTen[cat]).forEach(f => { dTen[cat][f] = +(dTen[cat][f]/PESO_CATEGORIA[cat]).toFixed(1); }); });
+                const fList = Array.from(fechasSet).sort();
 
-                if (filtrados.length === 0) {
-                    contenedor.innerHTML = '<p style="text-align:center; padding: 40px; color: #999;">No hay registros de actividad para el periodo seleccionado.</p>';
-                } else {
-                    let currentFecha = "";
-                    filtrados.forEach(r => {
-                        if (r.fecha !== currentFecha) {
-                            currentFecha = r.fecha;
-                            contenedor.innerHTML += `<h2 style="margin-top:25px; background:#f0f7f6; padding:8px 12px; color:#0f766e; font-size:16px; border-radius:4px; border-left:4px solid #0f766e;">${r.fecha}</h2>`;
-                        }
-                        const esTerapia = r.fase.includes('Fase 1') || r.fase.includes('Fase 5');
-                        contenedor.innerHTML += `
-                            <div style="padding: 10px 12px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
-                                <div style="font-weight: bold; font-size: 13px;">${r.ejercicio}</div>
-                                <div style="color: #666; font-size: 12px;">${esTerapia ? '✓ Aplicado' : r.series + ' series x ' + r.repeticiones + ' reps'}</div>
-                            </div>`;
+                // Renderizar a Canvas Oculto
+                if(pdfChart1) pdfChart1.destroy();
+                pdfChart1 = new Chart(document.getElementById('pdf-canvas-tendencia').getContext('2d'), { type: 'line', data: { labels: fList, datasets: [ { label: 'Movilidad', pointStyle:'circle', data: fList.map(f => dTen['Movilidad'][f]||0), borderColor: '#2dd4bf', tension: 0.4 }, { label: 'Fortalecimiento', pointStyle:'rect', data: fList.map(f => dTen['Fortalecimiento'][f]||0), borderColor: '#3b82f6', tension: 0.4 }, { label: 'Estiramientos', pointStyle:'triangle', data: fList.map(f => dTen['Estiramientos'][f]||0), borderColor: '#c084fc', tension: 0.4 } ] }, options: { animation: false, responsive: false, plugins: { datalabels: {display:false}, legend: { labels: { usePointStyle: true, color: '#333' } }, customCanvasBackgroundColor: { color: 'white'} }, scales: { y: { beginAtZero: true } } }, plugins: [whiteBgPlugin] });
+                
+                if(pdfChart2) pdfChart2.destroy();
+                pdfChart2 = new Chart(document.getElementById('pdf-canvas-equilibrio').getContext('2d'), { type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [dEq.Movilidad, dEq.Fortalecimiento, dEq.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'] }] }, options: { animation: false, responsive: false, plugins: { datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (v, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); return sum>0 ? Math.round((v/sum)*100)+'%' : ''; } }, legend: { position: 'bottom', labels: { color: '#333' } }, customCanvasBackgroundColor: { color: 'white'} } }, plugins: [whiteBgPlugin, ChartDataLabels] });
+
+                // Esperar un milisegundo para asegurar que los canvas tienen las imágenes pintadas
+                await new Promise(r => setTimeout(r, 200));
+
+                const imgTen = document.getElementById('pdf-canvas-tendencia').toDataURL('image/jpeg', 1.0);
+                const imgEq = document.getElementById('pdf-canvas-equilibrio').toDataURL('image/jpeg', 1.0);
+
+                // Crear PDF con jsPDF nativo
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                doc.setFontSize(22); doc.setTextColor(15, 118, 110); doc.text("CerviCare - Informe Clínico", 14, 20);
+                doc.setFontSize(11); doc.setTextColor(100, 100, 100); doc.text(`Periodo evaluado: ${fInicio || 'Inicio'} al ${fFin}`, 14, 28);
+
+                doc.setFontSize(10); doc.setTextColor(150, 150, 150); doc.text("Tendencia de Esfuerzo (Reps/Ej)", 14, 40);
+                doc.addImage(imgTen, 'JPEG', 14, 45, 90, 52);
+                
+                doc.text("Equilibrio Relativo", 110, 40);
+                doc.addImage(imgEq, 'JPEG', 110, 45, 75, 75);
+
+                let finalY = 110;
+
+                // Generar Tabla de registros
+                const tableBody = [];
+                const agrupados = {}; filtrados.forEach(r => { if(!agrupados[r.fecha]) agrupados[r.fecha] = []; agrupados[r.fecha].push(r); });
+                Object.keys(agrupados).sort().reverse().forEach(f => {
+                    tableBody.push([{ content: f, colSpan: 3, styles: { fillColor: [240, 240, 240], textColor: [0, 0, 0], fontStyle: 'bold' } }]);
+                    agrupados[f].forEach(r => {
+                        const esTerapia = r.fase.includes('Fase 1')||r.fase.includes('Fase 5');
+                        tableBody.push(['', r.ejercicio, esTerapia ? 'Terapia única' : r.series + ' x ' + r.repeticiones]);
                     });
+                });
+
+                if (tableBody.length > 0) {
+                    doc.autoTable({ startY: finalY, head: [['Fecha', 'Ejercicio / Actividad', 'Volumen']], body: tableBody, theme: 'grid', styles: { fontSize: 9 }, headStyles: { fillColor: [15, 118, 110] } });
+                } else {
+                    doc.text("No hay registros en el periodo seleccionado.", 14, finalY);
                 }
 
-                const lab = document.getElementById('pdf-laboratorio');
-                const opt = { 
-                    margin: 15, 
-                    filename: `CerviCare_Datos_${fFin}.pdf`, 
-                    image: { type: 'jpeg', quality: 0.98 }, 
-                    html2canvas: { scale: 2, logging: false, useCORS: true }, 
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } 
-                };
-                
-                await html2pdf().set(opt).from(lab).save();
-                
-            } catch (e) { console.error(e); alert("Error al generar el documento. Intenta desde un navegador estándar."); }
-            btn.innerText = "Exportar"; btn.disabled = false; cerrarModalPDF();
+                doc.save(`CerviCare_Reporte_${fFin}.pdf`);
+
+            } catch (e) { console.error(e); alert("Error al compilar el PDF."); }
+            btn.innerText = originalText; btn.disabled = false; cerrarModalPDF();
         }
 
-        // --- SISTEMA DE HISTORIAL Y EDICIÓN ---
+        // --- HISTORIAL ---
         function cambiarDiaHistorial(offset) { let d = new Date(diaHistorialActual); d.setDate(d.getDate() + offset); diaHistorialActual = getLocalDateStr(d); document.getElementById('fecha-historial-input').value = diaHistorialActual; cargarHistorial(); }
         function seleccionarDiaHistorial(v) { if(!v) return; diaHistorialActual = v; cargarHistorial(); }
         async function cargarHistorial() {
@@ -412,7 +557,7 @@
         async function editarRegistro(id) { const r = await db.registros.get(id); if(r.fase.includes('Fase 1')||r.fase.includes('Fase 5')) return alert("Terapias no editables."); let ns = prompt("Nuevas SERIES:", r.series), nr = prompt("Nuevas REPETICIONES:", r.repeticiones); if(ns&&nr) { await db.registros.update(id, { series: parseInt(ns), repeticiones: parseInt(nr) }); cargarHistorial(); actualizarVistasProgreso(); } }
         async function borrarRegistro(id) { if(confirm("¿Borrar?")){ await db.registros.delete(id); cargarHistorial(); actualizarVistasProgreso(); } }
         async function borrarTodosLosDatos() { if(confirm("⚠️ ¿BORRAR TODO?")){ await db.registros.clear(); location.reload(); } }
-        async function exportarCSV() { const d = await db.registros.toArray(); let c="Fecha,Fase,Ejercicio,Series,Reps\n"; d.forEach(r=>c+=`${r.fecha},${r.fase},${r.ejercicio},${r.series},${r.repeticiones}\n`); descargarArchivo(c,`cervicare.csv`,'text/csv'); }
+        async function exportarCSV() { const d = await db.registros.toArray(); let c="Fecha,Ejercicio,Series,Reps\n"; d.forEach(r=>c+=`${r.fecha},${r.ejercicio},${r.series},${r.repeticiones}\n`); descargarArchivo(c,`cervicare.csv`,'text/csv'); }
         async function exportarBackup() { descargarArchivo(JSON.stringify(await db.registros.toArray()),`cervicare_backup.json`,'application/json'); }
         function importarBackup(e) { const r=new FileReader(); r.onload=async(ev)=>{ await db.registros.clear(); await db.registros.bulkAdd(JSON.parse(ev.target.result)); alert("Éxito."); location.reload(); }; r.readAsText(e.target.files[0]); }
         function descargarArchivo(c, n, t) { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([c],{type:t})); a.download=n; a.click(); }
