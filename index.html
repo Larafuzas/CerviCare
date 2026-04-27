@@ -34,6 +34,8 @@
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
         body { -webkit-tap-highlight-color: transparent; user-select: none; }
@@ -131,13 +133,20 @@
         </section>
 
         <section id="vista-ajustes" class="hidden h-full w-full p-4 overflow-y-auto pb-24">
-            <h2 class="text-xl font-bold text-white mb-4">Ajustes y Datos</h2>
-            <div class="grid grid-cols-2 gap-3 mb-6">
-                <button onclick="exportarCSV()" class="bg-cardBg border border-neonCyan text-neonCyan py-2 rounded text-sm font-semibold shadow-md">Exportar CSV</button>
-                <button onclick="exportarBackup()" class="bg-cardBg border border-neonCyan text-neonCyan py-2 rounded text-sm font-semibold shadow-md">Backup JSON</button>
-                <button onclick="document.getElementById('import-file').click()" class="bg-cardBg border border-gray-500 text-gray-300 py-2 rounded text-sm font-semibold shadow-md">Restaurar JSON</button>
+            <h2 class="text-xl font-bold text-white mb-4">Ajustes y Exportación</h2>
+            
+            <div class="bg-blueDark/20 p-4 rounded-xl border border-blueDark mb-6 shadow-lg">
+                <h3 class="text-blueLight font-semibold mb-2 text-sm uppercase tracking-wide">Generar Informe Clínico (PDF)</h3>
+                <p class="text-xs text-gray-400 mb-3">Extrae un documento profesional con gráficas y el registro detallado para tu fisioterapeuta.</p>
+                <button onclick="abrirModalPDF()" class="w-full bg-blueDark text-white py-3 rounded-lg font-bold shadow-md hover:bg-blue-700 transition">Generar PDF...</button>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 mb-6">
+                <button onclick="exportarCSV()" class="bg-cardBg border border-neonCyan text-neonCyan py-2 rounded text-xs font-semibold shadow-md">Exportar CSV</button>
+                <button onclick="exportarBackup()" class="bg-cardBg border border-neonCyan text-neonCyan py-2 rounded text-xs font-semibold shadow-md">Backup JSON</button>
+                <button onclick="document.getElementById('import-file').click()" class="bg-cardBg border border-gray-500 text-gray-300 py-2 rounded text-xs font-semibold shadow-md">Restaurar JSON</button>
                 <input type="file" id="import-file" class="hidden" accept=".json" onchange="importarBackup(event)">
-                <button onclick="borrarTodosLosDatos()" class="bg-red-900 border border-red-500 text-red-200 py-2 rounded text-sm font-semibold shadow-md">Borrar Todo</button>
+                <button onclick="borrarTodosLosDatos()" class="col-span-3 bg-red-900/40 border border-red-500 text-red-200 py-2 rounded text-xs font-semibold shadow-md mt-2">Borrar Todos los Datos de la App</button>
             </div>
 
             <h3 class="text-neonCyan font-semibold mb-3 text-sm uppercase tracking-wide">Registro Diario</h3>
@@ -151,6 +160,43 @@
         </section>
 
     </main>
+
+    <div id="modal-pdf" class="hidden fixed inset-0 bg-black/90 z-50 flex justify-center items-center p-4 backdrop-blur-sm">
+        <div class="bg-cardBg p-6 rounded-xl border border-blueDark w-full max-w-sm shadow-2xl relative">
+            <h3 class="text-lg font-bold text-white mb-2">Informe Clínico PDF</h3>
+            <p class="text-xs text-gray-400 mb-4">Selecciona el periodo que deseas incluir en el reporte.</p>
+            
+            <select id="pdf-rango" class="w-full bg-darkBg border border-gray-600 text-sm rounded p-3 text-white outline-none mb-6">
+                <option value="7">Últimos 7 días</option>
+                <option value="30" selected>Últimos 30 días</option>
+                <option value="todo">Historial completo</option>
+            </select>
+
+            <div class="flex gap-3">
+                <button onclick="cerrarModalPDF()" class="w-1/2 bg-gray-700 text-white font-bold py-2.5 rounded-lg transition-colors">Cancelar</button>
+                <button onclick="ejecutarGeneracionPDF()" id="btn-generar-pdf" class="w-1/2 bg-blueDark text-white font-bold py-2.5 rounded-lg shadow-md transition-colors flex justify-center items-center">Generar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pdf-laboratorio" class="fixed top-0 bg-white text-black p-8 z-[-10]" style="left: -9999px; width: 210mm;">
+        <h1 class="text-3xl font-bold border-b-2 border-gray-300 pb-2 mb-4" style="color: #0f766e;">CerviCare - Informe de Rehabilitación</h1>
+        <p class="text-sm text-gray-600 mb-6" id="pdf-fechas"></p>
+        
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="border border-gray-300 p-4 rounded-lg text-center">
+                <h4 class="text-xs uppercase text-gray-500 font-bold">Tendencia de Esfuerzo (Reps/Ej)</h4>
+                <div class="w-full h-48 relative mt-2"><canvas id="pdf-chart-tendencia"></canvas></div>
+            </div>
+            <div class="border border-gray-300 p-4 rounded-lg text-center">
+                <h4 class="text-xs uppercase text-gray-500 font-bold">Equilibrio Relativo</h4>
+                <div class="w-full h-48 relative mt-2"><canvas id="pdf-chart-equilibrio"></canvas></div>
+            </div>
+        </div>
+
+        <h3 class="text-lg font-bold mb-3 border-b border-gray-200 pb-1" style="color: #0f766e;">Registro Detallado por Días</h3>
+        <div id="pdf-tabla-registros" class="text-xs"></div>
+    </div>
 
     <nav class="bg-cardBg border-t border-gray-800 flex justify-around p-2 pb-safe z-10 fixed bottom-0 w-full h-16 shadow-[0_-5px_15px_rgba(0,0,0,0.3)]">
         <button id="nav-rutina" class="nav-btn text-neonCyan flex flex-col items-center justify-center w-1/3 transition-colors" onclick="cambiarPestana('rutina')">
@@ -192,8 +238,8 @@
         ];
 
         let miSwiper, chartTendencia = null, chartEquilibrio = null, chartEjercicios = null;
+        let pdfChartTendencia = null, pdfChartEquilibrio = null; // Instancias PDF
         let timerInterval, tiempoRestante = 15 * 60, timerEstado = 'detenido', endTime = null; 
-        
         let calMonth = new Date().getMonth(), calYear = new Date().getFullYear();
         const nombresMeses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
@@ -378,30 +424,24 @@
 
             datosFiltradosTemp.forEach(reg => {
                 const esCalor = reg.fase.includes('Fase 1'), esElectro = reg.fase.includes('Fase 5');
-                
                 if (!esCalor && !esElectro) {
                     if (fTipo === 'todos' || reg.fase.includes(fTipo)) {
                         if (reg.fase.includes('Movilidad')) datosEquilibrio['Movilidad'] += reg.repeticiones;
                         if (reg.fase.includes('Fortalecimiento')) datosEquilibrio['Fortalecimiento'] += reg.repeticiones;
                         if (reg.fase.includes('Estiramientos')) datosEquilibrio['Estiramientos'] += reg.repeticiones;
-
                         if (!datosEjercicios[reg.ejercicio]) datosEjercicios[reg.ejercicio] = 0;
                         datosEjercicios[reg.ejercicio] += reg.repeticiones;
                     }
                 }
-
                 if (fTipo !== 'todos' && !reg.fase.includes(fTipo)) return;
                 if (fTipo === 'todos' && (esCalor || esElectro)) return; 
-                
                 let claveStr = reg.fecha;
                 fechasSet.add(claveStr);
-
                 if (!esCalor && !esElectro) {
                     let cat = '';
                     if (reg.fase.includes('Movilidad')) cat = 'Movilidad';
                     else if (reg.fase.includes('Fortalecimiento')) cat = 'Fortalecimiento';
                     else if (reg.fase.includes('Estiramientos')) cat = 'Estiramientos';
-
                     if (cat) {
                         if (!datosTendenciaCat[cat][claveStr]) datosTendenciaCat[cat][claveStr] = 0;
                         datosTendenciaCat[cat][claveStr] += reg.repeticiones;
@@ -422,14 +462,12 @@
             if (chartTendencia) chartTendencia.destroy(); 
             const fechas = Array.from(fechasSet).sort();
             let datasetsLinea = [];
-            
             if (fTipo === 'todos') {
                 datasetsLinea = [
                     { label: 'Movilidad', pointStyle: 'circle', pointRadius: 5, pointHoverRadius: 7, data: fechas.map(f => datosTendenciaCat['Movilidad'][f] || 0), borderColor: '#2dd4bf', backgroundColor: 'rgba(45, 212, 191, 0.1)', fill: false, tension: 0.4 },
                     { label: 'Fortalecimiento', pointStyle: 'rect', pointRadius: 5, pointHoverRadius: 7, data: fechas.map(f => datosTendenciaCat['Fortalecimiento'][f] || 0), borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: false, tension: 0.4 },
                     { label: 'Estiramientos', pointStyle: 'triangle', pointRadius: 6, pointHoverRadius: 8, data: fechas.map(f => datosTendenciaCat['Estiramientos'][f] || 0), borderColor: '#c084fc', backgroundColor: 'rgba(192, 132, 252, 0.1)', fill: false, tension: 0.4 }
                 ];
-
                 for (let i = 0; i < fechas.length; i++) {
                     let mapVal = {};
                     datasetsLinea.forEach((ds, dsIdx) => { let v = ds.data[i]; if (v > 0) { if(!mapVal[v]) mapVal[v] = []; mapVal[v].push(dsIdx); } });
@@ -459,7 +497,6 @@
                 options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } }, tooltip: { callbacks: { label: function(context) { return ' ' + context.label + ': ' + context.parsed + ' medias/ej'; } } }, datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (value, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); if(sum === 0 || value === 0) return ''; return Math.round((value / sum) * 100) + '%'; } } } } 
             });
 
-            // GRÁFICO BARRAS (ALINEADO ABSOLUTO A LA IZQUIERDA CON SCALE WIDTH = 0)
             if (chartEjercicios) chartEjercicios.destroy();
             const nombresEj = Object.keys(datosEjercicios).sort((a,b) => datosEjercicios[b] - datosEjercicios[a]);
             const valsEj = nombresEj.map(e => datosEjercicios[e]);
@@ -468,55 +505,154 @@
                 type: 'bar',
                 data: { labels: nombresEj, datasets: [{ label: 'Repeticiones Totales', data: valsEj, backgroundColor: '#2dd4bf', barThickness: 6, borderRadius: 3 }] },
                 options: { 
-                    indexAxis: 'y', 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    layout: { padding: { top: 25, right: 30, left: 0, bottom: 0 } }, // Sin padding izquierdo
+                    indexAxis: 'y', responsive: true, maintainAspectRatio: false, 
+                    layout: { padding: { top: 25, right: 30, left: 0, bottom: 0 } },
                     scales: { 
                         x: { display: false, beginAtZero: true }, 
-                        y: { 
-                            display: true, 
-                            grid: { display: false, drawBorder: false }, 
-                            border: { display: false }, 
-                            ticks: { 
-                                display: true, 
-                                mirror: true, // Dibuja el texto dentro del área del gráfico
-                                crossAlign: 'near', // Fuerza alineación a la izquierda
-                                color: '#cbd5e1', 
-                                font: { size: 11, weight: 'bold' }, 
-                                padding: 0, 
-                                labelOffset: -12, // Sube el texto por encima de la barra
-                                z: 10 
-                            },
-                            afterFit: function(scale) {
-                                scale.width = 0; // ¡Magia! Elimina la reserva de espacio del eje Y
-                            }
-                        } 
+                        y: { display: true, grid: { display: false, drawBorder: false }, border: { display: false }, ticks: { display: true, mirror: true, crossAlign: 'near', color: '#cbd5e1', font: { size: 11, weight: 'bold' }, padding: 0, labelOffset: -14, z: 10 }, afterFit: function(scale) { scale.width = 0; } } 
                     }, 
-                    plugins: { 
-                        legend: { display: false }, 
-                        tooltip: { enabled: false }, 
-                        datalabels: { 
-                            display: true, 
-                            align: 'right', 
-                            anchor: 'end', 
-                            offset: 4, 
-                            formatter: Math.round, 
-                            color: '#2dd4bf', 
-                            font: { weight: 'bold', size: 11 } 
-                        } 
-                    } 
+                    plugins: { legend: { display: false }, tooltip: { enabled: false }, datalabels: { display: true, align: 'right', anchor: 'end', offset: 4, formatter: Math.round, color: '#2dd4bf', font: { weight: 'bold', size: 11 } } } 
                 }
             });
         }
 
-        function cambiarDiaHistorial(offset) {
-            let d = new Date(diaHistorialActual); d.setDate(d.getDate() + offset);
-            diaHistorialActual = getLocalDateStr(d);
-            document.getElementById('fecha-historial-input').value = diaHistorialActual;
-            cargarHistorial();
+        // --- SISTEMA DE EXPORTACIÓN PDF (html2pdf) ---
+        function abrirModalPDF() {
+            document.getElementById('modal-pdf').classList.remove('hidden');
         }
 
+        function cerrarModalPDF() {
+            document.getElementById('modal-pdf').classList.add('hidden');
+        }
+
+        async function ejecutarGeneracionPDF() {
+            const btn = document.getElementById('btn-generar-pdf');
+            btn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generando...`;
+            
+            try {
+                const rangoStr = document.getElementById('pdf-rango').options[document.getElementById('pdf-rango').selectedIndex].text;
+                const rangoVal = document.getElementById('pdf-rango').value;
+                document.getElementById('pdf-fechas').innerText = `Periodo: ${rangoStr}`;
+                
+                const todos = await db.registros.toArray();
+                let datosFiltrados = todos;
+                
+                if (rangoVal !== 'todo') {
+                    const dias = parseInt(rangoVal);
+                    const limite = new Date();
+                    limite.setDate(limite.getDate() - dias);
+                    const limiteStr = getLocalDateStr(limite);
+                    datosFiltrados = todos.filter(r => r.fecha >= limiteStr);
+                }
+
+                // Generar lista de registros para el PDF
+                const tabla = document.getElementById('pdf-tabla-registros');
+                tabla.innerHTML = '';
+                
+                const datosPorFecha = {};
+                datosFiltrados.forEach(r => {
+                    if(!datosPorFecha[r.fecha]) datosPorFecha[r.fecha] = [];
+                    datosPorFecha[r.fecha].push(r);
+                });
+                
+                const fechasOrdenadas = Object.keys(datosPorFecha).sort().reverse();
+                
+                if(fechasOrdenadas.length === 0) {
+                    tabla.innerHTML = '<p class="text-gray-500">No hay registros en el periodo seleccionado.</p>';
+                } else {
+                    fechasOrdenadas.forEach(f => {
+                        let htmlDia = `<div class="mb-4 break-inside-avoid"><h4 class="font-bold border-b border-gray-300 mb-2">${f}</h4><ul class="list-disc pl-5 text-gray-700">`;
+                        datosPorFecha[f].forEach(r => {
+                            const esTerapia = r.fase.includes('Fase 1') || r.fase.includes('Fase 5');
+                            htmlDia += `<li><strong>${r.ejercicio}</strong> - ${esTerapia ? 'Terapia de unidad' : r.series + ' series, ' + r.repeticiones + ' reps'}</li>`;
+                        });
+                        htmlDia += `</ul></div>`;
+                        tabla.innerHTML += htmlDia;
+                    });
+                }
+
+                // Dibujar gráficas exclusivas para el PDF
+                await renderizarGraficosPDF(datosFiltrados);
+
+                // Esperar un instante para que el Canvas termine de renderizar
+                setTimeout(() => {
+                    const opt = {
+                        margin:       15,
+                        filename:     `CerviCare_Informe_${new Date().toISOString().slice(0,10)}.pdf`,
+                        image:        { type: 'jpeg', quality: 0.98 },
+                        html2canvas:  { scale: 2, useCORS: true },
+                        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                    };
+                    
+                    html2pdf().set(opt).from(document.getElementById('pdf-laboratorio')).save().then(() => {
+                        btn.innerHTML = 'Generar';
+                        cerrarModalPDF();
+                    });
+                }, 500);
+
+            } catch(e) {
+                console.error(e);
+                alert("Error al generar el PDF.");
+                btn.innerHTML = 'Generar';
+            }
+        }
+
+        async function renderizarGraficosPDF(datosFiltrados) {
+            const datosEquilibrio = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 };
+            const datosTendenciaCat = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} };
+            const fechasSet = new Set();
+
+            datosFiltrados.forEach(reg => {
+                const esCalor = reg.fase.includes('Fase 1'), esElectro = reg.fase.includes('Fase 5');
+                if (!esCalor && !esElectro) {
+                    if (reg.fase.includes('Movilidad')) datosEquilibrio['Movilidad'] += reg.repeticiones;
+                    if (reg.fase.includes('Fortalecimiento')) datosEquilibrio['Fortalecimiento'] += reg.repeticiones;
+                    if (reg.fase.includes('Estiramientos')) datosEquilibrio['Estiramientos'] += reg.repeticiones;
+                }
+                let claveStr = reg.fecha;
+                fechasSet.add(claveStr);
+                if (!esCalor && !esElectro) {
+                    let cat = '';
+                    if (reg.fase.includes('Movilidad')) cat = 'Movilidad';
+                    else if (reg.fase.includes('Fortalecimiento')) cat = 'Fortalecimiento';
+                    else if (reg.fase.includes('Estiramientos')) cat = 'Estiramientos';
+                    if (cat) {
+                        if (!datosTendenciaCat[cat][claveStr]) datosTendenciaCat[cat][claveStr] = 0;
+                        datosTendenciaCat[cat][claveStr] += reg.repeticiones;
+                    }
+                }
+            });
+
+            datosEquilibrio.Movilidad = +(datosEquilibrio.Movilidad / PESO_CATEGORIA.Movilidad).toFixed(1);
+            datosEquilibrio.Fortalecimiento = +(datosEquilibrio.Fortalecimiento / PESO_CATEGORIA.Fortalecimiento).toFixed(1);
+            datosEquilibrio.Estiramientos = +(datosEquilibrio.Estiramientos / PESO_CATEGORIA.Estiramientos).toFixed(1);
+
+            Object.keys(datosTendenciaCat).forEach(cat => { Object.keys(datosTendenciaCat[cat]).forEach(fecha => { datosTendenciaCat[cat][fecha] = +(datosTendenciaCat[cat][fecha] / PESO_CATEGORIA[cat]).toFixed(1); }); });
+
+            const fechas = Array.from(fechasSet).sort();
+            let datasetsLinea = [
+                { label: 'Movilidad', data: fechas.map(f => datosTendenciaCat['Movilidad'][f] || 0), borderColor: '#2dd4bf', fill: false, tension: 0.4 },
+                { label: 'Fortalecimiento', data: fechas.map(f => datosTendenciaCat['Fortalecimiento'][f] || 0), borderColor: '#3b82f6', fill: false, tension: 0.4 },
+                { label: 'Estiramientos', data: fechas.map(f => datosTendenciaCat['Estiramientos'][f] || 0), borderColor: '#c084fc', fill: false, tension: 0.4 }
+            ];
+
+            // Gráfico Tendencia PDF
+            if (pdfChartTendencia) pdfChartTendencia.destroy();
+            pdfChartTendencia = new Chart(document.getElementById('pdf-chart-tendencia').getContext('2d'), { 
+                type: 'line', data: { labels: fechas, datasets: datasetsLinea }, 
+                options: { animation: false, responsive: true, maintainAspectRatio: false, plugins: { datalabels: { display: false } } } 
+            });
+
+            // Gráfico Equilibrio PDF
+            if (pdfChartEquilibrio) pdfChartEquilibrio.destroy();
+            pdfChartEquilibrio = new Chart(document.getElementById('pdf-chart-equilibrio').getContext('2d'), { 
+                type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'] }] }, 
+                options: { animation: false, responsive: true, maintainAspectRatio: false, plugins: { datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 12 }, formatter: (value, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); if(sum === 0 || value === 0) return ''; return Math.round((value / sum) * 100) + '%'; } } } } 
+            });
+        }
+
+        // --- SISTEMA DE NAVEGACIÓN DIARIA Y EDICIÓN ---
+        function cambiarDiaHistorial(offset) { let d = new Date(diaHistorialActual); d.setDate(d.getDate() + offset); diaHistorialActual = getLocalDateStr(d); document.getElementById('fecha-historial-input').value = diaHistorialActual; cargarHistorial(); }
         function seleccionarDiaHistorial(fechaStr) { if(!fechaStr) return; diaHistorialActual = fechaStr; cargarHistorial(); }
 
         async function cargarHistorial() {
@@ -524,9 +660,7 @@
             t.reverse(); 
             const l = document.getElementById('lista-registros'); l.innerHTML = '';
             
-            if (t.length === 0) {
-                return l.innerHTML = '<p class="text-gray-400 text-sm text-center py-6 border border-gray-800 border-dashed rounded-lg">No hay registros de actividad en este día.</p>';
-            }
+            if (t.length === 0) { return l.innerHTML = '<p class="text-gray-400 text-sm text-center py-6 border border-gray-800 border-dashed rounded-lg">No hay registros de actividad en este día.</p>'; }
 
             t.forEach(r => l.innerHTML += `
                 <div class="bg-darkBg p-3 rounded-lg border border-gray-700 flex justify-between items-center shadow-md">
@@ -546,20 +680,13 @@
         }
 
         async function editarRegistro(id) {
-            const r = await db.registros.get(id);
-            if (!r) return;
-            
+            const r = await db.registros.get(id); if (!r) return;
             const esTerapia = r.fase.includes('Fase 1') || r.fase.includes('Fase 5');
             if(esTerapia) { alert("Las terapias de unidad (Calor / Electro) se contabilizan como sesión única. No es necesario editar series ni repeticiones."); return; }
-
-            let p1 = prompt(`Editando: ${r.ejercicio}\nIntroduce las nuevas SERIES:`, r.series);
-            if (p1 === null) return; 
-            let p2 = prompt(`Introduce las nuevas REPETICIONES:`, r.repeticiones);
-            if (p2 === null) return; 
-            
-            let ns = parseInt(p1); let nr = parseInt(p2);
+            let p1 = prompt(`Editando: ${r.ejercicio}\nIntroduce las nuevas SERIES:`, r.series); if (p1 === null) return; 
+            let p2 = prompt(`Introduce las nuevas REPETICIONES:`, r.repeticiones); if (p2 === null) return; 
+            let ns = parseInt(p1), nr = parseInt(p2);
             if (isNaN(ns) || ns < 1) ns = 1; if (isNaN(nr) || nr < 1) nr = 1;
-            
             await db.registros.update(id, { series: ns, repeticiones: nr });
             cargarHistorial(); actualizarVistasProgreso();
         }
