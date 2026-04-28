@@ -181,23 +181,9 @@
         <h2 class="text-2xl font-bold text-white">Generando Informe...</h2>
         <p class="text-sm text-gray-400 mt-2">Compilando documento clínico nativo.</p>
         
-        <div class="absolute top-0 left-0 pointer-events-none opacity-[0.01] z-[-1]" style="width: 210mm;">
-            <div id="pdf-laboratorio" style="background: white; padding: 40px; font-family: sans-serif; color: black; min-height: 297mm;">
-                <h1 style="color: #0f766e; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 5px; font-size: 24px;">CerviCare - Informe Clínico</h1>
-                <p id="pdf-fechas" style="font-size: 14px; color: #666; margin-bottom: 30px;"></p>
-                <div style="display: flex; gap: 20px; margin-bottom: 40px; width: 100%;">
-                    <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
-                        <h4 style="font-size: 12px; text-transform: uppercase; color: #888; text-align: center; margin-bottom: 15px;">Tendencia de Esfuerzo</h4>
-                        <div style="height: 220px; width: 100%;"><canvas id="pdf-canvas-tendencia"></canvas></div>
-                    </div>
-                    <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">
-                        <h4 style="font-size: 12px; text-transform: uppercase; color: #888; text-align: center; margin-bottom: 15px;">Equilibrio Relativo</h4>
-                        <div style="height: 220px; width: 100%;"><canvas id="pdf-canvas-equilibrio"></canvas></div>
-                    </div>
-                </div>
-                <h3 style="font-size: 18px; border-bottom: 1px solid #eee; padding-bottom: 8px; color: #0f766e; margin-bottom: 20px;">Registro Detallado por Sesiones</h3>
-                <div id="pdf-tabla-registros" style="font-size: 13px; line-height: 1.6; color: #000000;"></div>
-            </div>
+        <div style="position: absolute; top: 0; left: 0; width: 600px; height: 350px; opacity: 0.01; pointer-events: none;">
+            <canvas id="pdf-canvas-tendencia" width="600" height="350"></canvas>
+            <canvas id="pdf-canvas-equilibrio" width="400" height="400"></canvas>
         </div>
     </div>
 
@@ -225,7 +211,6 @@
         Chart.register(ChartDataLabels);
         Chart.defaults.plugins.datalabels.display = false;
 
-        // PLUGIN EXPERTO PARA ALINEACIÓN ABSOLUTA A LA IZQUIERDA EN GRÁFICO DE BARRAS
         const leftAlignLabelsPlugin = {
             id: 'leftAlignLabels',
             afterDraw(chart) {
@@ -234,13 +219,11 @@
                 ctx.save();
                 ctx.textAlign = 'left';
                 ctx.textBaseline = 'bottom';
-                ctx.fillStyle = '#cbd5e1'; // Color gris claro
+                ctx.fillStyle = '#cbd5e1'; 
                 ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
-                
                 const meta = chart.getDatasetMeta(0);
                 meta.data.forEach((bar, index) => {
                     const label = data.labels[index];
-                    // Dibuja el texto exactamente en el borde izquierdo (left) y unos píxeles encima de la barra (bar.y - 6)
                     ctx.fillText(label, left, bar.y - 6);
                 });
                 ctx.restore();
@@ -357,10 +340,9 @@
             const fechas = Array.from(fechasSet).sort();
             let datasetsLinea = (fTipo === 'todos') ? [ { label: 'Movilidad', pointStyle: 'circle', pointRadius: 5, data: fechas.map(f => datosTendenciaCat['Movilidad'][f] || 0), borderColor: '#2dd4bf', tension: 0.4 }, { label: 'Fortalecimiento', pointStyle: 'rect', pointRadius: 5, data: fechas.map(f => datosTendenciaCat['Fortalecimiento'][f] || 0), borderColor: '#3b82f6', tension: 0.4 }, { label: 'Estiramientos', pointStyle: 'triangle', pointRadius: 6, data: fechas.map(f => datosTendenciaCat['Estiramientos'][f] || 0), borderColor: '#c084fc', tension: 0.4 } ] : [ { label: fTipo, data: fechas.map(f => datosTendenciaCat[fTipo][f] || 0), borderColor: fTipo==='Fortalecimiento'?'#3b82f6':(fTipo==='Estiramientos'?'#c084fc':'#2dd4bf'), fill: true, tension: 0.4 } ];
             if (fTipo === 'todos') { for (let i = 0; i < fechas.length; i++) { let mapVal = {}; datasetsLinea.forEach((ds, dsIdx) => { let v = ds.data[i]; if (v > 0) { if(!mapVal[v]) mapVal[v] = []; mapVal[v].push(dsIdx); } }); Object.keys(mapVal).forEach(v => { let indices = mapVal[v]; if(indices.length > 1) { let offset = -0.05 * (indices.length - 1) / 2; indices.forEach(idx => { datasetsLinea[idx].data[i] = parseFloat(v) + offset; offset += 0.05; }); } }); } }
-            if (chartTendencia) chartTendencia.destroy(); chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), { type: 'line', data: { labels: fechas, datasets: datasetsLinea }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: fTipo === 'todos', labels: { usePointStyle: true, color: '#cbd5e1' } }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + (Math.round(c.raw*10)/10).toFixed(1) + ' media' } } } } });
-            if (chartEquilibrio) chartEquilibrio.destroy(); chartEquilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), { type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } }, datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (v, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); return sum>0 ? Math.round((v/sum)*100)+'%' : ''; } } } } });
+            if (chartTendencia) chartTendencia.destroy(); chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), { type: 'line', data: { labels: fechas, datasets: datasetsLinea }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: fTipo === 'todos', labels: { usePointStyle: true, color: '#cbd5e1', boxWidth: 10 } }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + (Math.round(c.raw*10)/10).toFixed(1) + ' media' } } }, datalabels: { display: false } } } });
+            if (chartEquilibrio) chartEquilibrio.destroy(); chartEquilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), { type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } }, tooltip: { callbacks: { label: c => ' ' + c.label + ': ' + c.parsed + ' medias/ej' } }, datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (v, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); return sum>0 ? Math.round((v/sum)*100)+'%' : ''; } } } } });
             
-            // GRÁFICO BARRAS (PLUGIN ALINEACIÓN ABSOLUTA)
             if (chartEjercicios) chartEjercicios.destroy();
             const nombresEj = Object.keys(datosEjercicios).sort((a,b) => datosEjercicios[b] - datosEjercicios[a]);
             const valsEj = nombresEj.map(e => datosEjercicios[e]);
@@ -373,7 +355,6 @@
                     layout: { padding: { top: 25, right: 30, left: 0, bottom: 0 } }, 
                     scales: { 
                         x: { display: false, beginAtZero: true }, 
-                        // Desactivamos el eje Y para evitar el bloque invisible y dejamos que el plugin "leftAlignLabelsPlugin" dibuje
                         y: { display: true, ticks: { display: false }, grid: { display: false }, border: { display: false } } 
                     }, 
                     plugins: { 
@@ -381,7 +362,7 @@
                         datalabels: { display: true, align: 'right', anchor: 'end', offset: 4, formatter: Math.round, color: '#2dd4bf', font: { weight: 'bold', size: 11 } } 
                     } 
                 },
-                plugins: [leftAlignLabelsPlugin] // Invocación del plugin maestro
+                plugins: [leftAlignLabelsPlugin] 
             });
         }
 
@@ -438,7 +419,7 @@
                 if(pdfChart2) pdfChart2.destroy();
                 pdfChart2 = new Chart(document.getElementById('pdf-canvas-equilibrio').getContext('2d'), { type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [dEq.Movilidad, dEq.Fortalecimiento, dEq.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'] }] }, options: { animation: false, responsive: false, plugins: { datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (v, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); return sum>0 ? Math.round((v/sum)*100)+'%' : ''; } }, legend: { position: 'bottom', labels: { color: '#333' } }, customCanvasBackgroundColor: { color: 'white'} } }, plugins: [whiteBgPlugin, ChartDataLabels] });
 
-                await new Promise(r => setTimeout(r, 600)); // Esperamos al renderizado dentro del overlay
+                await new Promise(r => setTimeout(r, 600)); 
                 
                 const imgTen = document.getElementById('pdf-canvas-tendencia').toDataURL('image/jpeg', 1.0);
                 const imgEq = document.getElementById('pdf-canvas-equilibrio').toDataURL('image/jpeg', 1.0);
@@ -455,12 +436,13 @@
                 doc.addImage(imgTen, 'JPEG', 14, 45, 90, 52);
                 
                 doc.text("Equilibrio Relativo", 110, 40);
+                // MARGEN AUMENTADO: Bajamos la tabla de Y=110 a Y=130 para que no tape la leyenda del dónut.
                 doc.addImage(imgEq, 'JPEG', 110, 45, 75, 75);
 
-                let finalY = 110;
+                let finalY = 130;
 
-                if (tableBody.length > 0) { doc.autoTable({ startY: 110, head: [['Ejercicio / Actividad', 'Volumen']], body: tableBody, theme: 'grid', styles: { fontSize: 9 }, headStyles: { fillColor: [15, 118, 110] } }); } 
-                else { doc.text("No hay registros en el periodo seleccionado.", 14, 110); }
+                if (tableBody.length > 0) { doc.autoTable({ startY: finalY, head: [['Ejercicio / Actividad', 'Volumen']], body: tableBody, theme: 'grid', styles: { fontSize: 9 }, headStyles: { fillColor: [15, 118, 110] } }); } 
+                else { doc.text("No hay registros en el periodo seleccionado.", 14, finalY); }
 
                 doc.save(`CerviCare_Reporte_${fFin}.pdf`);
 
@@ -493,7 +475,6 @@
             sesiones.forEach((sesion, index) => {
                 let horaInicio = new Date(sesion[0].timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 let numeroSesion = sesiones.length - index;
-                // SESIÓN 1 (Índice 0) abierta por defecto
                 let estaAbierta = index === 0;
 
                 let htmlSesion = `
