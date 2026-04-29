@@ -55,7 +55,8 @@
             <span id="lbl-usuario-actual" class="text-xs font-bold truncate max-w-[80px]">...</span>
         </button>
         <h1 class="text-xl font-bold text-neonCyan tracking-wider absolute left-1/2 -translate-x-1/2">CerviCare</h1>
-        <div class="w-12"></div> </header>
+        <div class="w-12"></div>
+    </header>
 
     <main id="app-container" class="flex-1 overflow-y-auto relative w-full flex flex-col">
         
@@ -88,8 +89,20 @@
 
             <div class="bg-cardBg p-3 rounded-xl border border-gray-700 mb-4 shadow-lg">
                 <div class="grid grid-cols-2 gap-2 mb-2">
-                    <select id="filtro-tipo" onchange="renderizarGraficos()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none"><option value="todos">Todas las Categorías</option><option value="Movilidad">Solo Movilidad</option><option value="Fortalecimiento">Solo Fortalecimiento</option><option value="Estiramientos">Solo Estiramientos</option></select>
-                    <select id="filtro-periodo" onchange="toggleFechasPersonalizadas()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none"><option value="hoy">Hoy</option><option value="dia_concreto">Día específico...</option><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="todo">Desde el principio</option><option value="rango">Rango de fechas...</option></select>
+                    <select id="filtro-tipo" onchange="renderizarGraficos()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none">
+                        <option value="todos">Todas las Categorías</option>
+                        <option value="Movilidad">Solo Movilidad</option>
+                        <option value="Fortalecimiento">Solo Fortalecimiento</option>
+                        <option value="Estiramientos">Solo Estiramientos</option>
+                    </select>
+                    <select id="filtro-periodo" onchange="toggleFechasPersonalizadas()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none">
+                        <option value="hoy">Hoy</option>
+                        <option value="dia_concreto">Día específico...</option>
+                        <option value="7">Últimos 7 días</option>
+                        <option value="30" selected>Últimos 30 días</option>
+                        <option value="todo">Desde el principio</option>
+                        <option value="rango">Rango de fechas...</option>
+                    </select>
                 </div>
                 <div id="input-dia-concreto" class="hidden mt-2 pt-2 border-t border-gray-700"><label class="text-[10px] text-gray-400">Selecciona el día</label><input type="date" id="fecha-unica" onchange="renderizarGraficos()" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1.5 text-white mt-1"></div>
                 <div id="rango-fechas" class="hidden grid-cols-2 gap-2 mt-2 pt-2 border-t border-gray-700">
@@ -112,7 +125,7 @@
                 <button onclick="abrirModalPDF()" class="w-full bg-blueDark text-white py-3 rounded-lg font-bold shadow-md hover:bg-blue-700 transition">Generar Informe PDF...</button>
             </div>
 
-            <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Gestión de Datos (<span id="lbl-gestion-user"></span>)</h3>
+            <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Gestión de Datos (<span id="lbl-gestion-user">...</span>)</h3>
             <div class="grid grid-cols-2 gap-3 mb-6">
                 <button onclick="exportarCSV()" class="col-span-2 bg-cardBg border border-neonCyan text-neonCyan py-2.5 rounded-lg text-sm font-semibold shadow-md">📊 Exportar a CSV</button>
                 <button onclick="exportarBackup()" class="bg-cardBg border border-gray-600 text-gray-300 hover:text-white py-2 rounded-lg text-sm font-semibold shadow-md transition-colors">💾 Backup JSON</button>
@@ -133,7 +146,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mb-2 text-gray-400 opacity-60" viewBox="0 0 100 100" fill="currentColor">
                     <path d="M50 5C25.1 5 5 25.1 5 50s20.1 45 45 45 45-20.1 45-45S74.9 5 50 5zm0 82C30 87 13 70 13 50S30 13 50 13s37 16.7 37 37-16.7 37-37 37zm-9.3-43.3c-2.3-1.6-5.4-2.5-8.5-2.5-7.7 0-13 5.4-13 13.8 0 8.1 5.3 13.6 13 13.6 3.2 0 6.4-1 8.7-2.7v-7c-2.1 1.4-4.8 2.2-7.5 2.2-4.1 0-6.6-2.9-6.6-6.4 0-3.6 2.6-6.4 6.6-6.4 2.5 0 5.2.7 7.3 2v-6.6zm29 0c-2.3-1.6-5.4-2.5-8.5-2.5-7.7 0-13 5.4-13 13.8 0 8.1 5.3 13.6 13 13.6 3.2 0 6.4-1 8.7-2.7v-7c-2.1 1.4-4.8 2.2-7.5 2.2-4.1 0-6.6-2.9-6.6-6.4 0-3.6 2.6-6.4 6.6-6.4 2.5 0 5.2.7 7.3 2v-6.6z"/>
                 </svg>
-                <p class="font-bold text-gray-400 mb-1">CerviCare v1.32 &copy; 2024</p>
+                <p class="font-bold text-gray-400 mb-1">CerviCare v1.33 &copy; 2024</p>
                 <p class="text-center px-4">Desarrollado por <span class="text-neonCyan font-bold">Larafuzas</span></p>
                 <p class="text-center px-4 mt-1">Licencia Creative Commons (CC BY-NC-SA)</p>
             </div>
@@ -149,8 +162,7 @@
             </h3>
             <p class="text-xs text-gray-400 mb-4">Selecciona quién está utilizando la aplicación ahora mismo.</p>
             
-            <div id="lista-perfiles-ui" class="space-y-2 mb-4 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
-                </div>
+            <div id="lista-perfiles-ui" class="space-y-2 mb-4 max-h-48 overflow-y-auto pr-1 custom-scrollbar"></div>
 
             <div class="border-t border-gray-700 pt-4 mt-2">
                 <button onclick="crearNuevoUsuario()" class="w-full bg-darkBg border border-gray-500 text-white font-bold py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-700 transition">
@@ -158,10 +170,7 @@
                     Añadir Nuevo Perfil
                 </button>
             </div>
-            
-            <button onclick="cerrarModalUsuarios()" class="absolute top-4 right-4 text-gray-400 hover:text-white">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
+            <button onclick="cerrarModalUsuarios()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
         </div>
     </div>
 
@@ -170,7 +179,11 @@
             <h3 class="text-lg font-bold text-white mb-2">Informe Clínico PDF</h3>
             <p class="text-xs text-gray-400 mb-4">Selecciona el periodo del reporte.</p>
             <select id="pdf-rango" onchange="toggleFiltroDiaPDF()" class="w-full bg-darkBg border border-gray-600 text-sm rounded p-3 text-white outline-none mb-3">
-                <option value="hoy">Solo hoy</option><option value="especifico">Día específico...</option><option value="7">Últimos 7 días</option><option value="30" selected>Últimos 30 días</option><option value="todo">Historial completo</option>
+                <option value="hoy">Solo hoy</option>
+                <option value="especifico">Día específico...</option>
+                <option value="7">Últimos 7 días</option>
+                <option value="30" selected>Últimos 30 días</option>
+                <option value="todo">Historial completo</option>
             </select>
             <div id="pdf-input-dia" class="hidden mb-4"><label class="text-[10px] text-gray-400">Fecha del informe</label><input type="date" id="pdf-fecha-valor" class="w-full bg-darkBg border border-gray-600 text-sm rounded p-2 text-white mt-1"></div>
             <div class="flex gap-3 mt-4">
@@ -180,17 +193,16 @@
         </div>
     </div>
 
-    <div id="pdf-loading-overlay" class="hidden fixed inset-0 bg-darkBg z-[9999] flex flex-col justify-center items-center p-4 text-center">
-        <svg class="animate-spin h-12 w-12 text-blueLight mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-        <h2 class="text-2xl font-bold text-white">Generando Informe...</h2><p class="text-sm text-gray-400 mt-2">Compilando documento clínico nativo.</p>
-        <div class="absolute top-0 left-0 pointer-events-none opacity-[0.01] z-[-1]" style="width: 210mm;">
-            <div id="pdf-laboratorio" style="background: white; padding: 40px; font-family: sans-serif; color: black; min-height: 297mm;">
-                <h1 style="color: #0f766e; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 5px; font-size: 24px;">CerviCare - Informe Clínico</h1>
-                <p id="pdf-fechas" style="font-size: 14px; color: #666; margin-bottom: 30px;"></p>
-                <div style="display: flex; gap: 20px; margin-bottom: 40px; width: 100%;">
-                    <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 8px;"><h4 style="font-size: 12px; text-transform: uppercase; color: #888; text-align: center; margin-bottom: 15px;">Tendencia de Esfuerzo</h4><div style="height: 220px; width: 100%;"><canvas id="pdf-canvas-tendencia"></canvas></div></div>
-                    <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 8px;"><h4 style="font-size: 12px; text-transform: uppercase; color: #888; text-align: center; margin-bottom: 15px;">Equilibrio Relativo</h4><div style="height: 220px; width: 100%;"><canvas id="pdf-canvas-equilibrio"></canvas></div></div>
-                </div>
+    <div id="pdf-loading-overlay" class="hidden fixed inset-0 z-[9999] flex justify-center items-center">
+        <div class="absolute inset-0 bg-darkBg z-10 flex flex-col justify-center items-center p-4 text-center">
+            <svg class="animate-spin h-12 w-12 text-blueLight mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+            <h2 class="text-2xl font-bold text-white">Generando Informe...</h2>
+            <p class="text-sm text-gray-400 mt-2">Compilando documento clínico nativo.</p>
+        </div>
+        <div class="absolute inset-0 z-0 flex justify-center items-center pointer-events-none overflow-hidden">
+            <div style="background: white; padding: 40px; width: 210mm;">
+                <canvas id="pdf-canvas-tendencia" width="600" height="350" class="mb-4"></canvas>
+                <canvas id="pdf-canvas-equilibrio" width="400" height="400"></canvas>
             </div>
         </div>
     </div>
@@ -201,39 +213,72 @@
     </div>
 
     <nav class="bg-cardBg border-t border-gray-800 flex justify-around p-2 pb-safe z-10 fixed bottom-0 w-full h-16 shadow-[0_-5px_15px_rgba(0,0,0,0.3)]">
-        <button id="nav-rutina" class="nav-btn text-neonCyan flex flex-col items-center justify-center w-1/3 transition-colors" onclick="cambiarPestana('rutina')"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg><span class="text-[10px] font-bold uppercase tracking-widest">Rutina</span></button>
-        <button id="nav-estadisticas" class="nav-btn text-gray-500 hover:text-neonCyan flex flex-col items-center justify-center w-1/3 transition-colors" onclick="cambiarPestana('estadisticas')"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg><span class="text-[10px] font-bold uppercase tracking-widest">Progreso</span></button>
-        <button id="nav-ajustes" class="nav-btn text-gray-500 hover:text-neonCyan flex flex-col items-center justify-center w-1/3 transition-colors" onclick="cambiarPestana('ajustes')"><svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg><span class="text-[10px] font-bold uppercase tracking-widest">Ajustes</span></button>
+        <button id="nav-rutina" class="nav-btn text-neonCyan flex flex-col items-center justify-center w-1/3 transition-colors" onclick="cambiarPestana('rutina')">
+            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+            <span class="text-[10px] font-bold uppercase tracking-widest">Rutina</span>
+        </button>
+        <button id="nav-estadisticas" class="nav-btn text-gray-500 hover:text-neonCyan flex flex-col items-center justify-center w-1/3 transition-colors" onclick="cambiarPestana('estadisticas')">
+            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            <span class="text-[10px] font-bold uppercase tracking-widest">Progreso</span>
+        </button>
+        <button id="nav-ajustes" class="nav-btn text-gray-500 hover:text-neonCyan flex flex-col items-center justify-center w-1/3 transition-colors" onclick="cambiarPestana('ajustes')">
+            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <span class="text-[10px] font-bold uppercase tracking-widest">Ajustes</span>
+        </button>
     </nav>
 
     <script>
         // CONFIGURACIONES GLOBALES DE CHARTJS
-        if (typeof ChartDataLabels !== 'undefined') { Chart.register(ChartDataLabels); Chart.defaults.plugins.datalabels.display = false; }
+        if (typeof ChartDataLabels !== 'undefined') {
+            Chart.register(ChartDataLabels);
+            Chart.defaults.plugins.datalabels.display = false;
+        }
 
-        const leftAlignLabelsPlugin = { id: 'leftAlignLabels', afterDraw(chart) { if (chart.config.type !== 'bar') return; if (!chart.chartArea) return; const { ctx, data, chartArea: { left } } = chart; ctx.save(); ctx.textAlign = 'left'; ctx.textBaseline = 'bottom'; ctx.fillStyle = '#cbd5e1'; ctx.font = 'bold 11px system-ui, -apple-system, sans-serif'; const meta = chart.getDatasetMeta(0); if (meta && meta.data) { meta.data.forEach((bar, index) => { const label = data.labels[index]; ctx.fillText(label, left, bar.y - 6); }); } ctx.restore(); } };
-        const whiteBgPlugin = { id: 'customCanvasBackgroundColor', beforeDraw: (chart, args, options) => { const {ctx} = chart; ctx.save(); ctx.globalCompositeOperation = 'destination-over'; ctx.fillStyle = options.color || '#ffffff'; ctx.fillRect(0, 0, chart.width, chart.height); ctx.restore(); } };
+        // PLUGIN EXPERTO: Protegido con try-catch
+        const leftAlignLabelsPlugin = {
+            id: 'leftAlignLabels',
+            afterDraw(chart) {
+                try {
+                    if (chart.config.type !== 'bar') return;
+                    if (!chart.chartArea) return; 
+                    const { ctx, data, chartArea: { left } } = chart;
+                    ctx.save();
+                    ctx.textAlign = 'left';
+                    ctx.textBaseline = 'bottom';
+                    ctx.fillStyle = '#cbd5e1'; 
+                    ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+                    const meta = chart.getDatasetMeta(0);
+                    if (meta && meta.data) {
+                        meta.data.forEach((bar, index) => {
+                            const label = data.labels[index];
+                            if(bar.y) ctx.fillText(label, left, bar.y - 6);
+                        });
+                    }
+                    ctx.restore();
+                } catch(e) { console.warn("Error en plugin de etiquetas:", e); }
+            }
+        };
 
-        // BASE DE DATOS E INICIALIZACIÓN MULTIUSUARIO
+        const whiteBgPlugin = { 
+            id: 'customCanvasBackgroundColor', 
+            beforeDraw: (chart, args, options) => { 
+                const {ctx} = chart; 
+                ctx.save(); 
+                ctx.globalCompositeOperation = 'destination-over'; 
+                ctx.fillStyle = options.color || '#ffffff'; 
+                ctx.fillRect(0, 0, chart.width, chart.height); 
+                ctx.restore(); 
+            } 
+        };
+
+        // BASE DE DATOS
         const db = new Dexie('CerviCareDB');
-        // v1 a v2: Añadir timestamp
-        // v2 a v3: Añadir tabla usuarios y vincular registros a usuarioId
         db.version(1).stores({ registros: '++id, fecha, ejercicio, series, repeticiones, fase' });
-        db.version(2).stores({ registros: '++id, fecha, timestamp, ejercicio, series, repeticiones, fase' }).upgrade(tx => { return tx.registros.toCollection().modify(r => { if (!r.timestamp) r.timestamp = new Date(r.fecha).getTime(); }); });
-        db.version(3).stores({ usuarios: '++id, nombre', registros: '++id, usuarioId, fecha, timestamp, ejercicio, series, repeticiones, fase' }).upgrade(async tx => {
-            const num = await tx.usuarios.count();
-            let defId = 1;
-            if (num === 0) defId = await tx.usuarios.add({ nombre: "Perfil Principal" });
-            return tx.registros.toCollection().modify(r => { if (!r.usuarioId) r.usuarioId = defId; });
-        });
+        db.version(2).stores({ registros: '++id, fecha, timestamp, ejercicio, series, repeticiones, fase' });
+        db.version(3).stores({ usuarios: '++id, nombre', registros: '++id, usuarioId, fecha, timestamp, ejercicio, series, repeticiones, fase' });
 
-        let usuarioActual = null;
-        let miSwiper, chartTendencia = null, chartEquilibrio = null, chartEjercicios = null, pdfChart1 = null, pdfChart2 = null;
-        let timerInterval, tiempoRestante = 15 * 60, timerEstado = 'detenido', endTime = null; 
-        let calMonth = new Date().getMonth(), calYear = new Date().getFullYear(), diaHistorialActual = getLocalDateStr();
-        
         const PESO_CATEGORIA = { 'Movilidad': 5, 'Fortalecimiento': 2, 'Estiramientos': 2 };
         const RUTINA_TOTAL_EJERCICIOS = 9;
-        const nombresMeses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
         const rutinaCervical = [
             { id: "fase1_calor", short: "Calor", fase: "Fase 1: Preparación", titulo: "Aplicación de Calor", imagen: null, tipo: "temporizador", instrucciones: "<p><strong>Fundamento:</strong> El calor provoca vasodilatación, aumentando el flujo sanguíneo y relajando las fibras musculares antes del estiramiento.</p>" },
@@ -249,24 +294,41 @@
             { id: "fase5_electro", short: "Electro", fase: "Fase 5: Recuperación", titulo: "Electroestimulación", imagen: "electrodos.png", tipo: "electro", instrucciones: `<p><strong>Ubicación:</strong> Coloca los electrodos bilateralmente sobre los músculos trapecios o en la zona esplenia posterior.</p><p class="text-red-400 font-bold mb-3 mt-1 text-sm border-l-2 border-red-500 pl-2">⚠️ NUNCA colocar en la parte delantera del cuello, garganta o carótidas.</p><div class="space-y-2 mt-2"><details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer"><summary class="font-semibold text-neonCyan outline-none">⚡ TENS (Alivio del Dolor)</summary><p class="mt-1 text-xs text-gray-300"><strong>Parámetros:</strong> Frecuencia Alta (80-120 Hz).<br><strong>Sensación:</strong> Hormigueo constante y agradable, SIN provocar contracción muscular.<br><strong>Aplicación:</strong> 20-30 minutos para dolor agudo.</p></details><details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer"><summary class="font-semibold text-neonCyan outline-none">💆 EMS (Masaje Descontracturante)</summary><p class="mt-1 text-xs text-gray-300"><strong>Parámetros:</strong> Frecuencia Baja (2-10 Hz).<br><strong>Sensación:</strong> Intensidad hasta notar un bombeo o pequeñas sacudidas musculares.<br><strong>Aplicación:</strong> 15-20 minutos para aumentar el flujo sanguíneo.</p></details></div>` }
         ];
 
+        let usuarioActual = null;
+        let miSwiper, chartTendencia = null, chartEquilibrio = null, chartEjercicios = null, pdfChart1 = null, pdfChart2 = null;
+        let timerInterval, tiempoRestante = 15 * 60, timerEstado = 'detenido', endTime = null; 
+        let calMonth = new Date().getMonth(), calYear = new Date().getFullYear(), diaHistorialActual = getLocalDateStr();
+        const nombresMeses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+
         window.onload = async () => { 
             try {
-                // INICIALIZACIÓN DE USUARIO
+                await db.open();
+
+                // MIGRACIÓN SEGURA FUERA DE UPGRADE
                 let count = await db.usuarios.count();
+                let defId = 1;
                 if(count === 0) {
-                    let newId = await db.usuarios.add({ nombre: "Perfil Principal" });
-                    usuarioActual = { id: newId, nombre: "Perfil Principal" };
+                    defId = await db.usuarios.add({ nombre: "Perfil Principal" });
                 } else {
-                    let savedId = localStorage.getItem('cervicare_uid');
-                    if(savedId) usuarioActual = await db.usuarios.get(parseInt(savedId));
-                    if(!usuarioActual) { const all = await db.usuarios.toArray(); usuarioActual = all[0]; }
+                    const primerU = await db.usuarios.toCollection().first();
+                    if(primerU) defId = primerU.id;
                 }
-                actualizarInterfazUsuario();
+
+                // Asignar ID a registros huérfanos
+                await db.registros.filter(r => !r.usuarioId).modify(r => { r.usuarioId = defId; });
+
+                let savedId = localStorage.getItem('cervicare_uid');
+                if(savedId) usuarioActual = await db.usuarios.get(parseInt(savedId));
+                if(!usuarioActual) usuarioActual = await db.usuarios.get(defId);
                 
+                actualizarInterfazUsuario();
                 renderizarRutina(); 
                 document.getElementById('fecha-historial-input').value = diaHistorialActual; 
                 cargarHistorial(); 
-            } catch (err) { console.error("Error al iniciar:", err); }
+            } catch (err) { 
+                console.error("Error al iniciar DB:", err); 
+                renderizarRutina(); // Render de rescate si DB falla
+            }
         };
 
         function getLocalDateStr(d = new Date()) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
@@ -301,7 +363,6 @@
             usuarioActual = await db.usuarios.get(id);
             actualizarInterfazUsuario();
             cerrarModalUsuarios();
-            // Refrescar todos los datos visuales
             if(!document.getElementById('vista-estadisticas').classList.contains('hidden')) actualizarVistasProgreso();
             cargarHistorial();
         }
@@ -313,7 +374,6 @@
                 usuarioActual = { id: nuevoId, nombre: nombre.trim() };
                 actualizarInterfazUsuario();
                 cerrarModalUsuarios();
-                // Limpiar vistas de gráficos porque el usuario es nuevo y no tiene datos
                 if(!document.getElementById('vista-estadisticas').classList.contains('hidden')) actualizarVistasProgreso();
                 cargarHistorial();
             }
@@ -340,7 +400,9 @@
 
         function irADiapositiva(index) { if(miSwiper) miSwiper.slideTo(index); }
         function actualizarEstiloPills(activeIndex) { document.querySelectorAll('.chip').forEach((pill, idx) => { if (idx === activeIndex) { pill.classList.replace('bg-transparent', 'bg-neonCyan'); pill.classList.replace('text-gray-400', 'text-darkBg'); pill.classList.replace('border-gray-600', 'border-neonCyan'); pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); } else { pill.classList.replace('bg-neonCyan', 'bg-transparent'); pill.classList.replace('text-darkBg', 'text-gray-400'); pill.classList.replace('border-neonCyan', 'border-gray-600'); } }); }
+
         function cambiarPestana(id) { ['rutina', 'estadisticas', 'ajustes'].forEach(p => { document.getElementById(`vista-${p}`).classList.add('hidden'); document.getElementById(`nav-${p}`).classList.replace('text-neonCyan', 'text-gray-500'); }); document.getElementById(`vista-${id}`).classList.remove('hidden'); document.getElementById(`nav-${id}`).classList.replace('text-gray-500', 'text-neonCyan'); if (id === 'estadisticas') setTimeout(actualizarVistasProgreso, 50); if (id === 'ajustes') cargarHistorial(); }
+
         function cambiarValor(id, inc) { let el = document.getElementById(id), v = parseInt(el.innerText) + inc; el.innerText = v < 1 ? 1 : v; }
 
         async function solicitarPermisoNotificaciones() { if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") { await Notification.requestPermission(); } }
@@ -358,7 +420,6 @@
         async function actualizarVistasProgreso() { await dibujarCalendarioMensual(); await renderizarGraficos(); }
         function cambiarMes(offset) { calMonth += offset; if(calMonth < 0) { calMonth = 11; calYear--; } if(calMonth > 11) { calMonth = 0; calYear++; } dibujarCalendarioMensual(); }
 
-        // --- LECTURAS FILTRADAS POR USUARIO ACTUAL ---
         async function getRegistrosUsuario() { return await db.registros.where({usuarioId: usuarioActual.id}).toArray(); }
 
         async function dibujarCalendarioMensual() {
@@ -394,6 +455,7 @@
             
             const datosFiltradosTemp = todos.filter(r => { if (fInicioStr && r.fecha < fInicioStr) return false; if (fFinStr && r.fecha > fFinStr) return false; return true; });
             const fTipo = document.getElementById('filtro-tipo').value;
+            
             const datosEquilibrio = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 }, datosTendenciaCat = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} }, datosEjercicios = {}, fechasSet = new Set();
             datosFiltradosTemp.forEach(reg => { const esCalor = reg.fase.includes('Fase 1'), esElectro = reg.fase.includes('Fase 5'); if (!esCalor && !esElectro) { if (fTipo === 'todos' || reg.fase.includes(fTipo)) { if (reg.fase.includes('Movilidad')) datosEquilibrio['Movilidad'] += reg.repeticiones; if (reg.fase.includes('Fortalecimiento')) datosEquilibrio['Fortalecimiento'] += reg.repeticiones; if (reg.fase.includes('Estiramientos')) datosEquilibrio['Estiramientos'] += reg.repeticiones; if (!datosEjercicios[reg.ejercicio]) datosEjercicios[reg.ejercicio] = 0; datosEjercicios[reg.ejercicio] += reg.repeticiones; } } if (fTipo !== 'todos' && !reg.fase.includes(fTipo)) return; if (fTipo === 'todos' && (esCalor || esElectro)) return;  fechasSet.add(reg.fecha); if (!esCalor && !esElectro) { let cat = reg.fase.includes('Movilidad')?'Movilidad':(reg.fase.includes('Fortalecimiento')?'Fortalecimiento':'Estiramientos'); if (!datosTendenciaCat[cat][reg.fecha]) datosTendenciaCat[cat][reg.fecha] = 0; datosTendenciaCat[cat][reg.fecha] += reg.repeticiones; } });
             datosEquilibrio.Movilidad = +(datosEquilibrio.Movilidad / PESO_CATEGORIA.Movilidad).toFixed(1); datosEquilibrio.Fortalecimiento = +(datosEquilibrio.Fortalecimiento / PESO_CATEGORIA.Fortalecimiento).toFixed(1); datosEquilibrio.Estiramientos = +(datosEquilibrio.Estiramientos / PESO_CATEGORIA.Estiramientos).toFixed(1);
@@ -401,9 +463,8 @@
             const fechas = Array.from(fechasSet).sort();
             let datasetsLinea = (fTipo === 'todos') ? [ { label: 'Movilidad', pointStyle: 'circle', pointRadius: 5, data: fechas.map(f => datosTendenciaCat['Movilidad'][f] || 0), borderColor: '#2dd4bf', tension: 0.4 }, { label: 'Fortalecimiento', pointStyle: 'rect', pointRadius: 5, data: fechas.map(f => datosTendenciaCat['Fortalecimiento'][f] || 0), borderColor: '#3b82f6', tension: 0.4 }, { label: 'Estiramientos', pointStyle: 'triangle', pointRadius: 6, data: fechas.map(f => datosTendenciaCat['Estiramientos'][f] || 0), borderColor: '#c084fc', tension: 0.4 } ] : [ { label: fTipo, data: fechas.map(f => datosTendenciaCat[fTipo][f] || 0), borderColor: fTipo==='Fortalecimiento'?'#3b82f6':(fTipo==='Estiramientos'?'#c084fc':'#2dd4bf'), fill: true, tension: 0.4 } ];
             if (fTipo === 'todos') { for (let i = 0; i < fechas.length; i++) { let mapVal = {}; datasetsLinea.forEach((ds, dsIdx) => { let v = ds.data[i]; if (v > 0) { if(!mapVal[v]) mapVal[v] = []; mapVal[v].push(dsIdx); } }); Object.keys(mapVal).forEach(v => { let indices = mapVal[v]; if(indices.length > 1) { let offset = -0.05 * (indices.length - 1) / 2; indices.forEach(idx => { datasetsLinea[idx].data[i] = parseFloat(v) + offset; offset += 0.05; }); } }); } }
-            if (chartTendencia) chartTendencia.destroy(); chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), { type: 'line', data: { labels: fechas, datasets: datasetsLinea }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: fTipo === 'todos', labels: { usePointStyle: true, color: '#cbd5e1', boxWidth: 10 } }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + (Math.round(c.raw*10)/10).toFixed(1) + ' media' } } }, datalabels: { display: false } } } });
-            if (chartEquilibrio) chartEquilibrio.destroy(); chartEquilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), { type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } }, datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (v, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); return sum>0 ? Math.round((v/sum)*100)+'%' : ''; } } } } });
-            
+            if (chartTendencia) chartTendencia.destroy(); chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), { type: 'line', data: { labels: fechas, datasets: datasetsLinea }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: fTipo === 'todos', labels: { usePointStyle: true, color: '#cbd5e1', boxWidth: 10 } }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + (Math.round(c.raw*10)/10).toFixed(1) + ' media' } } }, datalabels: { display: false } } });
+            if (chartEquilibrio) chartEquilibrio.destroy(); chartEquilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), { type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } }, tooltip: { callbacks: { label: c => ' ' + c.label + ': ' + c.parsed + ' medias/ej' } }, datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (v, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); return sum>0 ? Math.round((v/sum)*100)+'%' : ''; } } } } });
             if (chartEjercicios) chartEjercicios.destroy(); const nombresEj = Object.keys(datosEjercicios).sort((a,b) => datosEjercicios[b] - datosEjercicios[a]); const valsEj = nombresEj.map(e => datosEjercicios[e]);
             chartEjercicios = new Chart(document.getElementById('grafico-ejercicios').getContext('2d'), { type: 'bar', data: { labels: nombresEj, datasets: [{ data: valsEj, backgroundColor: '#2dd4bf', barThickness: 6, borderRadius: 3 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { top: 25, right: 30, left: 0, bottom: 0 } }, scales: { x: { display: false, beginAtZero: true }, y: { display: true, grid: { display: false, drawBorder: false }, border: { display: false }, ticks: { display: false }, afterFit: s => s.width = 0 } }, plugins: { legend: { display: false }, tooltip: { enabled: false }, datalabels: { display: true, align: 'right', anchor: 'end', offset: 4, formatter: Math.round, color: '#2dd4bf', font: { weight: 'bold', size: 11 } } } }, plugins: [leftAlignLabelsPlugin] });
         }
@@ -461,25 +522,21 @@
                 if(pdfChart2) pdfChart2.destroy();
                 pdfChart2 = new Chart(document.getElementById('pdf-canvas-equilibrio').getContext('2d'), { type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [dEq.Movilidad, dEq.Fortalecimiento, dEq.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'] }] }, options: { animation: false, responsive: false, plugins: { datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (v, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); return sum>0 ? Math.round((v/sum)*100)+'%' : ''; } }, legend: { position: 'bottom', labels: { color: '#333' } }, customCanvasBackgroundColor: { color: 'white'} } }, plugins: [whiteBgPlugin, ChartDataLabels] });
 
-                await new Promise(r => setTimeout(r, 400));
+                await new Promise(r => setTimeout(r, 1000)); 
+                
                 const imgTen = document.getElementById('pdf-canvas-tendencia').toDataURL('image/jpeg', 1.0);
                 const imgEq = document.getElementById('pdf-canvas-equilibrio').toDataURL('image/jpeg', 1.0);
-
-                if(imgTen.length < 50 || imgEq.length < 50) throw new Error("Canvas vacío de iOS Safari");
 
                 const { jsPDF } = window.jspdf;
                 const doc = new jsPDF();
                 
                 doc.setFontSize(22); doc.setTextColor(15, 118, 110); doc.text(`CerviCare - Informe Clínico (${usuarioActual.nombre})`, 14, 20);
                 doc.setFontSize(11); doc.setTextColor(100, 100, 100); doc.text(`Periodo evaluado: ${fInicio || 'Inicio'} al ${fFin}`, 14, 28);
-
                 doc.setFontSize(10); doc.setTextColor(150, 150, 150); doc.text("Tendencia de Esfuerzo (Reps/Ej)", 14, 40);
                 doc.addImage(imgTen, 'JPEG', 14, 45, 90, 52);
-                
                 doc.text("Equilibrio Relativo", 110, 40); doc.addImage(imgEq, 'JPEG', 110, 45, 75, 75);
 
                 let finalY = 130;
-
                 if (tableBody.length > 0) { doc.autoTable({ startY: finalY, head: [['Ejercicio / Actividad', 'Volumen']], body: tableBody, theme: 'grid', styles: { fontSize: 9 }, headStyles: { fillColor: [15, 118, 110] } }); } 
                 else { doc.text("No hay registros en el periodo seleccionado.", 14, finalY); }
 
@@ -489,22 +546,21 @@
             document.getElementById('pdf-loading-overlay').classList.add('hidden');
         }
 
-        // --- SISTEMA DE ACORDEÓN DE SESIONES ---
+        // --- SISTEMA DE ACORDEÓN DE SESIONES EN HISTORIAL ---
         function cambiarDiaHistorial(offset) { let d = new Date(diaHistorialActual); d.setDate(d.getDate() + offset); diaHistorialActual = getLocalDateStr(d); document.getElementById('fecha-historial-input').value = diaHistorialActual; cargarHistorial(); }
         function seleccionarDiaHistorial(v) { if(!v) return; diaHistorialActual = v; cargarHistorial(); }
         
         async function cargarHistorial() {
-            // Filtrar SOLO del usuario actual
-            let t = await db.registros.where({usuarioId: usuarioActual.id}).toArray();
-            t = t.filter(r => r.fecha === diaHistorialActual);
-            
+            const t = await db.registros.where({usuarioId: usuarioActual.id}).toArray();
+            const registrosDia = t.filter(r => r.fecha === diaHistorialActual);
             const l = document.getElementById('lista-registros'); l.innerHTML = '';
-            if (t.length === 0) { return l.innerHTML = '<p class="text-gray-400 text-sm text-center py-6 border border-dashed border-gray-800 rounded-lg">Sin actividad este día.</p>'; }
+            
+            if (registrosDia.length === 0) { return l.innerHTML = '<p class="text-gray-400 text-sm text-center py-6 border border-dashed border-gray-800 rounded-lg">Sin actividad este día.</p>'; }
 
-            t.sort((a,b) => a.timestamp - b.timestamp);
+            registrosDia.sort((a,b) => a.timestamp - b.timestamp);
             let sesiones = [], sesionActual = [];
 
-            t.forEach(r => {
+            registrosDia.forEach(r => {
                 if (sesionActual.length === 0) { sesionActual.push(r); } 
                 else {
                     if ((r.timestamp - sesionActual[sesionActual.length - 1].timestamp) < 90 * 60 * 1000) { sesionActual.push(r); } 
@@ -550,50 +606,13 @@
 
         async function editarRegistro(id) { const r = await db.registros.get(id); if(r.fase.includes('Fase 1')||r.fase.includes('Fase 5')) return alert("Terapias no editables."); let ns = prompt("Nuevas SERIES:", r.series), nr = prompt("Nuevas REPETICIONES:", r.repeticiones); if(ns&&nr) { await db.registros.update(id, { series: parseInt(ns), repeticiones: parseInt(nr) }); cargarHistorial(); actualizarVistasProgreso(); } }
         async function borrarRegistro(id) { if(confirm("¿Borrar?")){ await db.registros.delete(id); cargarHistorial(); actualizarVistasProgreso(); } }
-        
-        async function borrarTodosLosDatos() { 
-            if(confirm(`⚠️ ¿Estás seguro de que quieres BORRAR TODO el historial del perfil "${usuarioActual.nombre}"? Esta acción no se puede deshacer.`)){ 
-                const borrarIds = (await getRegistrosUsuario()).map(r => r.id);
-                await db.registros.bulkDelete(borrarIds); 
-                location.reload(); 
-            } 
-        }
-        
+        async function borrarTodosLosDatos() { if(confirm(`⚠️ ¿BORRAR TODO el historial del perfil "${usuarioActual.nombre}"?`)){ const borrarIds = (await getRegistrosUsuario()).map(r => r.id); await db.registros.bulkDelete(borrarIds); location.reload(); } }
         async function exportarCSV() { const d = await getRegistrosUsuario(); let c="Fecha,Ejercicio,Series,Reps\n"; d.forEach(r=>c+=`${r.fecha},${r.ejercicio},${r.series},${r.repeticiones}\n`); descargarArchivo(c,`cervicare_${usuarioActual.nombre}.csv`,'text/csv'); }
         async function exportarBackup() { descargarArchivo(JSON.stringify(await getRegistrosUsuario()),`cervicare_backup_${usuarioActual.nombre}.json`,'application/json'); }
-        function importarBackup(e) { 
-            const r=new FileReader(); 
-            r.onload=async(ev)=>{ 
-                const datos = JSON.parse(ev.target.result);
-                // Forzar que los datos importados vayan al perfil activo, aunque vengan de un backup viejo sin usuarioId
-                datos.forEach(d => { d.usuarioId = usuarioActual.id; if(!d.timestamp) d.timestamp = Date.now(); });
-                await db.registros.bulkAdd(datos); 
-                alert("Importado con éxito al perfil actual."); location.reload(); 
-            }; 
-            r.readAsText(e.target.files[0]); 
-        }
+        function importarBackup(e) { const r=new FileReader(); r.onload=async(ev)=>{ const datos = JSON.parse(ev.target.result); datos.forEach(d => { d.usuarioId = usuarioActual.id; if(!d.timestamp) d.timestamp = Date.now(); }); await db.registros.bulkAdd(datos); alert("Importado."); location.reload(); }; r.readAsText(e.target.files[0]); }
         function descargarArchivo(c, n, t) { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([c],{type:t})); a.download=n; a.click(); }
 
-        // --- SISTEMA OTA AUTOMÁTICO ---
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js').then(reg => {
-                    reg.addEventListener('updatefound', () => {
-                        const newWorker = reg.installing;
-                        newWorker.addEventListener('statechange', () => {
-                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                console.log('Nueva versión OTA detectada. Recargando app silenciosamente...');
-                                window.location.reload(); 
-                            }
-                        });
-                    });
-                }).catch(err => console.warn('Error SW', err));
-            });
-            let refreshing = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (!refreshing) { refreshing = true; window.location.reload(); }
-            });
-        }
+        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').then(reg => { reg.addEventListener('updatefound', () => { const newWorker = reg.installing; newWorker.addEventListener('statechange', () => { if (newWorker.state === 'installed' && navigator.serviceWorker.controller) { window.location.reload(); } }); }); }).catch(err => console.warn('Error SW', err)); }); let refreshing = false; navigator.serviceWorker.addEventListener('controllerchange', () => { if (!refreshing) { refreshing = true; window.location.reload(); } }); }
     </script>
 </body>
 </html>
