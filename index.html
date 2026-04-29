@@ -299,7 +299,6 @@
         window.onload = async () => { 
             try {
                 await db.open();
-
                 let count = await db.usuarios.count();
                 let defId = 1;
                 if(count === 0) {
@@ -341,10 +340,15 @@
             todos.forEach(u => {
                 const activo = u.id === usuarioActual.id;
                 lista.innerHTML += `
-                    <button onclick="cambiarDeUsuario(${u.id})" class="w-full text-left p-3 rounded-lg border flex justify-between items-center transition ${activo ? 'bg-neonCyan/10 border-neonCyan text-white' : 'bg-darkBg border-gray-700 text-gray-400 hover:bg-gray-800'}">
-                        <span class="font-bold">${u.nombre}</span>
-                        ${activo ? '<svg class="w-5 h-5 text-neonCyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>' : ''}
-                    </button>
+                    <div class="flex gap-2 mb-2">
+                        <button onclick="cambiarDeUsuario(${u.id})" class="flex-1 text-left p-3 rounded-lg border flex justify-between items-center transition ${activo ? 'bg-neonCyan/10 border-neonCyan text-white' : 'bg-darkBg border-gray-700 text-gray-400 hover:bg-gray-800'}">
+                            <span class="font-bold truncate">${u.nombre}</span>
+                            ${activo ? '<svg class="w-5 h-5 text-neonCyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>' : ''}
+                        </button>
+                        <button onclick="editarNombreUsuario(${u.id}, '${u.nombre.replace(/'/g, "\\'")}')" class="p-3 bg-darkBg border border-gray-700 text-gray-400 hover:text-neonCyan rounded-lg hover:bg-gray-800 transition" title="Editar nombre">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                        </button>
+                    </div>
                 `;
             });
             document.getElementById('modal-usuarios').classList.remove('hidden');
@@ -369,6 +373,18 @@
                 cerrarModalUsuarios();
                 if(!document.getElementById('vista-estadisticas').classList.contains('hidden')) actualizarVistasProgreso();
                 cargarHistorial();
+            }
+        }
+
+        async function editarNombreUsuario(id, nombreActual) {
+            const nuevoNombre = prompt("Modifica el nombre del perfil:", nombreActual);
+            if (nuevoNombre && nuevoNombre.trim() !== '' && nuevoNombre !== nombreActual) {
+                await db.usuarios.update(id, { nombre: nuevoNombre.trim() });
+                if (usuarioActual.id === id) {
+                    usuarioActual.nombre = nuevoNombre.trim();
+                    actualizarInterfazUsuario();
+                }
+                abrirModalUsuarios(); 
             }
         }
 
@@ -534,7 +550,7 @@
 
                 doc.save(`CerviCare_Reporte_${usuarioActual.nombre}_${fFin}.pdf`);
 
-            } catch (e) { console.error(e); alert("Error al compilar el PDF."); }
+            } catch (e) { console.error(e); alert("Error: Tu navegador bloqueó la captura gráfica. Si estás en modo Privado/Incógnito, usa navegación normal."); }
             document.getElementById('pdf-loading-overlay').classList.add('hidden');
         }
 
