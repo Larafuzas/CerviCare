@@ -79,11 +79,11 @@
                 <div id="calendario-grid" class="grid grid-cols-7 gap-1 text-center"></div>
                 
                 <div class="flex flex-wrap gap-x-3 gap-y-2 justify-center text-[10px] text-gray-300 mt-4 border-t border-gray-700 pt-3">
-                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonYellow rounded-full"></div> Algunos</div>
-                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonOrange rounded-full"></div> + Calor</div>
-                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonGreen rounded-full"></div> Completa</div>
-                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonPurple rounded-full"></div> + Calor</div>
-                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 border border-neonCyan rounded-full"></div> Electro</div>
+                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonYellow rounded-full shadow-[0_0_5px_rgba(250,204,21,0.5)]"></div> Algunos</div>
+                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonOrange rounded-full shadow-[0_0_5px_rgba(251,146,60,0.5)]"></div> + Calor</div>
+                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonGreen rounded-full shadow-[0_0_5px_rgba(74,222,128,0.5)]"></div> Completa</div>
+                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonPurple rounded-full shadow-[0_0_5px_rgba(192,132,252,0.5)]"></div> + Calor</div>
+                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 border border-neonCyan rounded-full bg-transparent shadow-[0_0_5px_rgba(45,212,191,0.5)]"></div> Electro</div>
                 </div>
             </div>
 
@@ -233,18 +233,16 @@
     </nav>
 
     <script>
-        // REGISTRO DE PLUGINS DE FORMA SEGURA
+        // CONFIGURACIONES GLOBALES DE CHARTJS
         if (typeof ChartDataLabels !== 'undefined') {
             Chart.register(ChartDataLabels);
             Chart.defaults.plugins.datalabels.display = false;
         }
 
-        // PLUGIN EXPERTO: Alineación absoluta del texto a la izquierda
         const leftAlignLabelsPlugin = {
             id: 'leftAlignLabels',
             afterDraw(chart) {
                 if (chart.config.type !== 'bar') return;
-                // Guard: Previene errores si el gráfico está oculto y no tiene medidas aún
                 if (!chart.chartArea) return; 
                 
                 const { ctx, data, chartArea: { left } } = chart;
@@ -347,7 +345,6 @@
             setTimeout(() => { v.classList.add('hidden'); }, 300); 
         }
 
-        // --- RENDERIZADO DE LA RUTINA ---
         function renderizarRutina() {
             const contenedor = document.getElementById('contenedor-ejercicios'); 
             const navPills = document.getElementById('top-nav-pills');
@@ -380,8 +377,6 @@
             if (typeof Swiper !== 'undefined') {
                 miSwiper = new Swiper(".mySwiper", { spaceBetween: 15, on: { slideChange: function () { actualizarEstiloPills(this.activeIndex); } } });
                 actualizarEstiloPills(0);
-            } else {
-                console.error("Librería Swiper no cargada.");
             }
         }
 
@@ -669,7 +664,6 @@
                     { label: 'Estiramientos', pointStyle: 'triangle', pointRadius: 6, pointHoverRadius: 8, data: fechas.map(f => datosTendenciaCat['Estiramientos'][f] || 0), borderColor: '#c084fc', backgroundColor: 'rgba(192, 132, 252, 0.1)', fill: false, tension: 0.4 } 
                 ]; 
                 
-                // Algoritmo Jitter Vertical
                 for (let i = 0; i < fechas.length; i++) { 
                     let mapVal = {}; 
                     datasetsLinea.forEach((ds, dsIdx) => { 
@@ -750,7 +744,6 @@
                     layout: { padding: { top: 25, right: 30, left: 0, bottom: 0 } }, 
                     scales: { 
                         x: { display: false, beginAtZero: true }, 
-                        // El eje Y es forzado a ancho 0 para alinear a la izquierda absoluta
                         y: { 
                             display: true, 
                             grid: { display: false, drawBorder: false }, 
@@ -771,7 +764,7 @@
             });
         }
 
-        // --- SISTEMA PDF NATIVO PARA iOS ---
+        // --- SISTEMA PDF NATIVO ---
         function toggleFiltroDiaPDF() { document.getElementById('pdf-input-dia').classList.toggle('hidden', document.getElementById('pdf-rango').value !== 'especifico'); }
         function abrirModalPDF() { document.getElementById('modal-pdf').classList.remove('hidden'); }
         function cerrarModalPDF() { document.getElementById('modal-pdf').classList.add('hidden'); }
@@ -889,7 +882,6 @@
                 doc.addImage(imgTen, 'JPEG', 14, 45, 90, 52);
                 
                 doc.text("Equilibrio Relativo", 110, 40);
-                // Ajustado finalY a 130 para dar espacio a la leyenda del dónut
                 doc.addImage(imgEq, 'JPEG', 110, 45, 75, 75);
 
                 let finalY = 130;
@@ -955,7 +947,6 @@
             sesiones.forEach((sesion, index) => {
                 let horaInicio = new Date(sesion[0].timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                 let numeroSesion = sesiones.length - index;
-                // SESIÓN RECIENTE SIEMPRE ABIERTA POR DEFECTO
                 let estaAbierta = index === 0;
 
                 let htmlSesion = `
@@ -1042,10 +1033,33 @@
             a.click(); 
         }
 
-        if ('serviceWorker' in navigator) { 
-            window.addEventListener('load', () => { 
-                navigator.serviceWorker.register('./sw.js').catch(err => console.warn('Error en Service Worker', err)); 
-            }); 
+        // --- SISTEMA OTA (ACTUALIZACIONES AUTOMÁTICAS) ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(reg => {
+                    // Detecta cuando el Service Worker encuentra un nuevo 'sw.js' en GitHub
+                    reg.addEventListener('updatefound', () => {
+                        const newWorker = reg.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            // Cuando el nuevo código se ha instalado y está listo para tomar el control
+                            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                console.log('Nueva actualización OTA detectada y descargada.');
+                                // Recarga silenciosa para aplicar los cambios sin perder IndexedDB
+                                window.location.reload(); 
+                            }
+                        });
+                    });
+                }).catch(err => console.warn('Error en Service Worker', err));
+            });
+            
+            // Asegurar que si el SW toma el control de repente, la página se refresque
+            let refreshing = false;
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (!refreshing) {
+                    refreshing = true;
+                    window.location.reload();
+                }
+            });
         }
     </script>
 </body>
