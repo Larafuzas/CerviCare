@@ -1,6 +1,6 @@
 // ATENCIÓN: Cambia este número de versión cada vez que subas cambios a GitHub
 // Por ejemplo: v1.31, v1.32... Así el móvil sabrá que hay código nuevo.
-const CACHE_NAME = 'cervicare-v1.38'; 
+const CACHE_NAME = 'cervicare-v1.39'; 
 
 const urlsToCache = [
   './',
