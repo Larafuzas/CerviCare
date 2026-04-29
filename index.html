@@ -1,674 +1,1593 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>CerviCare</title>
-    
-    <meta name="theme-color" content="#111827">
-    <link rel="icon" href="icono.jpg" type="image/jpeg">
-    <link rel="manifest" href="manifest.json">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        darkBg: '#0f172a',
-                        cardBg: '#1e293b',
-                        neonCyan: '#2dd4bf',   
-                        neonYellow: '#facc15', 
-                        neonOrange: '#fb923c', 
-                        neonGreen: '#4ade80',  
-                        neonPurple: '#c084fc',
-                        blueDark: '#1d4ed8',
-                        blueLight: '#60a5fa'
-                    }
+```
+<meta name="theme-color" content="#111827">
+<link rel="icon" href="icono.jpg" type="image/jpeg">
+<link rel="manifest" href="manifest.json">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    darkBg: '#0f172a',
+                    cardBg: '#1e293b',
+                    neonCyan: '#2dd4bf',
+                    neonYellow: '#facc15',
+                    neonOrange: '#fb923c',
+                    neonGreen: '#4ade80',
+                    neonPurple: '#c084fc',
+                    blueDark: '#1d4ed8',
+                    blueLight: '#60a5fa'
                 }
             }
         }
-    </script>
+    }
+</script>
 
-    <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
-    
-    <style>
-        body { -webkit-tap-highlight-color: transparent; user-select: none; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        .chip { transition: all 0.3s ease; }
-    </style>
+<script src="https://unpkg.com/dexie/dist/dexie.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
+<style>
+    body { -webkit-tap-highlight-color: transparent; user-select: none; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    .chip { transition: all 0.3s ease; }
+</style>
+```
+
 </head>
 <body class="bg-darkBg text-white font-sans antialiased h-screen flex flex-col overflow-hidden">
 
-    <header class="p-3 border-b border-gray-800 flex justify-between items-center shadow-md z-10 bg-darkBg relative">
-        <button onclick="abrirModalUsuarios()" class="text-neonCyan flex items-center gap-1.5 hover:text-white transition bg-gray-800/50 px-2 py-1.5 rounded-lg border border-gray-700">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-            <span id="lbl-usuario-actual" class="text-xs font-bold truncate max-w-[80px]">...</span>
-        </button>
-        <h1 class="text-xl font-bold text-neonCyan tracking-wider absolute left-1/2 -translate-x-1/2">CerviCare</h1>
-        <div class="w-12"></div>
-    </header>
+```
+<header class="p-3 border-b border-gray-800 flex justify-between items-center shadow-md z-10 bg-darkBg relative">
+    <button id="btn-abrir-usuarios" class="text-neonCyan flex items-center gap-1.5 hover:text-white transition bg-gray-800/50 px-2 py-1.5 rounded-lg border border-gray-700">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+        <span id="lbl-usuario-actual" class="text-xs font-bold truncate max-w-[80px]">...</span>
+    </button>
+    <h1 class="text-xl font-bold text-neonCyan tracking-wider absolute left-1/2 -translate-x-1/2">CerviCare</h1>
+    <div class="w-12"></div>
+</header>
 
-    <main id="app-container" class="flex-1 overflow-y-auto relative w-full flex flex-col">
-        
-        <section id="vista-rutina" class="h-full w-full flex flex-col relative">
-            <div id="top-nav-pills" class="w-full flex gap-2 overflow-x-auto no-scrollbar p-3 bg-darkBg border-b border-gray-800 z-10 sticky top-0"></div>
-            <div class="swiper mySwiper flex-1 w-full mt-2">
-                <div class="swiper-wrapper" id="contenedor-ejercicios"></div>
-            </div>
-        </section>
+<main id="app-container" class="flex-1 overflow-y-auto relative w-full flex flex-col">
 
-        <section id="vista-estadisticas" class="hidden h-full w-full p-4 overflow-y-auto pb-28">
-            <h2 class="text-xl font-bold text-white mb-3">Tu Progreso</h2>
-            
-            <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg">
-                <div class="flex justify-between items-center mb-3">
-                    <button onclick="cambiarMes(-1)" class="text-neonCyan p-1 px-3 bg-darkBg rounded hover:bg-gray-700 transition">&lt;</button>
-                    <h3 id="mes-actual-label" class="font-bold text-sm uppercase tracking-wide text-white">Mes Año</h3>
-                    <button onclick="cambiarMes(1)" class="text-neonCyan p-1 px-3 bg-darkBg rounded hover:bg-gray-700 transition">&gt;</button>
-                </div>
-                <div class="grid grid-cols-7 text-center text-[10px] text-gray-400 mb-1 font-semibold uppercase"><div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div></div>
-                <div id="calendario-grid" class="grid grid-cols-7 gap-1 text-center"></div>
-                <div class="flex flex-wrap gap-x-3 gap-y-2 justify-center text-[10px] text-gray-300 mt-4 border-t border-gray-700 pt-3">
-                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonYellow rounded-full shadow-[0_0_5px_rgba(250,204,21,0.5)]"></div> Algunos</div>
-                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonOrange rounded-full shadow-[0_0_5px_rgba(251,146,60,0.5)]"></div> + Calor</div>
-                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonGreen rounded-full shadow-[0_0_5px_rgba(74,222,128,0.5)]"></div> Completa</div>
-                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonPurple rounded-full shadow-[0_0_5px_rgba(192,132,252,0.5)]"></div> + Calor</div>
-                    <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 border border-neonCyan rounded-full bg-transparent shadow-[0_0_5px_rgba(45,212,191,0.5)]"></div> Electro</div>
-                </div>
-            </div>
-
-            <div class="bg-cardBg p-3 rounded-xl border border-gray-700 mb-4 shadow-lg">
-                <div class="grid grid-cols-2 gap-2 mb-2">
-                    <select id="filtro-tipo" onchange="renderizarGraficos()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none">
-                        <option value="todos">Todas las Categorías</option>
-                        <option value="Movilidad">Solo Movilidad</option>
-                        <option value="Fortalecimiento">Solo Fortalecimiento</option>
-                        <option value="Estiramientos">Solo Estiramientos</option>
-                    </select>
-                    <select id="filtro-periodo" onchange="toggleFechasPersonalizadas()" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none">
-                        <option value="hoy">Hoy</option>
-                        <option value="dia_concreto">Día específico...</option>
-                        <option value="7">Últimos 7 días</option>
-                        <option value="30" selected>Últimos 30 días</option>
-                        <option value="todo">Desde el principio</option>
-                        <option value="rango">Rango de fechas...</option>
-                    </select>
-                </div>
-                <div id="input-dia-concreto" class="hidden mt-2 pt-2 border-t border-gray-700"><label class="text-[10px] text-gray-400">Selecciona el día</label><input type="date" id="fecha-unica" onchange="renderizarGraficos()" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1.5 text-white mt-1"></div>
-                <div id="rango-fechas" class="hidden grid-cols-2 gap-2 mt-2 pt-2 border-t border-gray-700">
-                    <div><label class="text-[10px] text-gray-400">Inicio</label><input type="date" id="fecha-inicio" onchange="renderizarGraficos()" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1.5 text-white mt-1"></div>
-                    <div><label class="text-[10px] text-gray-400">Fin</label><input type="date" id="fecha-fin" onchange="renderizarGraficos()" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1.5 text-white mt-1"></div>
-                </div>
-            </div>
-
-            <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg"><h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Tendencia de Esfuerzo</h3><p class="text-[10px] text-gray-400 mb-3 text-center">Media de reps por ejercicio (Figuras geométricas)</p><div class="relative h-48 w-full"><canvas id="grafico-tendencia"></canvas></div></div>
-            <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg"><h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Equilibrio Relativo</h3><p class="text-[10px] text-gray-400 mb-3 text-center">Intensidad ajustada por categoría</p><div class="relative h-56 w-full flex justify-center"><canvas id="grafico-equilibrio"></canvas></div></div>
-            <div class="bg-cardBg p-4 rounded-xl border border-gray-700 shadow-lg"><h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Desempeño por Ejercicio</h3><p class="text-[10px] text-gray-400 mb-3 text-center">Ranking total de repeticiones</p><div class="relative h-80 w-full"><canvas id="grafico-ejercicios"></canvas></div></div>
-        </section>
-
-        <section id="vista-registro" class="hidden h-full w-full p-4 overflow-y-auto pb-28">
-            <h2 class="text-xl font-bold text-white mb-4">Registro por Sesiones</h2>
-            <p class="text-xs text-gray-400 mb-4">Consulta, edita o elimina los ejercicios realizados ordenados por hora.</p>
-            
-            <div class="flex justify-between items-center bg-cardBg p-2 rounded-xl border border-gray-700 mb-4 shadow-lg">
-                <button onclick="cambiarDiaHistorial(-1)" class="text-neonCyan p-2 px-4 bg-darkBg rounded hover:bg-gray-700 transition">&lt;</button>
-                <input type="date" id="fecha-historial-input" onchange="seleccionarDiaHistorial(this.value)" class="bg-transparent text-white font-bold text-sm text-center outline-none cursor-pointer">
-                <button onclick="cambiarDiaHistorial(1)" class="text-neonCyan p-2 px-4 bg-darkBg rounded hover:bg-gray-700 transition">&gt;</button>
-            </div>
-            
-            <div id="lista-registros" class="space-y-4 mb-8"></div>
-        </section>
-
-        <section id="vista-ajustes" class="hidden h-full w-full p-4 overflow-y-auto pb-32">
-            <h2 class="text-xl font-bold text-white mb-4">Ajustes y Configuración</h2>
-            
-            <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Sistema</h3>
-            <div class="bg-cardBg p-3 rounded-xl border border-gray-700 mb-6 shadow-lg flex justify-between items-center">
-                <div>
-                    <p class="font-bold text-sm text-white">Versión v1.37</p>
-                    <p class="text-[10px] text-gray-400">Actualización en 2º plano activada</p>
-                </div>
-                <button onclick="forzarActualizacion()" class="bg-darkBg border border-neonCyan text-neonCyan px-3 py-1.5 rounded-lg text-xs font-bold shadow-md hover:bg-neonCyan hover:text-darkBg transition-colors">Buscar Updates</button>
-            </div>
-
-            <div class="bg-blueDark/20 p-4 rounded-xl border border-blueDark mb-6 shadow-lg">
-                <h3 class="text-blueLight font-semibold mb-2 text-sm uppercase tracking-wide">Exportación Clínica</h3>
-                <p class="text-xs text-gray-400 mb-3">Genera un informe PDF de los registros de <strong id="lbl-pdf-user">...</strong> para el fisioterapeuta.</p>
-                <button onclick="abrirModalPDF()" class="w-full bg-blueDark text-white py-3 rounded-lg font-bold shadow-md hover:bg-blue-700 transition">Generar Informe PDF...</button>
-            </div>
-
-            <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Gestión de Datos (<span id="lbl-gestion-user"></span>)</h3>
-            <div class="grid grid-cols-2 gap-3 mb-6">
-                <button onclick="exportarCSV()" class="col-span-2 bg-cardBg border border-neonCyan text-neonCyan py-2.5 rounded-lg text-sm font-semibold shadow-md">📊 Exportar a CSV</button>
-                <button onclick="exportarBackup()" class="bg-cardBg border border-gray-600 text-gray-300 hover:text-white py-2 rounded-lg text-sm font-semibold shadow-md transition-colors">💾 Backup JSON</button>
-                <button onclick="document.getElementById('import-file').click()" class="bg-cardBg border border-gray-600 text-gray-300 hover:text-white py-2 rounded-lg text-sm font-semibold shadow-md transition-colors">📂 Restaurar JSON</button>
-                <input type="file" id="import-file" class="hidden" accept=".json" onchange="importarBackup(event)">
-                <button onclick="borrarTodosLosDatos()" class="col-span-2 bg-red-900/30 border border-red-500 text-red-300 py-2.5 rounded-lg text-sm font-semibold shadow-md mt-1 hover:bg-red-800/50 transition-colors">⚠️ Borrar el Historial de este Perfil</button>
-            </div>
-
-            <div class="mt-8 flex flex-col items-center justify-center text-gray-500 text-xs pb-4">
-                <p class="font-bold text-gray-400 mb-1">CerviCare v1.37</p>
-            </div>
-        </section>
-
-    </main>
-
-    <div class="fixed bottom-16 w-full bg-darkBg/95 backdrop-blur-md border-t border-gray-800 text-[10px] text-gray-400 py-1.5 flex justify-center items-center gap-2 z-10 shadow-[0_-5px_15px_rgba(0,0,0,0.5)]">
-        <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.es" target="_blank" rel="noopener noreferrer" class="hover:text-neonCyan transition-colors font-bold">CC0 1.0 Universal</a>
-        <span class="text-gray-600">|</span>
-        <span>2026</span>
-        <span class="text-gray-600">|</span>
-        <span>Por <strong class="text-neonCyan font-bold tracking-wide">Larafuzas</strong></span>
-    </div>
-
-    <div id="modal-usuarios" class="hidden fixed inset-0 bg-black/90 z-50 flex justify-center items-center p-4 backdrop-blur-sm">
-        <div class="bg-cardBg p-6 rounded-xl border border-neonCyan w-full max-w-sm shadow-2xl relative">
-            <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                Perfiles de Usuario
-            </h3>
-            <p class="text-xs text-gray-400 mb-4">Selecciona quién está utilizando la aplicación ahora mismo.</p>
-            
-            <div id="lista-perfiles-ui" class="space-y-2 mb-4 max-h-48 overflow-y-auto pr-1 custom-scrollbar"></div>
-
-            <div class="border-t border-gray-700 pt-4 mt-2">
-                <button onclick="crearNuevoUsuario()" class="w-full bg-darkBg border border-gray-500 text-white font-bold py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-700 transition">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Añadir Nuevo Perfil
-                </button>
-            </div>
-            <button onclick="cerrarModalUsuarios()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+    <section id="vista-rutina" class="h-full w-full flex flex-col relative">
+        <div id="top-nav-pills" class="w-full flex gap-2 overflow-x-auto no-scrollbar p-3 bg-darkBg border-b border-gray-800 z-10 sticky top-0"></div>
+        <div class="swiper mySwiper flex-1 w-full mt-2">
+            <div class="swiper-wrapper" id="contenedor-ejercicios"></div>
         </div>
-    </div>
+    </section>
 
-    <div id="modal-pdf" class="hidden fixed inset-0 bg-black/90 z-50 flex justify-center items-center p-4 backdrop-blur-sm">
-        <div class="bg-cardBg p-6 rounded-xl border border-blueDark w-full max-w-sm shadow-2xl relative">
-            <h3 class="text-lg font-bold text-white mb-2">Informe Clínico PDF</h3>
-            <p class="text-xs text-gray-400 mb-4">Selecciona el periodo del reporte.</p>
-            <select id="pdf-rango" onchange="toggleFiltroDiaPDF()" class="w-full bg-darkBg border border-gray-600 text-sm rounded p-3 text-white outline-none mb-3">
-                <option value="hoy">Solo hoy</option>
-                <option value="especifico">Día específico...</option>
-                <option value="7">Últimos 7 días</option>
-                <option value="30" selected>Últimos 30 días</option>
-                <option value="todo">Historial completo</option>
-            </select>
-            <div id="pdf-input-dia" class="hidden mb-4"><label class="text-[10px] text-gray-400">Fecha del informe</label><input type="date" id="pdf-fecha-valor" class="w-full bg-darkBg border border-gray-600 text-sm rounded p-2 text-white mt-1"></div>
-            <div class="flex gap-3 mt-4">
-                <button onclick="cerrarModalPDF()" class="w-1/2 bg-gray-700 text-white font-bold py-2.5 rounded-lg transition-colors">Cancelar</button>
-                <button onclick="ejecutarGeneracionPDF()" id="btn-generar-pdf" class="w-1/2 bg-blueDark text-white font-bold py-2.5 rounded-lg shadow-md flex justify-center items-center">Generar</button>
+    <section id="vista-estadisticas" class="hidden h-full w-full p-4 overflow-y-auto pb-28">
+        <h2 class="text-xl font-bold text-white mb-3">Tu Progreso</h2>
+
+        <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg">
+            <div class="flex justify-between items-center mb-3">
+                <button id="btn-mes-anterior" class="text-neonCyan p-1 px-3 bg-darkBg rounded hover:bg-gray-700 transition">&lt;</button>
+                <h3 id="mes-actual-label" class="font-bold text-sm uppercase tracking-wide text-white">Mes Año</h3>
+                <button id="btn-mes-siguiente" class="text-neonCyan p-1 px-3 bg-darkBg rounded hover:bg-gray-700 transition">&gt;</button>
+            </div>
+            <div class="grid grid-cols-7 text-center text-[10px] text-gray-400 mb-1 font-semibold uppercase"><div>L</div><div>M</div><div>X</div><div>J</div><div>V</div><div>S</div><div>D</div></div>
+            <div id="calendario-grid" class="grid grid-cols-7 gap-1 text-center"></div>
+            <div class="flex flex-wrap gap-x-3 gap-y-2 justify-center text-[10px] text-gray-300 mt-4 border-t border-gray-700 pt-3">
+                <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonYellow rounded-full shadow-[0_0_5px_rgba(250,204,21,0.5)]"></div> Algunos</div>
+                <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonOrange rounded-full shadow-[0_0_5px_rgba(251,146,60,0.5)]"></div> + Calor</div>
+                <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonGreen rounded-full shadow-[0_0_5px_rgba(74,222,128,0.5)]"></div> Completa</div>
+                <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 bg-neonPurple rounded-full shadow-[0_0_5px_rgba(192,132,252,0.5)]"></div> + Calor</div>
+                <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 border border-neonCyan rounded-full bg-transparent shadow-[0_0_5px_rgba(45,212,191,0.5)]"></div> Electro</div>
             </div>
         </div>
-    </div>
 
-    <div id="pdf-loading-overlay" class="hidden fixed inset-0 z-[9999] flex justify-center items-center">
-        <div class="absolute inset-0 bg-darkBg z-10 flex flex-col justify-center items-center p-4 text-center">
-            <svg class="animate-spin h-12 w-12 text-blueLight mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-            <h2 class="text-2xl font-bold text-white">Generando Informe...</h2>
-            <p class="text-sm text-gray-400 mt-2">Compilando documento clínico nativo.</p>
-        </div>
-        <div class="absolute inset-0 z-0 flex justify-center items-center pointer-events-none overflow-hidden">
-            <div style="background: white; padding: 40px; width: 210mm;">
-                <canvas id="pdf-canvas-tendencia" width="600" height="350" class="mb-4"></canvas>
-                <canvas id="pdf-canvas-equilibrio" width="400" height="400"></canvas>
+        <div class="bg-cardBg p-3 rounded-xl border border-gray-700 mb-4 shadow-lg">
+            <div class="grid grid-cols-2 gap-2 mb-2">
+                <select id="filtro-tipo" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none">
+                    <option value="todos">Todas las Categorías</option>
+                    <option value="Movilidad">Solo Movilidad</option>
+                    <option value="Fortalecimiento">Solo Fortalecimiento</option>
+                    <option value="Estiramientos">Solo Estiramientos</option>
+                </select>
+                <select id="filtro-periodo" class="bg-darkBg border border-gray-600 text-xs rounded p-2 text-white outline-none">
+                    <option value="hoy">Hoy</option>
+                    <option value="dia_concreto">Día específico...</option>
+                    <option value="7">Últimos 7 días</option>
+                    <option value="30" selected>Últimos 30 días</option>
+                    <option value="todo">Desde el principio</option>
+                    <option value="rango">Rango de fechas...</option>
+                </select>
+            </div>
+            <div id="input-dia-concreto" class="hidden mt-2 pt-2 border-t border-gray-700"><label class="text-[10px] text-gray-400">Selecciona el día</label><input type="date" id="fecha-unica" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1.5 text-white mt-1"></div>
+            <div id="rango-fechas" class="hidden grid-cols-2 gap-2 mt-2 pt-2 border-t border-gray-700">
+                <div><label class="text-[10px] text-gray-400">Inicio</label><input type="date" id="fecha-inicio" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1.5 text-white mt-1"></div>
+                <div><label class="text-[10px] text-gray-400">Fin</label><input type="date" id="fecha-fin" class="w-full bg-darkBg border border-gray-600 text-xs rounded p-1.5 text-white mt-1"></div>
             </div>
         </div>
+
+        <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg"><h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Tendencia de Esfuerzo</h3><p class="text-[10px] text-gray-400 mb-3 text-center">Media de reps por ejercicio (Figuras geométricas)</p><div class="relative h-48 w-full"><canvas id="grafico-tendencia"></canvas></div></div>
+        <div class="bg-cardBg p-4 rounded-xl border border-gray-700 mb-4 shadow-lg"><h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Equilibrio Relativo</h3><p class="text-[10px] text-gray-400 mb-3 text-center">Intensidad ajustada por categoría</p><div class="relative h-56 w-full flex justify-center"><canvas id="grafico-equilibrio"></canvas></div></div>
+        <div class="bg-cardBg p-4 rounded-xl border border-gray-700 shadow-lg"><h3 class="text-neonCyan font-semibold mb-1 text-sm uppercase tracking-wide">Desempeño por Ejercicio</h3><p class="text-[10px] text-gray-400 mb-3 text-center">Ranking total de repeticiones</p><div class="relative h-80 w-full"><canvas id="grafico-ejercicios"></canvas></div></div>
+    </section>
+
+    <section id="vista-registro" class="hidden h-full w-full p-4 overflow-y-auto pb-28">
+        <h2 class="text-xl font-bold text-white mb-4">Registro por Sesiones</h2>
+        <p class="text-xs text-gray-400 mb-4">Consulta, edita o elimina los ejercicios realizados ordenados por hora.</p>
+
+        <div class="flex justify-between items-center bg-cardBg p-2 rounded-xl border border-gray-700 mb-4 shadow-lg">
+            <button id="btn-dia-anterior" class="text-neonCyan p-2 px-4 bg-darkBg rounded hover:bg-gray-700 transition">&lt;</button>
+            <input type="date" id="fecha-historial-input" class="bg-transparent text-white font-bold text-sm text-center outline-none cursor-pointer">
+            <button id="btn-dia-siguiente" class="text-neonCyan p-2 px-4 bg-darkBg rounded hover:bg-gray-700 transition">&gt;</button>
+        </div>
+
+        <div id="lista-registros" class="space-y-4 mb-8"></div>
+    </section>
+
+    <section id="vista-ajustes" class="hidden h-full w-full p-4 overflow-y-auto pb-32">
+        <h2 class="text-xl font-bold text-white mb-4">Ajustes y Configuración</h2>
+
+        <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Sistema</h3>
+        <div class="bg-cardBg p-3 rounded-xl border border-gray-700 mb-6 shadow-lg flex justify-between items-center">
+            <div>
+                <p class="font-bold text-sm text-white">Versión v1.38</p>
+                <p class="text-[10px] text-gray-400">Actualización en 2º plano activada</p>
+            </div>
+            <button id="btn-buscar-updates" class="bg-darkBg border border-neonCyan text-neonCyan px-3 py-1.5 rounded-lg text-xs font-bold shadow-md hover:bg-neonCyan hover:text-darkBg transition-colors">Buscar Updates</button>
+        </div>
+
+        <div class="bg-blueDark/20 p-4 rounded-xl border border-blueDark mb-6 shadow-lg">
+            <h3 class="text-blueLight font-semibold mb-2 text-sm uppercase tracking-wide">Exportación Clínica</h3>
+            <p class="text-xs text-gray-400 mb-3">Genera un informe PDF de los registros de <strong id="lbl-pdf-user">...</strong> para el fisioterapeuta.</p>
+            <button id="btn-abrir-pdf" class="w-full bg-blueDark text-white py-3 rounded-lg font-bold shadow-md hover:bg-blue-700 transition">Generar Informe PDF...</button>
+        </div>
+
+        <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Gestión de Datos (<span id="lbl-gestion-user"></span>)</h3>
+        <div class="grid grid-cols-2 gap-3 mb-6">
+            <button id="btn-exportar-csv" class="col-span-2 bg-cardBg border border-neonCyan text-neonCyan py-2.5 rounded-lg text-sm font-semibold shadow-md">📊 Exportar a CSV</button>
+            <button id="btn-exportar-backup" class="bg-cardBg border border-gray-600 text-gray-300 hover:text-white py-2 rounded-lg text-sm font-semibold shadow-md transition-colors">💾 Backup JSON</button>
+            <button id="btn-importar-trigger" class="bg-cardBg border border-gray-600 text-gray-300 hover:text-white py-2 rounded-lg text-sm font-semibold shadow-md transition-colors">📂 Restaurar JSON</button>
+            <input type="file" id="import-file" class="hidden" accept=".json">
+            <button id="btn-borrar-historial" class="col-span-2 bg-red-900/30 border border-red-500 text-red-300 py-2.5 rounded-lg text-sm font-semibold shadow-md mt-1 hover:bg-red-800/50 transition-colors">⚠️ Borrar el Historial de este Perfil</button>
+        </div>
+
+        <div class="mt-8 flex flex-col items-center justify-center text-gray-500 text-xs pb-4">
+            <p class="font-bold text-gray-400 mb-1">CerviCare v1.38</p>
+        </div>
+    </section>
+
+</main>
+
+<div class="fixed bottom-16 w-full bg-darkBg/95 backdrop-blur-md border-t border-gray-800 text-[10px] text-gray-400 py-1.5 flex justify-center items-center gap-2 z-10 shadow-[0_-5px_15px_rgba(0,0,0,0.5)]">
+    <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.es" target="_blank" rel="noopener noreferrer" class="hover:text-neonCyan transition-colors font-bold">CC0 1.0 Universal</a>
+    <span class="text-gray-600">|</span>
+    <span>2026</span>
+    <span class="text-gray-600">|</span>
+    <span>Por <strong class="text-neonCyan font-bold tracking-wide">Larafuzas</strong></span>
+</div>
+
+<!-- ===== MODAL USUARIOS ===== -->
+<div id="modal-usuarios" class="hidden fixed inset-0 bg-black/90 z-50 flex justify-center items-center p-4 backdrop-blur-sm">
+    <div class="bg-cardBg p-6 rounded-xl border border-neonCyan w-full max-w-sm shadow-2xl relative">
+        <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            Perfiles de Usuario
+        </h3>
+        <p class="text-xs text-gray-400 mb-4">Selecciona quién está utilizando la aplicación ahora mismo.</p>
+        <div id="lista-perfiles-ui" class="space-y-2 mb-4 max-h-48 overflow-y-auto pr-1 custom-scrollbar"></div>
+        <div class="border-t border-gray-700 pt-4 mt-2">
+            <button id="btn-nuevo-usuario" class="w-full bg-darkBg border border-gray-500 text-white font-bold py-2 rounded-lg flex items-center justify-center gap-2 hover:bg-gray-700 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                Añadir Nuevo Perfil
+            </button>
+        </div>
+        <button id="btn-cerrar-usuarios" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
     </div>
+</div>
 
-    <div id="visor-imagen" class="hidden fixed inset-0 bg-black/95 z-[9999] flex justify-center items-center p-4 opacity-0 transition-opacity duration-300" onclick="cerrarVisorImagen()">
-        <button class="absolute top-6 right-6 text-white bg-gray-800/50 hover:bg-gray-700 rounded-full p-2 transition-colors z-50" onclick="cerrarVisorImagen(event)">
-            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-        <img id="visor-imagen-src" src="" class="max-w-full max-h-full object-contain rounded-lg transform scale-95 transition-transform duration-300">
+<!-- ===== MODAL NOMBRE (reemplaza prompt()) ===== -->
+<div id="modal-nombre" class="hidden fixed inset-0 bg-black/90 z-[60] flex justify-center items-center p-4 backdrop-blur-sm">
+    <div class="bg-cardBg p-6 rounded-xl border border-neonCyan w-full max-w-sm shadow-2xl">
+        <h3 id="modal-nombre-titulo" class="text-lg font-bold text-white mb-4">Nombre del perfil</h3>
+        <input id="modal-nombre-input" type="text" maxlength="40"
+            class="w-full bg-darkBg border border-gray-600 text-white rounded-lg p-3 outline-none focus:border-neonCyan mb-4 text-sm"
+            placeholder="Escribe un nombre...">
+        <div class="flex gap-3">
+            <button id="modal-nombre-cancelar" class="w-1/2 bg-gray-700 text-white font-bold py-2.5 rounded-lg">Cancelar</button>
+            <button id="modal-nombre-aceptar" class="w-1/2 bg-neonCyan text-darkBg font-bold py-2.5 rounded-lg">Aceptar</button>
+        </div>
     </div>
+</div>
 
-    <nav class="bg-cardBg border-t border-gray-800 flex justify-around p-2 pb-safe z-10 fixed bottom-0 w-full h-16 shadow-[0_-5px_15px_rgba(0,0,0,0.3)]">
-        <button id="nav-rutina" class="nav-btn text-neonCyan flex flex-col items-center justify-center w-1/4 transition-colors" onclick="cambiarPestana('rutina')">
-            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
-            <span class="text-[10px] font-bold uppercase tracking-widest">Rutina</span>
-        </button>
-        <button id="nav-estadisticas" class="nav-btn text-gray-500 hover:text-neonCyan flex flex-col items-center justify-center w-1/4 transition-colors" onclick="cambiarPestana('estadisticas')">
-            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-            <span class="text-[10px] font-bold uppercase tracking-widest">Progreso</span>
-        </button>
-        <button id="nav-registro" class="nav-btn text-gray-500 hover:text-neonCyan flex flex-col items-center justify-center w-1/4 transition-colors" onclick="cambiarPestana('registro')">
-            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <span class="text-[10px] font-bold uppercase tracking-widest">Registro</span>
-        </button>
-        <button id="nav-ajustes" class="nav-btn text-gray-500 hover:text-neonCyan flex flex-col items-center justify-center w-1/4 transition-colors" onclick="cambiarPestana('ajustes')">
-            <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-            <span class="text-[10px] font-bold uppercase tracking-widest">Ajustes</span>
-        </button>
-    </nav>
+<!-- ===== MODAL CONFIRMAR (reemplaza confirm()) ===== -->
+<div id="modal-confirm" class="hidden fixed inset-0 bg-black/90 z-[60] flex justify-center items-center p-4 backdrop-blur-sm">
+    <div class="bg-cardBg p-6 rounded-xl border border-red-500 w-full max-w-sm shadow-2xl">
+        <h3 id="modal-confirm-titulo" class="text-lg font-bold text-white mb-2">¿Confirmar acción?</h3>
+        <p id="modal-confirm-texto" class="text-sm text-gray-400 mb-6"></p>
+        <div class="flex gap-3">
+            <button id="modal-confirm-cancelar" class="w-1/2 bg-gray-700 text-white font-bold py-2.5 rounded-lg">Cancelar</button>
+            <button id="modal-confirm-aceptar" class="w-1/2 bg-red-600 text-white font-bold py-2.5 rounded-lg">Confirmar</button>
+        </div>
+    </div>
+</div>
 
-    <script>
-        if (typeof ChartDataLabels !== 'undefined') {
-            Chart.register(ChartDataLabels);
-            Chart.defaults.plugins.datalabels.display = false;
-        }
+<!-- ===== MODAL EDITAR REGISTRO (reemplaza prompt()) ===== -->
+<div id="modal-editar" class="hidden fixed inset-0 bg-black/90 z-[60] flex justify-center items-center p-4 backdrop-blur-sm">
+    <div class="bg-cardBg p-6 rounded-xl border border-neonCyan w-full max-w-sm shadow-2xl">
+        <h3 class="text-lg font-bold text-white mb-4">Editar Registro</h3>
+        <div class="flex justify-between gap-3 mb-4">
+            <div class="flex items-center justify-between bg-darkBg px-3 py-2 rounded w-1/2 border border-gray-600">
+                <span class="text-xs text-gray-400">Series</span>
+                <button id="modal-editar-series-menos" class="text-neonCyan text-xl px-2 font-bold">-</button>
+                <span id="modal-editar-series-val" class="font-bold text-lg">1</span>
+                <button id="modal-editar-series-mas" class="text-neonCyan text-xl px-2 font-bold">+</button>
+            </div>
+            <div class="flex items-center justify-between bg-darkBg px-3 py-2 rounded w-1/2 border border-gray-600">
+                <span class="text-xs text-gray-400">Reps</span>
+                <button id="modal-editar-reps-menos" class="text-neonCyan text-xl px-2 font-bold">-</button>
+                <span id="modal-editar-reps-val" class="font-bold text-lg">1</span>
+                <button id="modal-editar-reps-mas" class="text-neonCyan text-xl px-2 font-bold">+</button>
+            </div>
+        </div>
+        <div class="flex gap-3">
+            <button id="modal-editar-cancelar" class="w-1/2 bg-gray-700 text-white font-bold py-2.5 rounded-lg">Cancelar</button>
+            <button id="modal-editar-guardar" class="w-1/2 bg-neonCyan text-darkBg font-bold py-2.5 rounded-lg">Guardar</button>
+        </div>
+    </div>
+</div>
 
-        const leftAlignLabelsPlugin = {
-            id: 'leftAlignLabels',
-            afterDraw(chart) {
-                try {
-                    if (chart.config.type !== 'bar') return;
-                    if (!chart.chartArea) return; 
-                    const { ctx, data, chartArea: { left } } = chart;
-                    ctx.save();
-                    ctx.textAlign = 'left';
-                    ctx.textBaseline = 'bottom';
-                    ctx.fillStyle = '#cbd5e1'; 
-                    ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
-                    const meta = chart.getDatasetMeta(0);
-                    if (meta && meta.data) {
-                        meta.data.forEach((bar, index) => {
-                            const label = data.labels[index];
-                            if(bar.y) ctx.fillText(label, left, bar.y - 6);
-                        });
-                    }
-                    ctx.restore();
-                } catch(e) { console.warn("Error en plugin de etiquetas:", e); }
-            }
-        };
+<!-- ===== MODAL PDF ===== -->
+<div id="modal-pdf" class="hidden fixed inset-0 bg-black/90 z-50 flex justify-center items-center p-4 backdrop-blur-sm">
+    <div class="bg-cardBg p-6 rounded-xl border border-blueDark w-full max-w-sm shadow-2xl relative">
+        <h3 class="text-lg font-bold text-white mb-2">Informe Clínico PDF</h3>
+        <p class="text-xs text-gray-400 mb-4">Selecciona el periodo del reporte.</p>
+        <select id="pdf-rango" class="w-full bg-darkBg border border-gray-600 text-sm rounded p-3 text-white outline-none mb-3">
+            <option value="hoy">Solo hoy</option>
+            <option value="especifico">Día específico...</option>
+            <option value="7">Últimos 7 días</option>
+            <option value="30" selected>Últimos 30 días</option>
+            <option value="todo">Historial completo</option>
+        </select>
+        <div id="pdf-input-dia" class="hidden mb-4">
+            <label class="text-[10px] text-gray-400">Fecha del informe</label>
+            <input type="date" id="pdf-fecha-valor" class="w-full bg-darkBg border border-gray-600 text-sm rounded p-2 text-white mt-1">
+        </div>
+        <div class="flex gap-3 mt-4">
+            <button id="btn-cerrar-pdf" class="w-1/2 bg-gray-700 text-white font-bold py-2.5 rounded-lg transition-colors">Cancelar</button>
+            <button id="btn-generar-pdf" class="w-1/2 bg-blueDark text-white font-bold py-2.5 rounded-lg shadow-md flex justify-center items-center">Generar</button>
+        </div>
+    </div>
+</div>
 
-        const whiteBgPlugin = { 
-            id: 'customCanvasBackgroundColor', 
-            beforeDraw: (chart, args, options) => { 
-                const {ctx} = chart; 
-                ctx.save(); 
-                ctx.globalCompositeOperation = 'destination-over'; 
-                ctx.fillStyle = options.color || '#ffffff'; 
-                ctx.fillRect(0, 0, chart.width, chart.height); 
-                ctx.restore(); 
-            } 
-        };
+<!-- ===== PDF LOADING ===== -->
+<div id="pdf-loading-overlay" class="hidden fixed inset-0 z-[9999] flex justify-center items-center">
+    <div class="absolute inset-0 bg-darkBg z-10 flex flex-col justify-center items-center p-4 text-center">
+        <svg class="animate-spin h-12 w-12 text-blueLight mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+        <h2 class="text-2xl font-bold text-white">Generando Informe...</h2>
+        <p class="text-sm text-gray-400 mt-2">Compilando documento clínico nativo.</p>
+    </div>
+    <div class="absolute inset-0 z-0 flex justify-center items-center pointer-events-none overflow-hidden">
+        <div style="background: white; padding: 40px; width: 210mm;">
+            <canvas id="pdf-canvas-tendencia" width="600" height="350" class="mb-4"></canvas>
+            <canvas id="pdf-canvas-equilibrio" width="400" height="400"></canvas>
+        </div>
+    </div>
+</div>
 
-        const db = new Dexie('CerviCareDB');
-        db.version(1).stores({ registros: '++id, fecha, ejercicio, series, repeticiones, fase' });
-        db.version(2).stores({ registros: '++id, fecha, timestamp, ejercicio, series, repeticiones, fase' });
-        db.version(3).stores({ usuarios: '++id, nombre', registros: '++id, usuarioId, fecha, timestamp, ejercicio, series, repeticiones, fase' });
+<!-- ===== VISOR IMAGEN ===== -->
+<div id="visor-imagen" class="hidden fixed inset-0 bg-black/95 z-[9999] flex justify-center items-center p-4 opacity-0 transition-opacity duration-300">
+    <button id="btn-cerrar-visor" class="absolute top-6 right-6 text-white bg-gray-800/50 hover:bg-gray-700 rounded-full p-2 transition-colors z-50">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    </button>
+    <img id="visor-imagen-src" src="" alt="Vista ampliada del ejercicio" class="max-w-full max-h-full object-contain rounded-lg transform scale-95 transition-transform duration-300">
+</div>
 
-        const PESO_CATEGORIA = { 'Movilidad': 5, 'Fortalecimiento': 2, 'Estiramientos': 2 };
-        const RUTINA_TOTAL_EJERCICIOS = 9;
+<nav class="bg-cardBg border-t border-gray-800 flex justify-around p-2 pb-safe z-10 fixed bottom-0 w-full h-16 shadow-[0_-5px_15px_rgba(0,0,0,0.3)]">
+    <button id="nav-rutina" class="nav-btn text-neonCyan flex flex-col items-center justify-center w-1/4 transition-colors">
+        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+        <span class="text-[10px] font-bold uppercase tracking-widest">Rutina</span>
+    </button>
+    <button id="nav-estadisticas" class="nav-btn text-gray-500 hover:text-neonCyan flex flex-col items-center justify-center w-1/4 transition-colors">
+        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+        <span class="text-[10px] font-bold uppercase tracking-widest">Progreso</span>
+    </button>
+    <button id="nav-registro" class="nav-btn text-gray-500 hover:text-neonCyan flex flex-col items-center justify-center w-1/4 transition-colors">
+        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span class="text-[10px] font-bold uppercase tracking-widest">Registro</span>
+    </button>
+    <button id="nav-ajustes" class="nav-btn text-gray-500 hover:text-neonCyan flex flex-col items-center justify-center w-1/4 transition-colors">
+        <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        <span class="text-[10px] font-bold uppercase tracking-widest">Ajustes</span>
+    </button>
+</nav>
 
-        const rutinaCervical = [
-            { id: "fase1_calor", short: "Calor", fase: "Fase 1: Preparación", titulo: "Aplicación de Calor", imagen: null, tipo: "temporizador", instrucciones: "<p><strong>Fundamento:</strong> El calor provoca vasodilatación, aumentando el flujo sanguíneo y relajando las fibras musculares antes del estiramiento.</p>" },
-            { id: "mov_flexion", short: "Flexión", fase: "Fase 2: Movilidad", titulo: "Flexión y Extensión", imagen: "flexion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Siéntate recto. Exhala y lleva lentamente la barbilla hacia el pecho. Inhala y vuelve al centro, luego extiende la cabeza suavemente hacia atrás mirando al techo.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>No fuerces la extensión hacia atrás si sientes mareos o pellizcos articulares.</p>" },
-            { id: "mov_inclinacion", short: "Inclin.", fase: "Fase 2: Movilidad", titulo: "Inclinación Lateral", imagen: "inclinacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Intenta tocar el hombro con la oreja de forma controlada.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Es un error común levantar el hombro hacia la oreja. Ancla la mano del lado que estiras debajo de tu muslo.</p>" },
-            { id: "mov_rotacion", short: "Rotación", fase: "Fase 2: Movilidad", titulo: "Rotación", imagen: "rotacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Gira la cabeza lentamente para mirar por encima de tu hombro.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Imagina una línea horizontal trazada desde tu nariz hasta la pared; evita que la cabeza cabecee.</p>" },
-            { id: "mov_circulos", short: "Semicirc.", fase: "Fase 2: Movilidad", titulo: "Semicírculos", imagen: "circulos.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Deja caer la barbilla al pecho y traza un arco de hombro a hombro, dibujando una 'U'.</p><p class='mt-2 text-red-400 font-semibold'>⚠️ Advertencia:</p><p>Evita realizar el semicírculo por la espalda para no comprimir vértebras ni arterias.</p>" },
-            { id: "mov_elevacion", short: "Hombros", fase: "Fase 2: Movilidad", titulo: "Elevación de Hombros", imagen: "elevacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Sube hombros hacia las orejas encogiéndote. Mantén 2-3 segundos.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Déjalos caer abruptamente soltando el aire de golpe para desactivar el trapecio.</p>" },
-            { id: "fort_resistencia1", short: "Res.Front", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Frontal/Nuca", imagen: "resistencia1.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Manos en la frente, empuja la cabeza hacia delante (isométrico). Repite hacia atrás.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Aplica sólo un 20-30% de tu fuerza máxima. 'No rompas el huevo'.</p>" },
-            { id: "fort_resistencia2", short: "Res.Lat", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Lateral", imagen: "resistencia2.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Mano en la sien y empuja lateralmente sin permitir desplazamiento.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Fuerza progresiva durante 5s y relaja lentamente durante otros 5s.</p>" },
-            { id: "est_traccion1", short: "Trac.Front", fase: "Fase 4: Estiramientos", titulo: "Tracción Abajo", imagen: "traccion1.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Manos detrás de la cabeza, deja caer la barbilla al pecho.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>No tires con fuerza. Deja que el peso libre de tus brazos ejerza la tracción durante 15s.</p>" },
-            { id: "est_traccion2", short: "Trac.Lat", fase: "Fase 4: Estiramientos", titulo: "Tracción Lateral", imagen: "traccion2.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Pasa la mano sobre la cabeza hasta la oreja contraria e inclina suavemente.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Utiliza la respiración para ganar milímetros en cada exhalación.</p>" },
-            { id: "fase5_electro", short: "Electro", fase: "Fase 5: Recuperación", titulo: "Electroestimulación", imagen: "electrodos.png", tipo: "electro", instrucciones: `<p><strong>Ubicación:</strong> Coloca los electrodos bilateralmente sobre los músculos trapecios o en la zona esplenia posterior.</p><p class="text-red-400 font-bold mb-3 mt-1 text-sm border-l-2 border-red-500 pl-2">⚠️ NUNCA colocar en la parte delantera del cuello, garganta o carótidas.</p><div class="space-y-2 mt-2"><details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer"><summary class="font-semibold text-neonCyan outline-none">⚡ TENS (Alivio del Dolor)</summary><p class="mt-1 text-xs text-gray-300"><strong>Parámetros:</strong> Frecuencia Alta (80-120 Hz).<br><strong>Sensación:</strong> Hormigueo constante y agradable, SIN provocar contracción muscular.<br><strong>Aplicación:</strong> 20-30 minutos para dolor agudo.</p></details><details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer"><summary class="font-semibold text-neonCyan outline-none">💆 EMS (Masaje Descontracturante)</summary><p class="mt-1 text-xs text-gray-300"><strong>Parámetros:</strong> Frecuencia Baja (2-10 Hz).<br><strong>Sensación:</strong> Intensidad hasta notar un bombeo o pequeñas sacudidas musculares.<br><strong>Aplicación:</strong> 15-20 minutos para aumentar el flujo sanguíneo.</p></details></div>` }
-        ];
+<script>
+// =====================================================================
+// PLUGINS CHART.JS
+// =====================================================================
+if (typeof ChartDataLabels !== 'undefined') {
+    Chart.register(ChartDataLabels);
+    Chart.defaults.plugins.datalabels.display = false;
+}
 
-        let usuarioActual = null;
-        let miSwiper, chartTendencia = null, chartEquilibrio = null, chartEjercicios = null, pdfChart1 = null, pdfChart2 = null;
-        let timerInterval, tiempoRestante = 15 * 60, timerEstado = 'detenido', endTime = null; 
-        let calMonth = new Date().getMonth(), calYear = new Date().getFullYear(), diaHistorialActual = getLocalDateStr();
-        const nombresMeses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-
-        window.onload = async () => { 
-            try {
-                await db.open();
-
-                let count = await db.usuarios.count();
-                let defId = 1;
-                if(count === 0) {
-                    defId = await db.usuarios.add({ nombre: "Perfil Principal" });
-                } else {
-                    const primerU = await db.usuarios.toCollection().first();
-                    if(primerU) defId = primerU.id;
-                }
-
-                await db.registros.filter(r => !r.usuarioId).modify(r => { r.usuarioId = defId; });
-
-                let savedId = localStorage.getItem('cervicare_uid');
-                if(savedId) usuarioActual = await db.usuarios.get(parseInt(savedId));
-                if(!usuarioActual) usuarioActual = await db.usuarios.get(defId);
-                
-                actualizarInterfazUsuario();
-                renderizarRutina(); 
-                document.getElementById('fecha-historial-input').value = diaHistorialActual; 
-                cargarHistorial(); 
-            } catch (err) { 
-                console.error("Error al iniciar DB:", err); 
-                renderizarRutina(); 
-            }
-        };
-
-        function getLocalDateStr(d = new Date()) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
-
-        function actualizarInterfazUsuario() {
-            localStorage.setItem('cervicare_uid', usuarioActual.id);
-            document.getElementById('lbl-usuario-actual').innerText = usuarioActual.nombre;
-            document.getElementById('lbl-pdf-user').innerText = usuarioActual.nombre;
-            document.getElementById('lbl-gestion-user').innerText = usuarioActual.nombre;
-        }
-
-        async function abrirModalUsuarios() {
-            const lista = document.getElementById('lista-perfiles-ui');
-            lista.innerHTML = '';
-            const todos = await db.usuarios.toArray();
-            todos.forEach(u => {
-                const activo = u.id === usuarioActual.id;
-                lista.innerHTML += `
-                    <div class="flex gap-2 mb-2">
-                        <button onclick="cambiarDeUsuario(${u.id})" class="flex-1 text-left p-3 rounded-lg border flex justify-between items-center transition ${activo ? 'bg-neonCyan/10 border-neonCyan text-white' : 'bg-darkBg border-gray-700 text-gray-400 hover:bg-gray-800'}">
-                            <span class="font-bold truncate">${u.nombre}</span>
-                            ${activo ? '<svg class="w-5 h-5 text-neonCyan" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>' : ''}
-                        </button>
-                        <button onclick="editarNombreUsuario(${u.id}, '${u.nombre.replace(/'/g, "\\'")}')" class="p-3 bg-darkBg border border-gray-700 text-gray-400 hover:text-neonCyan rounded-lg hover:bg-gray-800 transition" title="Editar nombre">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                        </button>
-                    </div>
-                `;
-            });
-            document.getElementById('modal-usuarios').classList.remove('hidden');
-        }
-
-        function cerrarModalUsuarios() { document.getElementById('modal-usuarios').classList.add('hidden'); }
-
-        async function cambiarDeUsuario(id) {
-            usuarioActual = await db.usuarios.get(id);
-            actualizarInterfazUsuario();
-            cerrarModalUsuarios();
-            if(!document.getElementById('vista-estadisticas').classList.contains('hidden')) actualizarVistasProgreso();
-            cargarHistorial();
-        }
-
-        async function crearNuevoUsuario() {
-            const nombre = prompt("Introduce el nombre del nuevo perfil:");
-            if (nombre && nombre.trim() !== '') {
-                const nuevoId = await db.usuarios.add({ nombre: nombre.trim() });
-                usuarioActual = { id: nuevoId, nombre: nombre.trim() };
-                actualizarInterfazUsuario();
-                cerrarModalUsuarios();
-                if(!document.getElementById('vista-estadisticas').classList.contains('hidden')) actualizarVistasProgreso();
-                cargarHistorial();
-            }
-        }
-
-        async function editarNombreUsuario(id, nombreActual) {
-            const nuevoNombre = prompt("Modifica el nombre del perfil:", nombreActual);
-            if (nuevoNombre && nuevoNombre.trim() !== '' && nuevoNombre !== nombreActual) {
-                await db.usuarios.update(id, { nombre: nuevoNombre.trim() });
-                if (usuarioActual.id === id) {
-                    usuarioActual.nombre = nuevoNombre.trim();
-                    actualizarInterfazUsuario();
-                }
-                abrirModalUsuarios(); 
-            }
-        }
-
-        function abrirVisorImagen(src) { const v = document.getElementById('visor-imagen'), i = document.getElementById('visor-imagen-src'); i.src = src; v.classList.remove('hidden'); void v.offsetWidth; v.classList.remove('opacity-0'); i.classList.remove('scale-95'); i.classList.add('scale-100'); }
-        function cerrarVisorImagen(e) { if(e) e.stopPropagation(); const v = document.getElementById('visor-imagen'), i = document.getElementById('visor-imagen-src'); v.classList.add('opacity-0'); i.classList.remove('scale-100'); i.classList.add('scale-95'); setTimeout(() => { v.classList.add('hidden'); }, 300); }
-
-        function renderizarRutina() {
-            const contenedor = document.getElementById('contenedor-ejercicios'); const navPills = document.getElementById('top-nav-pills');
-            contenedor.innerHTML = ''; navPills.innerHTML = '';
-            rutinaCervical.forEach((ej, index) => {
-                navPills.innerHTML += `<button id="pill-${index}" onclick="irADiapositiva(${index})" class="chip flex-shrink-0 text-xs font-bold px-4 py-1.5 rounded-full border border-gray-600 bg-transparent text-gray-400">${index + 1}. ${ej.short}</button>`;
-                let controlesHTML = '';
-                if (ej.tipo === 'temporizador') { controlesHTML = `<div class="flex gap-2 w-full"><button id="btn-timer-play" onclick="toggleTemporizador()" class="flex-1 bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-[0_0_10px_rgba(45,212,191,0.3)] transition-colors">Iniciar Calor</button><button id="btn-timer-reset" onclick="resetTemporizador()" class="hidden px-4 bg-red-900 border border-red-500 text-red-200 font-bold py-3 rounded-lg transition-colors">⏹️</button></div>`; } 
-                else if (ej.tipo === 'contador') { controlesHTML = `<div class="flex justify-between gap-3 mb-3"><div class="flex items-center justify-between bg-darkBg px-3 py-2 rounded w-1/2 border border-gray-600"><span class="text-xs text-gray-400">Series</span><button onclick="cambiarValor('series-${ej.id}', -1)" class="text-neonCyan text-xl px-2 font-bold">-</button><span id="series-${ej.id}" class="font-bold text-lg">1</span><button onclick="cambiarValor('series-${ej.id}', 1)" class="text-neonCyan text-xl px-2 font-bold">+</button></div><div class="flex items-center justify-between bg-darkBg px-3 py-2 rounded w-1/2 border border-gray-600"><span class="text-xs text-gray-400">Reps</span><button onclick="cambiarValor('reps-${ej.id}', -1)" class="text-neonCyan text-xl px-2 font-bold">-</button><span id="reps-${ej.id}" class="font-bold text-lg">1</span><button onclick="cambiarValor('reps-${ej.id}', 1)" class="text-neonCyan text-xl px-2 font-bold">+</button></div></div><button onclick="guardarRegistro('${ej.id}', '${ej.titulo}', '${ej.fase}', this)" class="w-full bg-gray-700 text-white font-bold py-3 rounded-lg transition-colors">Guardar y Siguiente</button>`; } 
-                else if (ej.tipo === 'electro') { controlesHTML = `<div class="flex gap-2"><button onclick="guardarElectro(true, this)" class="w-1/2 bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-md transition-colors">Sí, Aplicada</button><button onclick="guardarElectro(false, this)" class="w-1/2 bg-gray-700 text-white font-bold py-3 rounded-lg transition-colors">Saltar</button></div>`; }
-                let visualHTML = ej.imagen ? `<img src="${ej.imagen}" onclick="abrirVisorImagen('${ej.imagen}')" class="h-60 mx-auto object-contain p-1 cursor-pointer transition-transform hover:scale-105" onerror="this.src=''; this.alt='Imagen: ${ej.imagen}'" title="Tocar para ampliar">` : `<div class="flex items-center justify-center h-60"><span class="text-5xl font-bold text-neonCyan" id="display-${ej.id}">15:00</span></div>`;
-                contenedor.innerHTML += `<div class="swiper-slide flex flex-col items-center justify-start p-4 pt-0 pb-6"><div class="bg-cardBg w-full max-w-sm h-[70vh] rounded-2xl shadow-lg p-5 flex flex-col border border-gray-700"><p class="text-neonCyan font-bold text-center text-xs uppercase tracking-wide mb-2">${ej.fase}</p><h3 class="text-white font-bold text-lg text-center mb-3 leading-tight">${ej.titulo}</h3><div class="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-3 pr-1"><div class="w-full bg-gray-800 rounded-xl border border-gray-700 flex-shrink-0 flex items-center justify-center overflow-hidden">${visualHTML}</div><details class="group bg-darkBg border border-gray-700 rounded-lg p-3"><summary class="font-semibold text-gray-300 outline-none select-none cursor-pointer flex justify-between items-center text-sm">Instrucciones Clínicas <span class="text-neonCyan font-bold text-xl group-open:rotate-180 transition-transform">▾</span></summary><div class="mt-3 text-sm text-gray-300 space-y-2 border-t border-gray-700 pt-2 pb-1">${ej.instrucciones}</div></details></div><div class="h-auto flex flex-col justify-end mt-4">${controlesHTML}</div></div></div>`;
-            });
-            if (typeof Swiper !== 'undefined') { miSwiper = new Swiper(".mySwiper", { spaceBetween: 15, on: { slideChange: function () { actualizarEstiloPills(this.activeIndex); } } }); actualizarEstiloPills(0); }
-        }
-
-        function irADiapositiva(index) { if(miSwiper) miSwiper.slideTo(index); }
-        function actualizarEstiloPills(activeIndex) { document.querySelectorAll('.chip').forEach((pill, idx) => { if (idx === activeIndex) { pill.classList.replace('bg-transparent', 'bg-neonCyan'); pill.classList.replace('text-gray-400', 'text-darkBg'); pill.classList.replace('border-gray-600', 'border-neonCyan'); pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); } else { pill.classList.replace('bg-neonCyan', 'bg-transparent'); pill.classList.replace('text-darkBg', 'text-gray-400'); pill.classList.replace('border-neonCyan', 'border-gray-600'); } }); }
-        
-        function cambiarPestana(id) { 
-            ['rutina', 'estadisticas', 'registro', 'ajustes'].forEach(p => { 
-                document.getElementById(`vista-${p}`).classList.add('hidden'); 
-                document.getElementById(`nav-${p}`).classList.replace('text-neonCyan', 'text-gray-500'); 
-            }); 
-            document.getElementById(`vista-${id}`).classList.remove('hidden'); 
-            document.getElementById(`nav-${id}`).classList.replace('text-gray-500', 'text-neonCyan'); 
-            if (id === 'estadisticas') setTimeout(actualizarVistasProgreso, 50); 
-            if (id === 'registro') cargarHistorial(); 
-        }
-
-        function cambiarValor(id, inc) { let el = document.getElementById(id), v = parseInt(el.innerText) + inc; el.innerText = v < 1 ? 1 : v; }
-
-        async function solicitarPermisoNotificaciones() { if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") { await Notification.requestPermission(); } }
-        function enviarNotificacion() { if ("Notification" in window && Notification.permission === "granted") { const title = "¡Tiempo de Calor Completado!"; const options = { body: "Es hora de continuar con la rutina.", icon: "./icono.jpg", vibrate: [200, 100, 200] }; if ('serviceWorker' in navigator) { navigator.serviceWorker.ready.then(reg => reg.showNotification(title, options)); } else { new Notification(title, options); } } }
-        async function guardarCalorAuto() { await db.registros.add({ usuarioId: usuarioActual.id, fecha: getLocalDateStr(), timestamp: Date.now(), ejercicio: 'Aplicación de Calor', series: 1, repeticiones: 1, fase: 'Fase 1: Preparación' }); actualizarVistasProgreso(); }
-
-        function toggleTemporizador() { const bp = document.getElementById('btn-timer-play'), br = document.getElementById('btn-timer-reset'); if (timerEstado === 'detenido' || timerEstado === 'pausado') { solicitarPermisoNotificaciones(); timerEstado = 'corriendo'; bp.innerText = "Pausar"; bp.className = bp.className.replace('bg-neonCyan', 'bg-amber-500').replace('text-darkBg', 'text-white'); br.classList.remove('hidden'); endTime = Date.now() + (tiempoRestante * 1000); timerInterval = setInterval(() => { tiempoRestante = Math.round((endTime - Date.now()) / 1000); if (tiempoRestante <= 0) { tiempoRestante = 0; clearInterval(timerInterval); timerEstado = 'completado'; document.getElementById('display-fase1_calor').innerText = "¡Listo!"; bp.innerText = "Siguiente Fase"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); bp.onclick = () => miSwiper.slideNext(); br.classList.add('hidden'); enviarNotificacion(); guardarCalorAuto(); } else { document.getElementById('display-fase1_calor').innerText = `${Math.floor(tiempoRestante/60).toString().padStart(2,'0')}:${(tiempoRestante%60).toString().padStart(2,'0')}`; } }, 500); } else if (timerEstado === 'corriendo') { clearInterval(timerInterval); timerEstado = 'pausado'; bp.innerText = "Reanudar"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); } }
-        function resetTemporizador() { clearInterval(timerInterval); tiempoRestante = 15*60; timerEstado = 'detenido'; endTime = null; document.getElementById('display-fase1_calor').innerText = "15:00"; const bp = document.getElementById('btn-timer-play'); bp.innerText = "Iniciar Calor"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); bp.onclick = toggleTemporizador; document.getElementById('btn-timer-reset').classList.add('hidden'); }
-
-        async function guardarRegistro(id, titulo, fase, btn) { await db.registros.add({ usuarioId: usuarioActual.id, fecha: getLocalDateStr(), timestamp: Date.now(), ejercicio: titulo, series: parseInt(document.getElementById(`series-${id}`).innerText), repeticiones: parseInt(document.getElementById(`reps-${id}`).innerText), fase }); const txt = btn.innerText; btn.innerText = "¡Guardado!"; btn.className = btn.className.replace('bg-gray-700', 'bg-green-500').replace('text-white', 'text-darkBg'); setTimeout(() => { btn.innerText = txt; btn.className = btn.className.replace('bg-green-500', 'bg-gray-700').replace('text-darkBg', 'text-white'); miSwiper.slideNext(); actualizarVistasProgreso(); cargarHistorial(); }, 600); }
-        async function guardarElectro(ap, btn) { if(ap) { await db.registros.add({ usuarioId: usuarioActual.id, fecha: getLocalDateStr(), timestamp: Date.now(), ejercicio: 'Electroestimulación', series: 1, repeticiones: 1, fase: 'Fase 5' }); btn.innerText = "¡Registrado!"; btn.classList.replace('bg-neonCyan', 'bg-green-500'); } setTimeout(() => { miSwiper.slideTo(0); btn.innerText = "Sí, Aplicada"; btn.classList.replace('bg-green-500', 'bg-neonCyan'); actualizarVistasProgreso(); cargarHistorial(); }, 800); }
-
-        function toggleFechasPersonalizadas() { const per = document.getElementById('filtro-periodo').value; document.getElementById('rango-fechas').classList.toggle('hidden', per !== 'rango'); document.getElementById('input-dia-concreto').classList.toggle('hidden', per !== 'dia_concreto'); if (per !== 'rango' && per !== 'dia_concreto') renderizarGraficos(); }
-        async function actualizarVistasProgreso() { await dibujarCalendarioMensual(); await renderizarGraficos(); }
-        function cambiarMes(offset) { calMonth += offset; if(calMonth < 0) { calMonth = 11; calYear--; } if(calMonth > 11) { calMonth = 0; calYear++; } dibujarCalendarioMensual(); }
-
-        async function getRegistrosUsuario() { return await db.registros.where({usuarioId: usuarioActual.id}).toArray(); }
-
-        async function dibujarCalendarioMensual() {
-            document.getElementById('mes-actual-label').innerText = `${nombresMeses[calMonth]} ${calYear}`;
-            const container = document.getElementById('calendario-grid'); container.innerHTML = '';
-            
-            const todos = await getRegistrosUsuario(); 
-            const evaluacionPorDia = {};
-            todos.forEach(r => { if (!evaluacionPorDia[r.fecha]) evaluacionPorDia[r.fecha] = { ejercicios: new Set(), calor: false, electro: false }; if (r.fase.includes('Fase 1')) evaluacionPorDia[r.fecha].calor = true; else if (r.fase.includes('Fase 5')) evaluacionPorDia[r.fecha].electro = true; else evaluacionPorDia[r.fecha].ejercicios.add(r.ejercicio); });
-            let primerDiaMes = new Date(calYear, calMonth, 1).getDay(); if (primerDiaMes === 0) primerDiaMes = 7; 
-            const diasEnMes = new Date(calYear, calMonth + 1, 0).getDate();
-            for (let i = 1; i < primerDiaMes; i++) container.innerHTML += `<div class="h-10"></div>`;
-            const hoyStr = getLocalDateStr();
-            for (let day = 1; day <= diasEnMes; day++) {
-                const fechaStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-                const datosDia = evaluacionPorDia[fechaStr];
-                let dotColor = 'bg-transparent', shadowClass = '', clasesBorde = 'border border-transparent', tieneDatos = false;
-                if (datosDia) { tieneDatos = true; const numEj = datosDia.ejercicios.size; const esCompleta = numEj >= RUTINA_TOTAL_EJERCICIOS; if (esCompleta && datosDia.calor) { dotColor = 'bg-neonPurple'; shadowClass = 'shadow-[0_0_8px_rgba(192,132,252,0.6)]'; } else if (esCompleta) { dotColor = 'bg-neonGreen'; shadowClass = 'shadow-[0_0_8px_rgba(74,222,128,0.6)]'; } else if (numEj > 0 && datosDia.calor) { dotColor = 'bg-neonOrange'; shadowClass = 'shadow-[0_0_8px_rgba(251,146,60,0.6)]'; } else if (numEj > 0 || datosDia.calor) { dotColor = 'bg-neonYellow'; shadowClass = 'shadow-[0_0_8px_rgba(250,204,21,0.6)]'; } if (datosDia.electro) clasesBorde = 'ring-2 ring-neonCyan'; }
-                const bgCelda = fechaStr === hoyStr ? 'bg-gray-800' : 'bg-transparent';
-                container.innerHTML += `<div class="h-10 flex flex-col items-center justify-center rounded-lg ${bgCelda} ${clasesBorde} cursor-pointer hover:bg-gray-700 transition" onclick="document.getElementById('filtro-periodo').value='dia_concreto'; document.getElementById('fecha-unica').value='${fechaStr}'; toggleFechasPersonalizadas(); renderizarGraficos();"><span class="text-xs ${tieneDatos?'text-white font-bold':'text-gray-400'}">${day}</span><div class="w-1.5 h-1.5 rounded-full mt-0.5 ${dotColor} ${shadowClass}"></div></div>`;
-            }
-        }
-
-        async function renderizarGraficos() {
-            const todos = await getRegistrosUsuario(); 
-            const fPeriodo = document.getElementById('filtro-periodo').value;
-            let fInicioStr = null, fFinStr = null; const hoyStr = getLocalDateStr();
-            if (fPeriodo === 'hoy') { fInicioStr = hoyStr; fFinStr = hoyStr; }
-            else if (fPeriodo === 'dia_concreto') { fInicioStr = document.getElementById('fecha-unica').value; fFinStr = fInicioStr; }
-            else if (fPeriodo === '7') { let d = new Date(); d.setDate(d.getDate()-7); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
-            else if (fPeriodo === '30') { let d = new Date(); d.setDate(d.getDate()-30); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
-            else if (fPeriodo === 'rango') { fInicioStr = document.getElementById('fecha-inicio').value; fFinStr = document.getElementById('fecha-fin').value; }
-            
-            const datosFiltradosTemp = todos.filter(r => { if (fInicioStr && r.fecha < fInicioStr) return false; if (fFinStr && r.fecha > fFinStr) return false; return true; });
-            const fTipo = document.getElementById('filtro-tipo').value;
-            const datosEquilibrio = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 }, datosTendenciaCat = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} }, datosEjercicios = {}, fechasSet = new Set();
-            datosFiltradosTemp.forEach(reg => { const esCalor = reg.fase.includes('Fase 1'), esElectro = reg.fase.includes('Fase 5'); if (!esCalor && !esElectro) { if (fTipo === 'todos' || reg.fase.includes(fTipo)) { if (reg.fase.includes('Movilidad')) datosEquilibrio['Movilidad'] += reg.repeticiones; if (reg.fase.includes('Fortalecimiento')) datosEquilibrio['Fortalecimiento'] += reg.repeticiones; if (reg.fase.includes('Estiramientos')) datosEquilibrio['Estiramientos'] += reg.repeticiones; if (!datosEjercicios[reg.ejercicio]) datosEjercicios[reg.ejercicio] = 0; datosEjercicios[reg.ejercicio] += reg.repeticiones; } } if (fTipo !== 'todos' && !reg.fase.includes(fTipo)) return; if (fTipo === 'todos' && (esCalor || esElectro)) return;  fechasSet.add(reg.fecha); if (!esCalor && !esElectro) { let cat = reg.fase.includes('Movilidad')?'Movilidad':(reg.fase.includes('Fortalecimiento')?'Fortalecimiento':'Estiramientos'); if (!datosTendenciaCat[cat][reg.fecha]) datosTendenciaCat[cat][reg.fecha] = 0; datosTendenciaCat[cat][reg.fecha] += reg.repeticiones; } });
-            datosEquilibrio.Movilidad = +(datosEquilibrio.Movilidad / PESO_CATEGORIA.Movilidad).toFixed(1); datosEquilibrio.Fortalecimiento = +(datosEquilibrio.Fortalecimiento / PESO_CATEGORIA.Fortalecimiento).toFixed(1); datosEquilibrio.Estiramientos = +(datosEquilibrio.Estiramientos / PESO_CATEGORIA.Estiramientos).toFixed(1);
-            Object.keys(datosTendenciaCat).forEach(cat => { Object.keys(datosTendenciaCat[cat]).forEach(f => { datosTendenciaCat[cat][f] = +(datosTendenciaCat[cat][f] / PESO_CATEGORIA[cat]).toFixed(1); }); });
-            const fechas = Array.from(fechasSet).sort();
-            let datasetsLinea = (fTipo === 'todos') ? [ { label: 'Movilidad', pointStyle: 'circle', pointRadius: 5, data: fechas.map(f => datosTendenciaCat['Movilidad'][f] || 0), borderColor: '#2dd4bf', tension: 0.4 }, { label: 'Fortalecimiento', pointStyle: 'rect', pointRadius: 5, data: fechas.map(f => datosTendenciaCat['Fortalecimiento'][f] || 0), borderColor: '#3b82f6', tension: 0.4 }, { label: 'Estiramientos', pointStyle: 'triangle', pointRadius: 6, data: fechas.map(f => datosTendenciaCat['Estiramientos'][f] || 0), borderColor: '#c084fc', tension: 0.4 } ] : [ { label: fTipo, data: fechas.map(f => datosTendenciaCat[fTipo][f] || 0), borderColor: fTipo==='Fortalecimiento'?'#3b82f6':(fTipo==='Estiramientos'?'#c084fc':'#2dd4bf'), fill: true, tension: 0.4 } ];
-            if (fTipo === 'todos') { for (let i = 0; i < fechas.length; i++) { let mapVal = {}; datasetsLinea.forEach((ds, dsIdx) => { let v = ds.data[i]; if (v > 0) { if(!mapVal[v]) mapVal[v] = []; mapVal[v].push(dsIdx); } }); Object.keys(mapVal).forEach(v => { let indices = mapVal[v]; if(indices.length > 1) { let offset = -0.05 * (indices.length - 1) / 2; indices.forEach(idx => { datasetsLinea[idx].data[i] = parseFloat(v) + offset; offset += 0.05; }); } }); } }
-            if (chartTendencia) chartTendencia.destroy(); chartTendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), { type: 'line', data: { labels: fechas, datasets: datasetsLinea }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: fTipo === 'todos', labels: { usePointStyle: true, color: '#cbd5e1', boxWidth: 10 } }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + (Math.round(c.raw*10)/10).toFixed(1) + ' media' } } }, datalabels: { display: false } } });
-            if (chartEquilibrio) chartEquilibrio.destroy(); chartEquilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), { type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } }, tooltip: { callbacks: { label: c => ' ' + c.label + ': ' + c.parsed + ' medias/ej' } }, datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (v, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); return sum>0 ? Math.round((v/sum)*100)+'%' : ''; } } } } });
-            if (chartEjercicios) chartEjercicios.destroy(); const nombresEj = Object.keys(datosEjercicios).sort((a,b) => datosEjercicios[b] - datosEjercicios[a]); const valsEj = nombresEj.map(e => datosEjercicios[e]);
-            chartEjercicios = new Chart(document.getElementById('grafico-ejercicios').getContext('2d'), { type: 'bar', data: { labels: nombresEj, datasets: [{ data: valsEj, backgroundColor: '#2dd4bf', barThickness: 6, borderRadius: 3 }] }, options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { top: 25, right: 30, left: 0, bottom: 0 } }, scales: { x: { display: false, beginAtZero: true }, y: { display: true, grid: { display: false, drawBorder: false }, border: { display: false }, ticks: { display: false }, afterFit: s => s.width = 0 } }, plugins: { legend: { display: false }, tooltip: { enabled: false }, datalabels: { display: true, align: 'right', anchor: 'end', offset: 4, formatter: Math.round, color: '#2dd4bf', font: { weight: 'bold', size: 11 } } } }, plugins: [leftAlignLabelsPlugin] });
-        }
-
-        function toggleFiltroDiaPDF() { document.getElementById('pdf-input-dia').classList.toggle('hidden', document.getElementById('pdf-rango').value !== 'especifico'); }
-        function abrirModalPDF() { document.getElementById('modal-pdf').classList.remove('hidden'); }
-        function cerrarModalPDF() { document.getElementById('modal-pdf').classList.add('hidden'); }
-
-        async function ejecutarGeneracionPDF() {
-            cerrarModalPDF(); document.getElementById('pdf-loading-overlay').classList.remove('hidden');
-            try {
-                const rangoVal = document.getElementById('pdf-rango').value;
-                let fInicio = null, fFin = getLocalDateStr();
-                if (rangoVal === 'hoy') { fInicio = fFin; }
-                else if (rangoVal === 'especifico') { fInicio = document.getElementById('pdf-fecha-valor').value; fFin = fInicio; }
-                else if (rangoVal !== 'todo') { let d = new Date(); d.setDate(d.getDate() - parseInt(rangoVal)); fInicio = getLocalDateStr(d); }
-
-                const todos = await getRegistrosUsuario();
-                const filtrados = todos.filter(r => (!fInicio || r.fecha >= fInicio) && (!fFin || r.fecha <= fFin));
-                filtrados.sort((a,b) => a.timestamp - b.timestamp);
-
-                const sesionesPorDia = {};
-                filtrados.forEach(r => {
-                    if (!sesionesPorDia[r.fecha]) sesionesPorDia[r.fecha] = [];
-                    let currDaySessions = sesionesPorDia[r.fecha];
-                    if (currDaySessions.length === 0) { currDaySessions.push([r]); } 
-                    else {
-                        let lastSession = currDaySessions[currDaySessions.length - 1], lastRecord = lastSession[lastSession.length - 1];
-                        if ((r.timestamp - lastRecord.timestamp) < 90 * 60 * 1000) { lastSession.push(r); } 
-                        else { currDaySessions.push([r]); }
-                    }
+const leftAlignLabelsPlugin = {
+    id: 'leftAlignLabels',
+    afterDraw(chart) {
+        try {
+            if (chart.config.type !== 'bar') return;
+            if (!chart.chartArea) return;
+            const { ctx, data, chartArea: { left } } = chart;
+            ctx.save();
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'bottom';
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+            const meta = chart.getDatasetMeta(0);
+            if (meta && meta.data) {
+                meta.data.forEach((bar, index) => {
+                    const label = data.labels[index];
+                    if (bar.y) ctx.fillText(label, left, bar.y - 6);
                 });
+            }
+            ctx.restore();
+        } catch(e) { console.warn("Error en plugin de etiquetas:", e); }
+    }
+};
 
-                const tableBody = [];
-                Object.keys(sesionesPorDia).sort().reverse().forEach(f => {
-                    tableBody.push([{ content: `Fecha: ${f}`, colSpan: 2, styles: { fillColor: [220, 220, 220], textColor: [0, 0, 0], fontStyle: 'bold' } }]);
-                    let daySessions = sesionesPorDia[f].reverse();
-                    daySessions.forEach((sesion, index) => {
-                        let horaSesion = new Date(sesion[0].timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                        tableBody.push([{ content: `Sesión ${daySessions.length - index} (${horaSesion})`, colSpan: 2, styles: { fillColor: [245, 245, 245], textColor: [50, 50, 50], fontStyle: 'italic', cellPadding: 2 } }]);
-                        sesion.forEach(r => { const esTerapia = r.fase.includes('Fase 1')||r.fase.includes('Fase 5'); tableBody.push([r.ejercicio, esTerapia ? 'Terapia única' : r.series + ' x ' + r.repeticiones]); });
+const whiteBgPlugin = {
+    id: 'customCanvasBackgroundColor',
+    beforeDraw: (chart, args, options) => {
+        const { ctx } = chart;
+        ctx.save();
+        ctx.globalCompositeOperation = 'destination-over';
+        ctx.fillStyle = options.color || '#ffffff';
+        ctx.fillRect(0, 0, chart.width, chart.height);
+        ctx.restore();
+    }
+};
+
+// =====================================================================
+// BASE DE DATOS
+// =====================================================================
+const db = new Dexie('CerviCareDB');
+db.version(1).stores({ registros: '++id, fecha, ejercicio, series, repeticiones, fase' });
+db.version(2).stores({ registros: '++id, fecha, timestamp, ejercicio, series, repeticiones, fase' });
+db.version(3).stores({ usuarios: '++id, nombre', registros: '++id, usuarioId, fecha, timestamp, ejercicio, series, repeticiones, fase' });
+
+// =====================================================================
+// CONSTANTES Y DATOS
+// =====================================================================
+const PESO_CATEGORIA = { 'Movilidad': 5, 'Fortalecimiento': 2, 'Estiramientos': 2 };
+const RUTINA_TOTAL_EJERCICIOS = 9;
+const nombresMeses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+const rutinaCervical = [
+    { id: "fase1_calor", short: "Calor", fase: "Fase 1: Preparación", titulo: "Aplicación de Calor", imagen: null, tipo: "temporizador", instrucciones: "<p><strong>Fundamento:</strong> El calor provoca vasodilatación, aumentando el flujo sanguíneo y relajando las fibras musculares antes del estiramiento.</p>" },
+    { id: "mov_flexion", short: "Flexión", fase: "Fase 2: Movilidad", titulo: "Flexión y Extensión", imagen: "flexion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Siéntate recto. Exhala y lleva lentamente la barbilla hacia el pecho. Inhala y vuelve al centro, luego extiende la cabeza suavemente hacia atrás mirando al techo.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>No fuerces la extensión hacia atrás si sientes mareos o pellizcos articulares.</p>" },
+    { id: "mov_inclinacion", short: "Inclin.", fase: "Fase 2: Movilidad", titulo: "Inclinación Lateral", imagen: "inclinacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Intenta tocar el hombro con la oreja de forma controlada.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Es un error común levantar el hombro hacia la oreja. Ancla la mano del lado que estiras debajo de tu muslo.</p>" },
+    { id: "mov_rotacion", short: "Rotación", fase: "Fase 2: Movilidad", titulo: "Rotación", imagen: "rotacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Gira la cabeza lentamente para mirar por encima de tu hombro.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Imagina una línea horizontal trazada desde tu nariz hasta la pared; evita que la cabeza cabecee.</p>" },
+    { id: "mov_circulos", short: "Semicirc.", fase: "Fase 2: Movilidad", titulo: "Semicírculos", imagen: "circulos.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Deja caer la barbilla al pecho y traza un arco de hombro a hombro, dibujando una 'U'.</p><p class='mt-2 text-red-400 font-semibold'>⚠️ Advertencia:</p><p>Evita realizar el semicírculo por la espalda para no comprimir vértebras ni arterias.</p>" },
+    { id: "mov_elevacion", short: "Hombros", fase: "Fase 2: Movilidad", titulo: "Elevación de Hombros", imagen: "elevacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Sube hombros hacia las orejas encogiéndote. Mantén 2-3 segundos.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Déjalos caer abruptamente soltando el aire de golpe para desactivar el trapecio.</p>" },
+    { id: "fort_resistencia1", short: "Res.Front", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Frontal/Nuca", imagen: "resistencia1.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Manos en la frente, empuja la cabeza hacia delante (isométrico). Repite hacia atrás.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Aplica sólo un 20-30% de tu fuerza máxima. 'No rompas el huevo'.</p>" },
+    { id: "fort_resistencia2", short: "Res.Lat", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Lateral", imagen: "resistencia2.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Mano en la sien y empuja lateralmente sin permitir desplazamiento.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Fuerza progresiva durante 5s y relaja lentamente durante otros 5s.</p>" },
+    { id: "est_traccion1", short: "Trac.Front", fase: "Fase 4: Estiramientos", titulo: "Tracción Abajo", imagen: "traccion1.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Manos detrás de la cabeza, deja caer la barbilla al pecho.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>No tires con fuerza. Deja que el peso libre de tus brazos ejerza la tracción durante 15s.</p>" },
+    { id: "est_traccion2", short: "Trac.Lat", fase: "Fase 4: Estiramientos", titulo: "Tracción Lateral", imagen: "traccion2.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Pasa la mano sobre la cabeza hasta la oreja contraria e inclina suavemente.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Utiliza la respiración para ganar milímetros en cada exhalación.</p>" },
+    { id: "fase5_electro", short: "Electro", fase: "Fase 5: Recuperación", titulo: "Electroestimulación", imagen: "electrodos.png", tipo: "electro", instrucciones: `<p><strong>Ubicación:</strong> Coloca los electrodos bilateralmente sobre los músculos trapecios o en la zona esplenia posterior.</p><p class="text-red-400 font-bold mb-3 mt-1 text-sm border-l-2 border-red-500 pl-2">⚠️ NUNCA colocar en la parte delantera del cuello, garganta o carótidas.</p><div class="space-y-2 mt-2"><details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer"><summary class="font-semibold text-neonCyan outline-none">⚡ TENS (Alivio del Dolor)</summary><p class="mt-1 text-xs text-gray-300"><strong>Parámetros:</strong> Frecuencia Alta (80-120 Hz).<br><strong>Sensación:</strong> Hormigueo constante y agradable, SIN provocar contracción muscular.<br><strong>Aplicación:</strong> 20-30 minutos para dolor agudo.</p></details><details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer"><summary class="font-semibold text-neonCyan outline-none">💆 EMS (Masaje Descontracturante)</summary><p class="mt-1 text-xs text-gray-300"><strong>Parámetros:</strong> Frecuencia Baja (2-10 Hz).<br><strong>Sensación:</strong> Intensidad hasta notar un bombeo o pequeñas sacudidas musculares.<br><strong>Aplicación:</strong> 15-20 minutos para aumentar el flujo sanguíneo.</p></details></div>` }
+];
+
+// =====================================================================
+// ESTADO DE LA APLICACIÓN
+// =====================================================================
+const AppState = {
+    usuarioActual: null,
+    miSwiper: null,
+    charts: { tendencia: null, equilibrio: null, ejercicios: null, pdfChart1: null, pdfChart2: null },
+    timer: { interval: null, tiempoRestante: 15 * 60, estado: 'detenido', endTime: null },
+    cal: { month: new Date().getMonth(), year: new Date().getFullYear() },
+    diaHistorial: getLocalDateStr()
+};
+
+// =====================================================================
+// HELPERS
+// =====================================================================
+
+/** Devuelve fecha local YYYY-MM-DD sin depender de UTC */
+function getLocalDateStr(d = new Date()) {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+/** Sanitiza texto para evitar XSS al insertar en HTML */
+function sanitize(str) {
+    const d = document.createElement('div');
+    d.textContent = String(str ?? '');
+    return d.innerHTML;
+}
+
+/** Crea un elemento DOM a partir de un string HTML (uso controlado con datos hardcoded) */
+function crearElemento(tag, clases, attrs = {}) {
+    const el = document.createElement(tag);
+    if (clases) el.className = clases;
+    Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+    return el;
+}
+
+/** Escapa un valor para CSV (RFC 4180) */
+function escaparCSV(valor) {
+    const s = String(valor ?? '');
+    if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+        return `"${s.replace(/"/g, '""')}"`;
+    }
+    return s;
+}
+
+// =====================================================================
+// MODALES PERSONALIZADOS (reemplazan prompt/confirm)
+// =====================================================================
+
+/**
+ * Abre modal de texto y devuelve una Promise con el valor o null si cancela.
+ */
+function modalNombre(titulo, valorInicial = '') {
+    return new Promise(resolve => {
+        const modal = document.getElementById('modal-nombre');
+        const input = document.getElementById('modal-nombre-input');
+        document.getElementById('modal-nombre-titulo').textContent = titulo;
+        input.value = valorInicial;
+        modal.classList.remove('hidden');
+        input.focus();
+
+        const onAceptar = () => {
+            const val = input.value.trim();
+            if (!val) { input.focus(); return; }
+            cleanup();
+            resolve(val);
+        };
+        const onCancelar = () => { cleanup(); resolve(null); };
+        const onKey = (e) => { if (e.key === 'Enter') onAceptar(); if (e.key === 'Escape') onCancelar(); };
+
+        function cleanup() {
+            modal.classList.add('hidden');
+            document.getElementById('modal-nombre-aceptar').removeEventListener('click', onAceptar);
+            document.getElementById('modal-nombre-cancelar').removeEventListener('click', onCancelar);
+            document.removeEventListener('keydown', onKey);
+        }
+
+        document.getElementById('modal-nombre-aceptar').addEventListener('click', onAceptar);
+        document.getElementById('modal-nombre-cancelar').addEventListener('click', onCancelar);
+        document.addEventListener('keydown', onKey);
+    });
+}
+
+/**
+ * Abre modal de confirmación y devuelve Promise<boolean>.
+ */
+function modalConfirm(titulo, texto) {
+    return new Promise(resolve => {
+        const modal = document.getElementById('modal-confirm');
+        document.getElementById('modal-confirm-titulo').textContent = titulo;
+        document.getElementById('modal-confirm-texto').textContent = texto;
+        modal.classList.remove('hidden');
+
+        const onAceptar = () => { cleanup(); resolve(true); };
+        const onCancelar = () => { cleanup(); resolve(false); };
+        const onKey = (e) => { if (e.key === 'Enter') onAceptar(); if (e.key === 'Escape') onCancelar(); };
+
+        function cleanup() {
+            modal.classList.add('hidden');
+            document.getElementById('modal-confirm-aceptar').removeEventListener('click', onAceptar);
+            document.getElementById('modal-confirm-cancelar').removeEventListener('click', onCancelar);
+            document.removeEventListener('keydown', onKey);
+        }
+
+        document.getElementById('modal-confirm-aceptar').addEventListener('click', onAceptar);
+        document.getElementById('modal-confirm-cancelar').addEventListener('click', onCancelar);
+        document.addEventListener('keydown', onKey);
+    });
+}
+
+/**
+ * Abre modal de edición de series/reps y devuelve Promise<{series,reps}|null>.
+ */
+function modalEditar(seriesActuales, repsActuales) {
+    return new Promise(resolve => {
+        const modal = document.getElementById('modal-editar');
+        const elSeries = document.getElementById('modal-editar-series-val');
+        const elReps   = document.getElementById('modal-editar-reps-val');
+        elSeries.textContent = seriesActuales;
+        elReps.textContent   = repsActuales;
+        modal.classList.remove('hidden');
+
+        const cambiar = (el, inc) => {
+            const v = parseInt(el.textContent) + inc;
+            el.textContent = v < 1 ? 1 : v;
+        };
+
+        const onSeriesMenos = () => cambiar(elSeries, -1);
+        const onSeriesMas   = () => cambiar(elSeries,  1);
+        const onRepsMenos   = () => cambiar(elReps,   -1);
+        const onRepsMas     = () => cambiar(elReps,    1);
+        const onGuardar = () => { cleanup(); resolve({ series: parseInt(elSeries.textContent), reps: parseInt(elReps.textContent) }); };
+        const onCancelar = () => { cleanup(); resolve(null); };
+
+        function cleanup() {
+            modal.classList.add('hidden');
+            document.getElementById('modal-editar-series-menos').removeEventListener('click', onSeriesMenos);
+            document.getElementById('modal-editar-series-mas').removeEventListener('click', onSeriesMas);
+            document.getElementById('modal-editar-reps-menos').removeEventListener('click', onRepsMenos);
+            document.getElementById('modal-editar-reps-mas').removeEventListener('click', onRepsMas);
+            document.getElementById('modal-editar-guardar').removeEventListener('click', onGuardar);
+            document.getElementById('modal-editar-cancelar').removeEventListener('click', onCancelar);
+        }
+
+        document.getElementById('modal-editar-series-menos').addEventListener('click', onSeriesMenos);
+        document.getElementById('modal-editar-series-mas').addEventListener('click', onSeriesMas);
+        document.getElementById('modal-editar-reps-menos').addEventListener('click', onRepsMenos);
+        document.getElementById('modal-editar-reps-mas').addEventListener('click', onRepsMas);
+        document.getElementById('modal-editar-guardar').addEventListener('click', onGuardar);
+        document.getElementById('modal-editar-cancelar').addEventListener('click', onCancelar);
+    });
+}
+
+// =====================================================================
+// INICIALIZACIÓN
+// =====================================================================
+window.onload = async () => {
+    try {
+        await db.open();
+
+        let count = await db.usuarios.count();
+        let defId = 1;
+        if (count === 0) {
+            defId = await db.usuarios.add({ nombre: "Perfil Principal" });
+        } else {
+            const primerU = await db.usuarios.toCollection().first();
+            if (primerU) defId = primerU.id;
+        }
+
+        // Migración: asignar usuarioId a registros huérfanos
+        await db.registros.filter(r => !r.usuarioId).modify(r => { r.usuarioId = defId; });
+
+        let savedId = localStorage.getItem('cervicare_uid');
+        if (savedId) AppState.usuarioActual = await db.usuarios.get(parseInt(savedId));
+        if (!AppState.usuarioActual) AppState.usuarioActual = await db.usuarios.get(defId);
+
+        actualizarInterfazUsuario();
+        renderizarRutina();
+        document.getElementById('fecha-historial-input').value = AppState.diaHistorial;
+        cargarHistorial();
+    } catch (err) {
+        console.error("Error al iniciar DB:", err);
+        renderizarRutina();
+    }
+
+    vincularEventos();
+};
+
+// =====================================================================
+// VINCULACIÓN DE EVENTOS (sin onclick en HTML)
+// =====================================================================
+function vincularEventos() {
+    // Header / navegación
+    document.getElementById('btn-abrir-usuarios').addEventListener('click', abrirModalUsuarios);
+    document.getElementById('btn-cerrar-usuarios').addEventListener('click', cerrarModalUsuarios);
+    document.getElementById('btn-nuevo-usuario').addEventListener('click', crearNuevoUsuario);
+
+    // Nav tabs
+    document.getElementById('nav-rutina').addEventListener('click', () => cambiarPestana('rutina'));
+    document.getElementById('nav-estadisticas').addEventListener('click', () => cambiarPestana('estadisticas'));
+    document.getElementById('nav-registro').addEventListener('click', () => cambiarPestana('registro'));
+    document.getElementById('nav-ajustes').addEventListener('click', () => cambiarPestana('ajustes'));
+
+    // Calendario
+    document.getElementById('btn-mes-anterior').addEventListener('click', () => cambiarMes(-1));
+    document.getElementById('btn-mes-siguiente').addEventListener('click', () => cambiarMes(1));
+
+    // Filtros gráficos
+    document.getElementById('filtro-tipo').addEventListener('change', renderizarGraficos);
+    document.getElementById('filtro-periodo').addEventListener('change', toggleFechasPersonalizadas);
+    document.getElementById('fecha-unica').addEventListener('change', renderizarGraficos);
+    document.getElementById('fecha-inicio').addEventListener('change', renderizarGraficos);
+    document.getElementById('fecha-fin').addEventListener('change', renderizarGraficos);
+
+    // Historial
+    document.getElementById('btn-dia-anterior').addEventListener('click', () => cambiarDiaHistorial(-1));
+    document.getElementById('btn-dia-siguiente').addEventListener('click', () => cambiarDiaHistorial(1));
+    document.getElementById('fecha-historial-input').addEventListener('change', (e) => seleccionarDiaHistorial(e.target.value));
+
+    // Ajustes
+    document.getElementById('btn-buscar-updates').addEventListener('click', forzarActualizacion);
+    document.getElementById('btn-abrir-pdf').addEventListener('click', abrirModalPDF);
+    document.getElementById('btn-cerrar-pdf').addEventListener('click', cerrarModalPDF);
+    document.getElementById('btn-generar-pdf').addEventListener('click', ejecutarGeneracionPDF);
+    document.getElementById('pdf-rango').addEventListener('change', toggleFiltroDiaPDF);
+    document.getElementById('btn-exportar-csv').addEventListener('click', exportarCSV);
+    document.getElementById('btn-exportar-backup').addEventListener('click', exportarBackup);
+    document.getElementById('btn-importar-trigger').addEventListener('click', () => document.getElementById('import-file').click());
+    document.getElementById('import-file').addEventListener('change', importarBackup);
+    document.getElementById('btn-borrar-historial').addEventListener('click', borrarTodosLosDatos);
+
+    // Visor imagen
+    document.getElementById('visor-imagen').addEventListener('click', cerrarVisorImagen);
+    document.getElementById('btn-cerrar-visor').addEventListener('click', (e) => { e.stopPropagation(); cerrarVisorImagen(); });
+}
+
+// =====================================================================
+// USUARIOS
+// =====================================================================
+function actualizarInterfazUsuario() {
+    if (!AppState.usuarioActual) return;
+    localStorage.setItem('cervicare_uid', AppState.usuarioActual.id);
+    document.getElementById('lbl-usuario-actual').textContent = AppState.usuarioActual.nombre;
+    document.getElementById('lbl-pdf-user').textContent = AppState.usuarioActual.nombre;
+    document.getElementById('lbl-gestion-user').textContent = AppState.usuarioActual.nombre;
+}
+
+async function abrirModalUsuarios() {
+    const lista = document.getElementById('lista-perfiles-ui');
+    lista.innerHTML = '';
+    const todos = await db.usuarios.toArray();
+
+    // FIX #1: construcción DOM segura, sin innerHTML con datos de usuario
+    const fragmento = document.createDocumentFragment();
+    todos.forEach(u => {
+        const activo = u.id === AppState.usuarioActual?.id;
+        const wrapper = crearElemento('div', 'flex gap-2 mb-2');
+
+        // Botón principal de selección
+        const btnSeleccionar = crearElemento('button',
+            `flex-1 text-left p-3 rounded-lg border flex justify-between items-center transition ${activo ? 'bg-neonCyan/10 border-neonCyan text-white' : 'bg-darkBg border-gray-700 text-gray-400 hover:bg-gray-800'}`
+        );
+        const spanNombre = crearElemento('span', 'font-bold truncate');
+        spanNombre.textContent = u.nombre; // textContent, no innerHTML
+        btnSeleccionar.appendChild(spanNombre);
+        if (activo) {
+            btnSeleccionar.innerHTML += '<svg class="w-5 h-5 text-neonCyan flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+        }
+        btnSeleccionar.addEventListener('click', () => cambiarDeUsuario(u.id));
+
+        // Botón de editar nombre
+        const btnEditar = crearElemento('button',
+            'p-3 bg-darkBg border border-gray-700 text-gray-400 hover:text-neonCyan rounded-lg hover:bg-gray-800 transition',
+            { title: 'Editar nombre' }
+        );
+        btnEditar.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>';
+        btnEditar.addEventListener('click', () => editarNombreUsuario(u.id, u.nombre));
+
+        wrapper.appendChild(btnSeleccionar);
+        wrapper.appendChild(btnEditar);
+        fragmento.appendChild(wrapper);
+    });
+    lista.appendChild(fragmento);
+
+    document.getElementById('modal-usuarios').classList.remove('hidden');
+}
+
+function cerrarModalUsuarios() {
+    document.getElementById('modal-usuarios').classList.add('hidden');
+}
+
+async function cambiarDeUsuario(id) {
+    AppState.usuarioActual = await db.usuarios.get(id);
+    actualizarInterfazUsuario();
+    cerrarModalUsuarios();
+    if (!document.getElementById('vista-estadisticas').classList.contains('hidden')) actualizarVistasProgreso();
+    cargarHistorial();
+}
+
+async function crearNuevoUsuario() {
+    // FIX #8: modal propio en vez de prompt()
+    const nombre = await modalNombre('Nombre del nuevo perfil');
+    if (!nombre) return;
+    const nuevoId = await db.usuarios.add({ nombre });
+    AppState.usuarioActual = { id: nuevoId, nombre };
+    actualizarInterfazUsuario();
+    cerrarModalUsuarios();
+    if (!document.getElementById('vista-estadisticas').classList.contains('hidden')) actualizarVistasProgreso();
+    cargarHistorial();
+}
+
+async function editarNombreUsuario(id, nombreActual) {
+    // FIX #8: modal propio en vez de prompt()
+    const nuevoNombre = await modalNombre('Modificar nombre del perfil', nombreActual);
+    if (!nuevoNombre || nuevoNombre === nombreActual) return;
+    await db.usuarios.update(id, { nombre: nuevoNombre });
+    if (AppState.usuarioActual?.id === id) {
+        AppState.usuarioActual.nombre = nuevoNombre;
+        actualizarInterfazUsuario();
+    }
+    abrirModalUsuarios();
+}
+
+// =====================================================================
+// VISOR DE IMAGEN
+// =====================================================================
+function abrirVisorImagen(src) {
+    const v = document.getElementById('visor-imagen');
+    const img = document.getElementById('visor-imagen-src');
+    img.src = src;
+    v.classList.remove('hidden');
+    void v.offsetWidth;
+    v.classList.remove('opacity-0');
+    img.classList.remove('scale-95');
+    img.classList.add('scale-100');
+}
+
+function cerrarVisorImagen() {
+    const v = document.getElementById('visor-imagen');
+    const img = document.getElementById('visor-imagen-src');
+    v.classList.add('opacity-0');
+    img.classList.remove('scale-100');
+    img.classList.add('scale-95');
+    setTimeout(() => { v.classList.add('hidden'); }, 300);
+}
+
+// =====================================================================
+// RUTINA - RENDERIZADO
+// =====================================================================
+function renderizarRutina() {
+    const contenedor = document.getElementById('contenedor-ejercicios');
+    const navPills   = document.getElementById('top-nav-pills');
+
+    // FIX #7: destruir Swiper anterior si existe
+    if (AppState.miSwiper) { AppState.miSwiper.destroy(true, true); AppState.miSwiper = null; }
+
+    // FIX #12: construir todo el HTML de una vez con un array
+    const pillsHTML  = [];
+    const slidesHTML = [];
+
+    rutinaCervical.forEach((ej, index) => {
+        pillsHTML.push(`<button data-slide="${index}" class="chip flex-shrink-0 text-xs font-bold px-4 py-1.5 rounded-full border border-gray-600 bg-transparent text-gray-400">${index + 1}. ${sanitize(ej.short)}</button>`);
+
+        let controlesHTML = '';
+        if (ej.tipo === 'temporizador') {
+            controlesHTML = `<div class="flex gap-2 w-full">
+                <button data-timer-play class="flex-1 bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-[0_0_10px_rgba(45,212,191,0.3)] transition-colors">Iniciar Calor</button>
+                <button data-timer-reset class="hidden px-4 bg-red-900 border border-red-500 text-red-200 font-bold py-3 rounded-lg transition-colors">⏹️</button>
+            </div>`;
+        } else if (ej.tipo === 'contador') {
+            controlesHTML = `<div class="flex justify-between gap-3 mb-3">
+                <div class="flex items-center justify-between bg-darkBg px-3 py-2 rounded w-1/2 border border-gray-600">
+                    <span class="text-xs text-gray-400">Series</span>
+                    <button data-inc="series-${ej.id}" data-delta="-1" class="text-neonCyan text-xl px-2 font-bold">-</button>
+                    <span id="series-${ej.id}" class="font-bold text-lg">1</span>
+                    <button data-inc="series-${ej.id}" data-delta="1" class="text-neonCyan text-xl px-2 font-bold">+</button>
+                </div>
+                <div class="flex items-center justify-between bg-darkBg px-3 py-2 rounded w-1/2 border border-gray-600">
+                    <span class="text-xs text-gray-400">Reps</span>
+                    <button data-inc="reps-${ej.id}" data-delta="-1" class="text-neonCyan text-xl px-2 font-bold">-</button>
+                    <span id="reps-${ej.id}" class="font-bold text-lg">1</span>
+                    <button data-inc="reps-${ej.id}" data-delta="1" class="text-neonCyan text-xl px-2 font-bold">+</button>
+                </div>
+            </div>
+            <button data-guardar="${ej.id}" data-titulo="${sanitize(ej.titulo)}" data-fase="${sanitize(ej.fase)}" class="w-full bg-gray-700 text-white font-bold py-3 rounded-lg transition-colors">Guardar y Siguiente</button>`;
+        } else if (ej.tipo === 'electro') {
+            controlesHTML = `<div class="flex gap-2">
+                <button data-electro="si" class="w-1/2 bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-md transition-colors">Sí, Aplicada</button>
+                <button data-electro="no" class="w-1/2 bg-gray-700 text-white font-bold py-3 rounded-lg transition-colors">Saltar</button>
+            </div>`;
+        }
+
+        // Imagen con datos hardcoded → sanitize igualmente por consistencia
+        const imagenSrc = ej.imagen ? sanitize(ej.imagen) : '';
+        let visualHTML = ej.imagen
+            ? `<img src="${imagenSrc}" data-visor="${imagenSrc}" class="h-60 mx-auto object-contain p-1 cursor-pointer transition-transform hover:scale-105" alt="${sanitize(ej.titulo)}" onerror="this.style.display='none'" title="Tocar para ampliar">`
+            : `<div class="flex items-center justify-center h-60"><span class="text-5xl font-bold text-neonCyan" id="display-${ej.id}">15:00</span></div>`;
+
+        slidesHTML.push(`
+            <div class="swiper-slide flex flex-col items-center justify-start p-4 pt-0 pb-6">
+                <div class="bg-cardBg w-full max-w-sm h-[70vh] rounded-2xl shadow-lg p-5 flex flex-col border border-gray-700">
+                    <p class="text-neonCyan font-bold text-center text-xs uppercase tracking-wide mb-2">${sanitize(ej.fase)}</p>
+                    <h3 class="text-white font-bold text-lg text-center mb-3 leading-tight">${sanitize(ej.titulo)}</h3>
+                    <div class="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-3 pr-1">
+                        <div class="w-full bg-gray-800 rounded-xl border border-gray-700 flex-shrink-0 flex items-center justify-center overflow-hidden">${visualHTML}</div>
+                        <details class="group bg-darkBg border border-gray-700 rounded-lg p-3">
+                            <summary class="font-semibold text-gray-300 outline-none select-none cursor-pointer flex justify-between items-center text-sm">
+                                Instrucciones Clínicas <span class="text-neonCyan font-bold text-xl group-open:rotate-180 transition-transform">▾</span>
+                            </summary>
+                            <div class="mt-3 text-sm text-gray-300 space-y-2 border-t border-gray-700 pt-2 pb-1">${ej.instrucciones}</div>
+                        </details>
+                    </div>
+                    <div class="h-auto flex flex-col justify-end mt-4">${controlesHTML}</div>
+                </div>
+            </div>`);
+    });
+
+    // Un único innerHTML = O(n) total
+    navPills.innerHTML  = pillsHTML.join('');
+    contenedor.innerHTML = slidesHTML.join('');
+
+    // Delegación de eventos en el contenedor de píldoras
+    navPills.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-slide]');
+        if (btn) irADiapositiva(parseInt(btn.dataset.slide));
+    });
+
+    // Delegación de eventos en las slides
+    contenedor.addEventListener('click', (e) => {
+        // Visor imagen
+        const visorTarget = e.target.closest('[data-visor]');
+        if (visorTarget) { abrirVisorImagen(visorTarget.dataset.visor); return; }
+
+        // Contadores +/-
+        const incTarget = e.target.closest('[data-inc]');
+        if (incTarget) { cambiarValor(incTarget.dataset.inc, parseInt(incTarget.dataset.delta)); return; }
+
+        // Guardar ejercicio
+        const guardarTarget = e.target.closest('[data-guardar]');
+        if (guardarTarget) { guardarRegistro(guardarTarget.dataset.guardar, guardarTarget.dataset.titulo, guardarTarget.dataset.fase, guardarTarget); return; }
+
+        // Electroestimulación
+        const electro = e.target.closest('[data-electro]');
+        if (electro) { guardarElectro(electro.dataset.electro === 'si', electro); return; }
+
+        // Timer
+        const timerPlay = e.target.closest('[data-timer-play]');
+        if (timerPlay) { toggleTemporizador(timerPlay); return; }
+        const timerReset = e.target.closest('[data-timer-reset]');
+        if (timerReset) { resetTemporizador(); return; }
+    });
+
+    if (typeof Swiper !== 'undefined') {
+        AppState.miSwiper = new Swiper(".mySwiper", {
+            spaceBetween: 15,
+            on: { slideChange: function () { actualizarEstiloPills(this.activeIndex); } }
+        });
+        actualizarEstiloPills(0);
+    }
+}
+
+function irADiapositiva(index) {
+    if (AppState.miSwiper) AppState.miSwiper.slideTo(index);
+}
+
+function actualizarEstiloPills(activeIndex) {
+    document.querySelectorAll('.chip').forEach((pill, idx) => {
+        if (idx === activeIndex) {
+            pill.classList.remove('bg-transparent','text-gray-400','border-gray-600');
+            pill.classList.add('bg-neonCyan','text-darkBg','border-neonCyan');
+            pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        } else {
+            pill.classList.remove('bg-neonCyan','text-darkBg','border-neonCyan');
+            pill.classList.add('bg-transparent','text-gray-400','border-gray-600');
+        }
+    });
+}
+
+// =====================================================================
+// NAVEGACIÓN DE PESTAÑAS
+// =====================================================================
+function cambiarPestana(id) {
+    if (!AppState.usuarioActual) return; // FIX #6: guardia defensiva
+    ['rutina','estadisticas','registro','ajustes'].forEach(p => {
+        document.getElementById(`vista-${p}`).classList.add('hidden');
+        document.getElementById(`nav-${p}`).classList.remove('text-neonCyan');
+        document.getElementById(`nav-${p}`).classList.add('text-gray-500');
+    });
+    document.getElementById(`vista-${id}`).classList.remove('hidden');
+    document.getElementById(`nav-${id}`).classList.remove('text-gray-500');
+    document.getElementById(`nav-${id}`).classList.add('text-neonCyan');
+    // FIX #15: requestAnimationFrame en lugar de setTimeout hack
+    if (id === 'estadisticas') requestAnimationFrame(() => actualizarVistasProgreso());
+    if (id === 'registro') cargarHistorial();
+}
+
+// =====================================================================
+// CONTADORES
+// =====================================================================
+function cambiarValor(id, inc) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const v = parseInt(el.innerText) + inc;
+    el.innerText = v < 1 ? 1 : v;
+}
+
+// =====================================================================
+// TEMPORIZADOR
+// =====================================================================
+async function solicitarPermisoNotificaciones() {
+    if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
+        await Notification.requestPermission();
+    }
+}
+
+function enviarNotificacion() {
+    if ("Notification" in window && Notification.permission === "granted") {
+        const title   = "¡Tiempo de Calor Completado!";
+        const options = { body: "Es hora de continuar con la rutina.", icon: "./icono.jpg", vibrate: [200,100,200] };
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.ready.then(reg => reg.showNotification(title, options));
+        } else {
+            new Notification(title, options);
+        }
+    }
+}
+
+async function guardarCalorAuto() {
+    if (!AppState.usuarioActual) return;
+    await db.registros.add({ usuarioId: AppState.usuarioActual.id, fecha: getLocalDateStr(), timestamp: Date.now(), ejercicio: 'Aplicación de Calor', series: 1, repeticiones: 1, fase: 'Fase 1: Preparación' });
+    actualizarVistasProgreso();
+}
+
+function toggleTemporizador(btnPlay) {
+    const t = AppState.timer;
+    const btnReset = btnPlay?.parentElement?.querySelector('[data-timer-reset]');
+
+    if (t.estado === 'detenido' || t.estado === 'pausado') {
+        solicitarPermisoNotificaciones();
+        t.estado = 'corriendo';
+        if (btnPlay) {
+            btnPlay.textContent = "Pausar";
+            btnPlay.classList.replace('bg-neonCyan','bg-amber-500');
+            btnPlay.classList.replace('text-darkBg','text-white');
+        }
+        if (btnReset) btnReset.classList.remove('hidden');
+
+        t.endTime = Date.now() + (t.tiempoRestante * 1000);
+        t.interval = setInterval(() => {
+            // FIX #4: Math.max para evitar valores negativos
+            t.tiempoRestante = Math.max(0, Math.round((t.endTime - Date.now()) / 1000));
+            const display = document.getElementById('display-fase1_calor');
+            if (!display) { clearInterval(t.interval); return; }
+
+            if (t.tiempoRestante <= 0) {
+                clearInterval(t.interval);
+                t.estado = 'completado';
+                display.innerText = "¡Listo!";
+                if (btnPlay) {
+                    btnPlay.textContent = "Siguiente Fase";
+                    btnPlay.classList.replace('bg-amber-500','bg-neonCyan');
+                    btnPlay.classList.replace('text-white','text-darkBg');
+                    // Reasignar listener: al completarse el timer, el botón avanza la slide
+                    const nuevoBtn = btnPlay.cloneNode(true);
+                    btnPlay.parentElement.replaceChild(nuevoBtn, btnPlay);
+                    nuevoBtn.addEventListener('click', () => AppState.miSwiper?.slideNext());
+                }
+                if (btnReset) btnReset.classList.add('hidden');
+                enviarNotificacion();
+                guardarCalorAuto();
+            } else {
+                display.innerText = `${Math.floor(t.tiempoRestante/60).toString().padStart(2,'0')}:${(t.tiempoRestante%60).toString().padStart(2,'0')}`;
+            }
+        }, 500);
+
+    } else if (t.estado === 'corriendo') {
+        clearInterval(t.interval);
+        t.estado = 'pausado';
+        if (btnPlay) {
+            btnPlay.textContent = "Reanudar";
+            btnPlay.classList.replace('bg-amber-500','bg-neonCyan');
+            btnPlay.classList.replace('text-white','text-darkBg');
+        }
+    }
+}
+
+function resetTemporizador() {
+    const t = AppState.timer;
+    clearInterval(t.interval);
+    t.tiempoRestante = 15 * 60;
+    t.estado = 'detenido';
+    t.endTime = null;
+    const display = document.getElementById('display-fase1_calor');
+    if (display) display.innerText = "15:00";
+    // Reconstruir los botones del timer para limpiar listeners
+    const btnReset = document.querySelector('[data-timer-reset]');
+    if (btnReset) btnReset.classList.add('hidden');
+    const btnPlay = document.querySelector('[data-timer-play]');
+    if (btnPlay) {
+        btnPlay.textContent = "Iniciar Calor";
+        btnPlay.classList.replace('bg-amber-500','bg-neonCyan');
+        btnPlay.classList.replace('text-white','text-darkBg');
+    }
+}
+
+// =====================================================================
+// GUARDAR REGISTROS
+// =====================================================================
+async function guardarRegistro(id, titulo, fase, btn) {
+    if (!AppState.usuarioActual) return;
+    await db.registros.add({
+        usuarioId: AppState.usuarioActual.id,
+        fecha: getLocalDateStr(),
+        timestamp: Date.now(),
+        ejercicio: titulo,
+        series: parseInt(document.getElementById(`series-${id}`)?.innerText ?? 1),
+        repeticiones: parseInt(document.getElementById(`reps-${id}`)?.innerText ?? 1),
+        fase
+    });
+    const txt = btn.textContent;
+    btn.textContent = "¡Guardado!";
+    btn.classList.replace('bg-gray-700','bg-green-500');
+    btn.classList.replace('text-white','text-darkBg');
+    setTimeout(() => {
+        btn.textContent = txt;
+        btn.classList.replace('bg-green-500','bg-gray-700');
+        btn.classList.replace('text-darkBg','text-white');
+        AppState.miSwiper?.slideNext();
+        actualizarVistasProgreso();
+        cargarHistorial();
+    }, 600);
+}
+
+async function guardarElectro(aplicada, btn) {
+    if (!AppState.usuarioActual) return;
+    if (aplicada) {
+        await db.registros.add({ usuarioId: AppState.usuarioActual.id, fecha: getLocalDateStr(), timestamp: Date.now(), ejercicio: 'Electroestimulación', series: 1, repeticiones: 1, fase: 'Fase 5' });
+        btn.textContent = "¡Registrado!";
+        btn.classList.replace('bg-neonCyan','bg-green-500');
+    }
+    setTimeout(() => {
+        AppState.miSwiper?.slideTo(0);
+        if (aplicada) {
+            btn.textContent = "Sí, Aplicada";
+            btn.classList.replace('bg-green-500','bg-neonCyan');
+        }
+        actualizarVistasProgreso();
+        cargarHistorial();
+    }, 800);
+}
+
+// =====================================================================
+// GRÁFICOS Y CALENDARIO
+// =====================================================================
+function toggleFechasPersonalizadas() {
+    const per = document.getElementById('filtro-periodo').value;
+    document.getElementById('rango-fechas').classList.toggle('hidden', per !== 'rango');
+    document.getElementById('input-dia-concreto').classList.toggle('hidden', per !== 'dia_concreto');
+    if (per !== 'rango' && per !== 'dia_concreto') renderizarGraficos();
+}
+
+async function actualizarVistasProgreso() {
+    if (!AppState.usuarioActual) return; // FIX #5: guardia defensiva
+    await dibujarCalendarioMensual();
+    await renderizarGraficos();
+}
+
+function cambiarMes(offset) {
+    AppState.cal.month += offset;
+    if (AppState.cal.month < 0)  { AppState.cal.month = 11; AppState.cal.year--; }
+    if (AppState.cal.month > 11) { AppState.cal.month = 0;  AppState.cal.year++; }
+    dibujarCalendarioMensual();
+}
+
+async function getRegistrosUsuario() {
+    if (!AppState.usuarioActual) return [];
+    return await db.registros.where({ usuarioId: AppState.usuarioActual.id }).toArray();
+}
+
+async function dibujarCalendarioMensual() {
+    const { month, year } = AppState.cal;
+    document.getElementById('mes-actual-label').textContent = `${nombresMeses[month]} ${year}`;
+    const container = document.getElementById('calendario-grid');
+
+    const todos = await getRegistrosUsuario();
+    const evalPorDia = {};
+    todos.forEach(r => {
+        if (!evalPorDia[r.fecha]) evalPorDia[r.fecha] = { ejercicios: new Set(), calor: false, electro: false };
+        if (r.fase.includes('Fase 1'))       evalPorDia[r.fecha].calor = true;
+        else if (r.fase.includes('Fase 5'))  evalPorDia[r.fecha].electro = true;
+        else                                  evalPorDia[r.fecha].ejercicios.add(r.ejercicio);
+    });
+
+    let primerDia = new Date(year, month, 1).getDay();
+    if (primerDia === 0) primerDia = 7;
+    const diasEnMes = new Date(year, month + 1, 0).getDate();
+    const hoyStr = getLocalDateStr();
+
+    // FIX #12: un solo innerHTML
+    const celdas = [];
+    for (let i = 1; i < primerDia; i++) celdas.push(`<div class="h-10"></div>`);
+
+    for (let day = 1; day <= diasEnMes; day++) {
+        const fechaStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+        const datos = evalPorDia[fechaStr];
+        let dotColor = 'bg-transparent', shadowClass = '', clasesBorde = 'border border-transparent', tieneDatos = false;
+        if (datos) {
+            tieneDatos = true;
+            const numEj = datos.ejercicios.size;
+            const esCompleta = numEj >= RUTINA_TOTAL_EJERCICIOS;
+            if (esCompleta && datos.calor)      { dotColor = 'bg-neonPurple'; shadowClass = 'shadow-[0_0_8px_rgba(192,132,252,0.6)]'; }
+            else if (esCompleta)                { dotColor = 'bg-neonGreen';  shadowClass = 'shadow-[0_0_8px_rgba(74,222,128,0.6)]'; }
+            else if (numEj > 0 && datos.calor)  { dotColor = 'bg-neonOrange'; shadowClass = 'shadow-[0_0_8px_rgba(251,146,60,0.6)]'; }
+            else if (numEj > 0 || datos.calor)  { dotColor = 'bg-neonYellow'; shadowClass = 'shadow-[0_0_8px_rgba(250,204,21,0.6)]'; }
+            if (datos.electro) clasesBorde = 'ring-2 ring-neonCyan';
+        }
+        const bgCelda = fechaStr === hoyStr ? 'bg-gray-800' : 'bg-transparent';
+        // FIX #1: fechaStr es generado internamente (YYYY-MM-DD), seguro para data-attr
+        celdas.push(`<div class="h-10 flex flex-col items-center justify-center rounded-lg ${bgCelda} ${clasesBorde} cursor-pointer hover:bg-gray-700 transition" data-cal-fecha="${fechaStr}"><span class="text-xs ${tieneDatos?'text-white font-bold':'text-gray-400'}">${day}</span><div class="w-1.5 h-1.5 rounded-full mt-0.5 ${dotColor} ${shadowClass}"></div></div>`);
+    }
+    container.innerHTML = celdas.join('');
+
+    // Delegación de clicks en el calendario
+    container.addEventListener('click', (e) => {
+        const celda = e.target.closest('[data-cal-fecha]');
+        if (!celda) return;
+        const fecha = celda.dataset.calFecha;
+        document.getElementById('filtro-periodo').value = 'dia_concreto';
+        document.getElementById('fecha-unica').value = fecha;
+        toggleFechasPersonalizadas();
+        renderizarGraficos();
+    }, { once: true }); // Se re-añade en cada redibujado
+}
+
+async function renderizarGraficos() {
+    if (!AppState.usuarioActual) return; // FIX #5
+    const todos = await getRegistrosUsuario();
+    const fPeriodo = document.getElementById('filtro-periodo').value;
+    let fInicioStr = null, fFinStr = null;
+    const hoyStr = getLocalDateStr();
+
+    if (fPeriodo === 'hoy')          { fInicioStr = hoyStr; fFinStr = hoyStr; }
+    else if (fPeriodo === 'dia_concreto') { fInicioStr = document.getElementById('fecha-unica').value; fFinStr = fInicioStr; }
+    else if (fPeriodo === '7')       { let d = new Date(); d.setDate(d.getDate()-7);  fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
+    else if (fPeriodo === '30')      { let d = new Date(); d.setDate(d.getDate()-30); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
+    else if (fPeriodo === 'rango')   { fInicioStr = document.getElementById('fecha-inicio').value; fFinStr = document.getElementById('fecha-fin').value; }
+
+    const datosFiltrados = todos.filter(r => {
+        if (fInicioStr && r.fecha < fInicioStr) return false;
+        if (fFinStr   && r.fecha > fFinStr)     return false;
+        return true;
+    });
+
+    const fTipo = document.getElementById('filtro-tipo').value;
+    const datosEquilibrio = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 };
+    const datosTendenciaCat = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} };
+    const datosEjercicios = {}, fechasSet = new Set();
+
+    datosFiltrados.forEach(reg => {
+        const esCalor   = reg.fase.includes('Fase 1');
+        const esElectro = reg.fase.includes('Fase 5');
+        if (!esCalor && !esElectro) {
+            if (fTipo === 'todos' || reg.fase.includes(fTipo)) {
+                if (reg.fase.includes('Movilidad'))        datosEquilibrio['Movilidad']        += reg.repeticiones;
+                if (reg.fase.includes('Fortalecimiento'))  datosEquilibrio['Fortalecimiento']  += reg.repeticiones;
+                if (reg.fase.includes('Estiramientos'))    datosEquilibrio['Estiramientos']    += reg.repeticiones;
+                if (!datosEjercicios[reg.ejercicio]) datosEjercicios[reg.ejercicio] = 0;
+                datosEjercicios[reg.ejercicio] += reg.repeticiones;
+            }
+        }
+        if (fTipo !== 'todos' && !reg.fase.includes(fTipo)) return;
+        if (fTipo === 'todos' && (esCalor || esElectro)) return;
+        fechasSet.add(reg.fecha);
+        if (!esCalor && !esElectro) {
+            let cat = reg.fase.includes('Movilidad') ? 'Movilidad' : (reg.fase.includes('Fortalecimiento') ? 'Fortalecimiento' : 'Estiramientos');
+            if (!datosTendenciaCat[cat][reg.fecha]) datosTendenciaCat[cat][reg.fecha] = 0;
+            datosTendenciaCat[cat][reg.fecha] += reg.repeticiones;
+        }
+    });
+
+    datosEquilibrio.Movilidad       = +(datosEquilibrio.Movilidad       / PESO_CATEGORIA.Movilidad).toFixed(1);
+    datosEquilibrio.Fortalecimiento = +(datosEquilibrio.Fortalecimiento / PESO_CATEGORIA.Fortalecimiento).toFixed(1);
+    datosEquilibrio.Estiramientos   = +(datosEquilibrio.Estiramientos   / PESO_CATEGORIA.Estiramientos).toFixed(1);
+    Object.keys(datosTendenciaCat).forEach(cat => {
+        Object.keys(datosTendenciaCat[cat]).forEach(f => {
+            datosTendenciaCat[cat][f] = +(datosTendenciaCat[cat][f] / PESO_CATEGORIA[cat]).toFixed(1);
+        });
+    });
+
+    const fechas = Array.from(fechasSet).sort();
+    let datasetsLinea = fTipo === 'todos'
+        ? [
+            { label: 'Movilidad',       pointStyle: 'circle',   pointRadius: 5, data: fechas.map(f => datosTendenciaCat['Movilidad'][f]       || 0), borderColor: '#2dd4bf', tension: 0.4 },
+            { label: 'Fortalecimiento', pointStyle: 'rect',     pointRadius: 5, data: fechas.map(f => datosTendenciaCat['Fortalecimiento'][f]  || 0), borderColor: '#3b82f6', tension: 0.4 },
+            { label: 'Estiramientos',   pointStyle: 'triangle', pointRadius: 6, data: fechas.map(f => datosTendenciaCat['Estiramientos'][f]    || 0), borderColor: '#c084fc', tension: 0.4 }
+          ]
+        : [{ label: fTipo, data: fechas.map(f => datosTendenciaCat[fTipo][f] || 0), borderColor: fTipo==='Fortalecimiento'?'#3b82f6':(fTipo==='Estiramientos'?'#c084fc':'#2dd4bf'), fill: true, tension: 0.4 }];
+
+    if (fTipo === 'todos') {
+        for (let i = 0; i < fechas.length; i++) {
+            let mapVal = {};
+            datasetsLinea.forEach((ds, dsIdx) => { let v = ds.data[i]; if (v > 0) { if (!mapVal[v]) mapVal[v] = []; mapVal[v].push(dsIdx); } });
+            Object.keys(mapVal).forEach(v => { let indices = mapVal[v]; if (indices.length > 1) { let offset = -0.05*(indices.length-1)/2; indices.forEach(idx => { datasetsLinea[idx].data[i] = parseFloat(v)+offset; offset += 0.05; }); } });
+        }
+    }
+
+    const charts = AppState.charts;
+    if (charts.tendencia)  charts.tendencia.destroy();
+    if (charts.equilibrio) charts.equilibrio.destroy();
+    if (charts.ejercicios) charts.ejercicios.destroy();
+
+    charts.tendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), {
+        type: 'line', data: { labels: fechas, datasets: datasetsLinea },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: fTipo === 'todos', labels: { usePointStyle: true, color: '#cbd5e1', boxWidth: 10 } }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + (Math.round(c.raw*10)/10).toFixed(1) + ' media' } }, datalabels: { display: false } } }
+    });
+
+    charts.equilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), {
+        type: 'doughnut', data: { labels: ['Movilidad','Fortalecimiento','Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf','#3b82f6','#c084fc'], borderWidth: 0 }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } }, tooltip: { callbacks: { label: c => ' '+c.label+': '+c.parsed+' medias/ej' } }, datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (v, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0); return sum>0 ? Math.round((v/sum)*100)+'%' : ''; } } } }
+    });
+
+    const nombresEj = Object.keys(datosEjercicios).sort((a,b) => datosEjercicios[b]-datosEjercicios[a]);
+    const valsEj = nombresEj.map(e => datosEjercicios[e]);
+    charts.ejercicios = new Chart(document.getElementById('grafico-ejercicios').getContext('2d'), {
+        type: 'bar', data: { labels: nombresEj, datasets: [{ data: valsEj, backgroundColor: '#2dd4bf', barThickness: 6, borderRadius: 3 }] },
+        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { top: 25, right: 30, left: 0, bottom: 0 } }, scales: { x: { display: false, beginAtZero: true }, y: { display: true, grid: { display: false, drawBorder: false }, border: { display: false }, ticks: { display: false }, afterFit: s => s.width = 0 } }, plugins: { legend: { display: false }, tooltip: { enabled: false }, datalabels: { display: true, align: 'right', anchor: 'end', offset: 4, formatter: Math.round, color: '#2dd4bf', font: { weight: 'bold', size: 11 } } } },
+        plugins: [leftAlignLabelsPlugin]
+    });
+}
+
+// =====================================================================
+// PDF
+// =====================================================================
+function toggleFiltroDiaPDF() {
+    document.getElementById('pdf-input-dia').classList.toggle('hidden', document.getElementById('pdf-rango').value !== 'especifico');
+}
+function abrirModalPDF()  { document.getElementById('modal-pdf').classList.remove('hidden'); }
+function cerrarModalPDF() { document.getElementById('modal-pdf').classList.add('hidden'); }
+
+async function ejecutarGeneracionPDF() {
+    if (!AppState.usuarioActual) return;
+    cerrarModalPDF();
+    document.getElementById('pdf-loading-overlay').classList.remove('hidden');
+    try {
+        const rangoVal = document.getElementById('pdf-rango').value;
+        let fInicio = null, fFin = getLocalDateStr();
+        if (rangoVal === 'hoy')        { fInicio = fFin; }
+        else if (rangoVal === 'especifico') { fInicio = document.getElementById('pdf-fecha-valor').value; fFin = fInicio; }
+        else if (rangoVal !== 'todo')  { let d = new Date(); d.setDate(d.getDate()-parseInt(rangoVal)); fInicio = getLocalDateStr(d); }
+
+        const todos     = await getRegistrosUsuario();
+        const filtrados = todos.filter(r => (!fInicio || r.fecha >= fInicio) && (!fFin || r.fecha <= fFin));
+        filtrados.sort((a,b) => a.timestamp - b.timestamp);
+
+        const sesionesPorDia = {};
+        filtrados.forEach(r => {
+            if (!sesionesPorDia[r.fecha]) sesionesPorDia[r.fecha] = [];
+            let currDay = sesionesPorDia[r.fecha];
+            if (currDay.length === 0) { currDay.push([r]); }
+            else {
+                let lastSesion = currDay[currDay.length-1], lastRec = lastSesion[lastSesion.length-1];
+                if ((r.timestamp - lastRec.timestamp) < 90*60*1000) { lastSesion.push(r); }
+                else { currDay.push([r]); }
+            }
+        });
+
+        const tableBody = [];
+        Object.keys(sesionesPorDia).sort().reverse().forEach(f => {
+            tableBody.push([{ content: `Fecha: ${f}`, colSpan: 2, styles: { fillColor: [220,220,220], textColor: [0,0,0], fontStyle: 'bold' } }]);
+            let daySessions = sesionesPorDia[f].reverse();
+            daySessions.forEach((sesion, index) => {
+                let horaSesion = new Date(sesion[0].timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+                tableBody.push([{ content: `Sesión ${daySessions.length-index} (${horaSesion})`, colSpan: 2, styles: { fillColor: [245,245,245], textColor: [50,50,50], fontStyle: 'italic', cellPadding: 2 } }]);
+                sesion.forEach(r => {
+                    const esTerapia = r.fase.includes('Fase 1') || r.fase.includes('Fase 5');
+                    tableBody.push([r.ejercicio, esTerapia ? 'Terapia única' : r.series+' x '+r.repeticiones]);
+                });
+            });
+        });
+
+        const dEq  = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 };
+        const dTen  = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} };
+        const fSet  = new Set();
+        filtrados.forEach(r => {
+            const esT = r.fase.includes('Fase 1') || r.fase.includes('Fase 5');
+            if (!esT) {
+                let cat = r.fase.includes('Movilidad') ? 'Movilidad' : (r.fase.includes('Fortalecimiento') ? 'Fortalecimiento' : 'Estiramientos');
+                dEq[cat] += r.repeticiones;
+                if (!dTen[cat][r.fecha]) dTen[cat][r.fecha] = 0;
+                dTen[cat][r.fecha] += r.repeticiones;
+                fSet.add(r.fecha);
+            }
+        });
+        dEq.Movilidad       = +(dEq.Movilidad/5).toFixed(1);
+        dEq.Fortalecimiento = +(dEq.Fortalecimiento/2).toFixed(1);
+        dEq.Estiramientos   = +(dEq.Estiramientos/2).toFixed(1);
+        Object.keys(dTen).forEach(cat => { Object.keys(dTen[cat]).forEach(f => { dTen[cat][f] = +(dTen[cat][f]/PESO_CATEGORIA[cat]).toFixed(1); }); });
+        const fList = Array.from(fSet).sort();
+
+        const charts = AppState.charts;
+        if (charts.pdfChart1) charts.pdfChart1.destroy();
+        charts.pdfChart1 = new Chart(document.getElementById('pdf-canvas-tendencia').getContext('2d'), {
+            type: 'line', data: { labels: fList, datasets: [
+                { label: 'Movilidad',       pointStyle:'circle',   data: fList.map(f => dTen['Movilidad'][f]||0),       borderColor:'#2dd4bf', tension: 0.4 },
+                { label: 'Fortalecimiento', pointStyle:'rect',     data: fList.map(f => dTen['Fortalecimiento'][f]||0), borderColor:'#3b82f6', tension: 0.4 },
+                { label: 'Estiramientos',   pointStyle:'triangle', data: fList.map(f => dTen['Estiramientos'][f]||0),   borderColor:'#c084fc', tension: 0.4 }
+            ]},
+            options: { animation: false, responsive: false, plugins: { datalabels:{display:false}, legend:{labels:{usePointStyle:true,color:'#333'}}, customCanvasBackgroundColor:{color:'white'} }, scales:{y:{beginAtZero:true}} },
+            plugins: [whiteBgPlugin]
+        });
+
+        if (charts.pdfChart2) charts.pdfChart2.destroy();
+        charts.pdfChart2 = new Chart(document.getElementById('pdf-canvas-equilibrio').getContext('2d'), {
+            type: 'doughnut', data: { labels: ['Movilidad','Fortalecimiento','Estiramientos'], datasets: [{ data: [dEq.Movilidad,dEq.Fortalecimiento,dEq.Estiramientos], backgroundColor:['#2dd4bf','#3b82f6','#c084fc'] }] },
+            options: { animation:false, responsive:false, plugins: { datalabels:{display:true,color:'#fff',font:{weight:'bold',size:14},formatter:(v,ctx)=>{let sum=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return sum>0?Math.round((v/sum)*100)+'%':'';}}, legend:{position:'bottom',labels:{color:'#333'}}, customCanvasBackgroundColor:{color:'white'} } },
+            plugins: [whiteBgPlugin, ChartDataLabels]
+        });
+
+        await new Promise(r => setTimeout(r, 600));
+        const imgTen = document.getElementById('pdf-canvas-tendencia').toDataURL('image/jpeg',1.0);
+        const imgEq  = document.getElementById('pdf-canvas-equilibrio').toDataURL('image/jpeg',1.0);
+        if (imgTen.length < 50 || imgEq.length < 50) throw new Error("Canvas vacío");
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFontSize(22); doc.setTextColor(15,118,110);
+        doc.text(`CerviCare - Informe Clínico (${AppState.usuarioActual.nombre})`, 14, 20);
+        doc.setFontSize(11); doc.setTextColor(100,100,100);
+        doc.text(`Periodo evaluado: ${fInicio||'Inicio'} al ${fFin}`, 14, 28);
+        doc.setFontSize(10); doc.setTextColor(150,150,150);
+        doc.text("Tendencia de Esfuerzo (Reps/Ej)", 14, 40);
+        doc.addImage(imgTen,'JPEG',14,45,90,52);
+        doc.text("Equilibrio Relativo", 110, 40);
+        doc.addImage(imgEq,'JPEG',110,45,75,75);
+
+        if (tableBody.length > 0) {
+            doc.autoTable({ startY: 130, head: [['Ejercicio / Actividad','Volumen']], body: tableBody, theme:'grid', styles:{fontSize:9}, headStyles:{fillColor:[15,118,110]} });
+        } else {
+            doc.text("No hay registros en el periodo seleccionado.", 14, 130);
+        }
+        doc.save(`CerviCare_Reporte_${AppState.usuarioActual.nombre}_${fFin}.pdf`);
+
+    } catch(e) {
+        console.error(e);
+        await modalConfirm('Error al generar PDF', 'No se pudo compilar el documento. Consulta la consola para más detalles.');
+    }
+    document.getElementById('pdf-loading-overlay').classList.add('hidden');
+}
+
+// =====================================================================
+// HISTORIAL
+// =====================================================================
+function cambiarDiaHistorial(offset) {
+    let d = new Date(AppState.diaHistorial);
+    d.setDate(d.getDate() + offset);
+    AppState.diaHistorial = getLocalDateStr(d);
+    document.getElementById('fecha-historial-input').value = AppState.diaHistorial;
+    cargarHistorial();
+}
+
+function seleccionarDiaHistorial(v) {
+    if (!v) return;
+    AppState.diaHistorial = v;
+    cargarHistorial();
+}
+
+async function cargarHistorial() {
+    if (!AppState.usuarioActual) return; // FIX #5
+
+    const lista = document.getElementById('lista-registros');
+    lista.innerHTML = '<p class="text-gray-400 text-sm text-center py-6">Cargando...</p>';
+
+    const todos = await getRegistrosUsuario();
+    const registrosDia = todos.filter(r => r.fecha === AppState.diaHistorial);
+
+    if (registrosDia.length === 0) {
+        lista.innerHTML = '<p class="text-gray-400 text-sm text-center py-6 border border-dashed border-gray-800 rounded-lg">Sin actividad este día.</p>';
+        return;
+    }
+
+    registrosDia.sort((a,b) => a.timestamp - b.timestamp);
+    let sesiones = [], sesionActual = [];
+    registrosDia.forEach(r => {
+        if (sesionActual.length === 0) { sesionActual.push(r); }
+        else {
+            if ((r.timestamp - sesionActual[sesionActual.length-1].timestamp) < 90*60*1000) { sesionActual.push(r); }
+            else { sesiones.push([...sesionActual]); sesionActual = [r]; }
+        }
+    });
+    if (sesionActual.length > 0) sesiones.push(sesionActual);
+    sesiones.reverse();
+
+    // FIX #12: array + join
+    const htmlParts = [];
+    sesiones.forEach((sesion, index) => {
+        const horaInicio  = new Date(sesion[0].timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+        const numeroSesion = sesiones.length - index;
+        const estaAbierta  = index === 0;
+
+        htmlParts.push(`
+        <div class="mb-4 bg-darkBg border border-gray-700 rounded-xl overflow-hidden shadow-lg">
+            <div class="accordion-header bg-gray-800 px-4 py-3 flex justify-between items-center border-b border-gray-700 cursor-pointer transition-colors hover:bg-gray-700">
+                <span class="font-bold text-sm text-white">🌞 Sesión ${numeroSesion}</span>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-neonCyan font-mono">${horaInicio}</span>
+                    <svg class="chevron w-4 h-4 text-gray-400 transition-transform duration-300 ${estaAbierta?'rotate-180':''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+            </div>
+            <div class="accordion-body p-2 space-y-2 ${estaAbierta?'':'hidden'}">`);
+
+        sesion.slice().reverse().forEach(r => {
+            const esTerapia = r.fase.includes('Fase 1') || r.fase.includes('Fase 5');
+            // FIX #9: ocultar botón editar para terapias
+            const btnEditar = esTerapia ? '' : `<button data-editar="${r.id}" class="text-neonCyan p-2 hover:bg-neonCyan/20 rounded"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-width="1.5"/></svg></button>`;
+            htmlParts.push(`
+            <div class="bg-cardBg p-3 rounded-lg border border-gray-700 flex justify-between items-center">
+                <div>
+                    <p class="font-bold text-sm text-neonCyan">${sanitize(r.ejercicio)}</p>
+                    <p class="text-xs text-gray-400 mt-1">${esTerapia ? 'Terapia única' : r.series+'x'+r.repeticiones}</p>
+                </div>
+                <div class="flex gap-1">
+                    ${btnEditar}
+                    <button data-borrar="${r.id}" class="text-red-500 p-2 hover:bg-red-900/30 rounded"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="1.5"/></svg></button>
+                </div>
+            </div>`);
+        });
+        htmlParts.push('</div></div>');
+    });
+
+    lista.innerHTML = htmlParts.join('');
+
+    // Acordeones
+    lista.querySelectorAll('.accordion-header').forEach(header => {
+        header.addEventListener('click', () => {
+            const body    = header.nextElementSibling;
+            const chevron = header.querySelector('.chevron');
+            body.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        });
+    });
+
+    // Delegación de editar/borrar
+    lista.addEventListener('click', async (e) => {
+        const editarBtn = e.target.closest('[data-editar]');
+        if (editarBtn) { await editarRegistro(parseInt(editarBtn.dataset.editar)); return; }
+        const borrarBtn = e.target.closest('[data-borrar]');
+        if (borrarBtn) { await borrarRegistro(parseInt(borrarBtn.dataset.borrar)); }
+    });
+}
+
+// =====================================================================
+// EDITAR / BORRAR REGISTROS
+// =====================================================================
+async function editarRegistro(id) {
+    const r = await db.registros.get(id);
+    if (!r) return;
+    // FIX #9: ya no llega aquí si es terapia (botón oculto)
+    // FIX #8: modal en lugar de prompt()
+    const resultado = await modalEditar(r.series, r.repeticiones);
+    if (!resultado) return;
+    await db.registros.update(id, { series: resultado.series, repeticiones: resultado.reps });
+    cargarHistorial();
+    actualizarVistasProgreso();
+}
+
+async function borrarRegistro(id) {
+    // FIX #8: modal en lugar de confirm()
+    const ok = await modalConfirm('Borrar registro', '¿Eliminar este registro? Esta acción no se puede deshacer.');
+    if (!ok) return;
+    await db.registros.delete(id);
+    cargarHistorial();
+    actualizarVistasProgreso();
+}
+
+async function borrarTodosLosDatos() {
+    if (!AppState.usuarioActual) return;
+    // FIX #8: modal en lugar de confirm()
+    const ok = await modalConfirm(
+        '⚠️ Borrar historial completo',
+        `¿Eliminar TODOS los registros del perfil "${AppState.usuarioActual.nombre}"? Esta acción no se puede deshacer.`
+    );
+    if (!ok) return;
+    const ids = (await getRegistrosUsuario()).map(r => r.id);
+    await db.registros.bulkDelete(ids);
+    location.reload();
+}
+
+// =====================================================================
+// EXPORTAR / IMPORTAR
+// =====================================================================
+async function exportarCSV() {
+    const datos = await getRegistrosUsuario();
+    // FIX #11: escapar valores del CSV correctamente
+    const cabecera = ['Fecha','Ejercicio','Series','Reps'].map(escaparCSV).join(',');
+    const filas    = datos.map(r => [r.fecha, r.ejercicio, r.series, r.repeticiones].map(escaparCSV).join(','));
+    descargarArchivo([cabecera, ...filas].join('\n'), `cervicare_${AppState.usuarioActual.nombre}.csv`, 'text/csv');
+}
+
+async function exportarBackup() {
+    descargarArchivo(JSON.stringify(await getRegistrosUsuario()), `cervicare_backup_${AppState.usuarioActual.nombre}.json`, 'application/json');
+}
+
+async function importarBackup(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // FIX #3: validar el backup antes de importar
+    const CAMPOS_REQUERIDOS  = ['fecha','ejercicio','series','repeticiones','fase'];
+    const TIPOS_CAMPO        = { fecha: 'string', ejercicio: 'string', series: 'number', repeticiones: 'number', fase: 'string' };
+    const MAX_REGISTROS      = 50000;
+    const MAX_LONGITUD_CAMPO = 200;
+
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+        try {
+            let datos;
+            try { datos = JSON.parse(ev.target.result); } catch { throw new Error("El archivo no es un JSON válido."); }
+
+            if (!Array.isArray(datos)) throw new Error("El JSON debe ser un array de registros.");
+            if (datos.length > MAX_REGISTROS) throw new Error(`El backup excede el límite de ${MAX_REGISTROS} registros.`);
+
+            const datosSanitizados = datos.map((d, i) => {
+                for (const campo of CAMPOS_REQUERIDOS) {
+                    if (!(campo in d)) throw new Error(`Registro ${i}: falta el campo "${campo}".`);
+                    if (typeof d[campo] !== TIPOS_CAMPO[campo]) throw new Error(`Registro ${i}: tipo incorrecto en "${campo}".`);
+                    if (typeof d[campo] === 'string' && d[campo].length > MAX_LONGITUD_CAMPO) throw new Error(`Registro ${i}: campo "${campo}" demasiado largo.`);
+                }
+                // Solo importar campos conocidos y seguros
+                return {
+                    usuarioId:    AppState.usuarioActual.id,
+                    fecha:        String(d.fecha).slice(0,10),
+                    timestamp:    typeof d.timestamp === 'number' ? d.timestamp : Date.now(),
+                    ejercicio:    String(d.ejercicio).slice(0, MAX_LONGITUD_CAMPO),
+                    series:       Math.max(1, Math.min(999, parseInt(d.series))),
+                    repeticiones: Math.max(1, Math.min(999, parseInt(d.repeticiones))),
+                    fase:         String(d.fase).slice(0, MAX_LONGITUD_CAMPO)
+                };
+            });
+
+            await db.registros.bulkAdd(datosSanitizados);
+            await modalConfirm('Importación completada', `Se importaron ${datosSanitizados.length} registros correctamente.`);
+            location.reload();
+        } catch(err) {
+            await modalConfirm('Error en la importación', err.message);
+        }
+    };
+    reader.readAsText(file);
+    // Limpiar para permitir reimportar el mismo archivo
+    e.target.value = '';
+}
+
+function descargarArchivo(contenido, nombre, tipo) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([contenido], { type: tipo }));
+    a.download = nombre;
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
+
+// =====================================================================
+// SERVICE WORKER / ACTUALIZACIONES
+// =====================================================================
+async function forzarActualizacion() {
+    if ('serviceWorker' in navigator) {
+        try {
+            const regs = await navigator.serviceWorker.getRegistrations();
+            for (let reg of regs) { await reg.update(); }
+            const cacheKeys = await caches.keys();
+            for (let key of cacheKeys) { await caches.delete(key); }
+            await modalConfirm('Actualización', 'App actualizada. Se reiniciará ahora.');
+            window.location.reload(true);
+        } catch(e) {
+            await modalConfirm('Error', 'No se pudo buscar actualizaciones.');
+        }
+    } else {
+        window.location.reload(true);
+    }
+}
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => {
+                reg.addEventListener('updatefound', () => {
+                    const newWorker = reg.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            window.location.reload();
+                        }
                     });
                 });
+            })
+            .catch(err => console.warn('Error SW', err));
+    });
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) { refreshing = true; window.location.reload(); }
+    });
+}
+</script>
+```
 
-                const dEq = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 }, dTen = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} }, fSet = new Set();
-                filtrados.forEach(r => { const esT = r.fase.includes('Fase 1')||r.fase.includes('Fase 5'); if(!esT) { let cat = r.fase.includes('Movilidad')?'Movilidad':(r.fase.includes('Fortalecimiento')?'Fortalecimiento':'Estiramientos'); dEq[cat] += r.repeticiones; if(!dTen[cat][r.fecha]) dTen[cat][r.fecha]=0; dTen[cat][r.fecha]+=r.repeticiones; fSet.add(r.fecha); } });
-                dEq.Movilidad = +(dEq.Movilidad/5).toFixed(1); dEq.Fortalecimiento = +(dEq.Fortalecimiento/2).toFixed(1); dEq.Estiramientos = +(dEq.Estiramientos/2).toFixed(1);
-                Object.keys(dTen).forEach(cat => { Object.keys(dTen[cat]).forEach(f => { dTen[cat][f] = +(dTen[cat][f]/PESO_CATEGORIA[cat]).toFixed(1); }); });
-                const fList = Array.from(fSet).sort();
-                
-                if(pdfChart1) pdfChart1.destroy();
-                pdfChart1 = new Chart(document.getElementById('pdf-canvas-tendencia').getContext('2d'), { type: 'line', data: { labels: fList, datasets: [ { label: 'Movilidad', pointStyle:'circle', data: fList.map(f => dTen['Movilidad'][f]||0), borderColor: '#2dd4bf', tension: 0.4 }, { label: 'Fortalecimiento', pointStyle:'rect', data: fList.map(f => dTen['Fortalecimiento'][f]||0), borderColor: '#3b82f6', tension: 0.4 }, { label: 'Estiramientos', pointStyle:'triangle', data: fList.map(f => dTen['Estiramientos'][f]||0), borderColor: '#c084fc', tension: 0.4 } ] }, options: { animation: false, responsive: false, plugins: { datalabels: {display:false}, legend: { labels: { usePointStyle: true, color: '#333' } }, customCanvasBackgroundColor: { color: 'white'} }, scales: { y: { beginAtZero: true } } }, plugins: [whiteBgPlugin] });
-                
-                if(pdfChart2) pdfChart2.destroy();
-                pdfChart2 = new Chart(document.getElementById('pdf-canvas-equilibrio').getContext('2d'), { type: 'doughnut', data: { labels: ['Movilidad', 'Fortalecimiento', 'Estiramientos'], datasets: [{ data: [dEq.Movilidad, dEq.Fortalecimiento, dEq.Estiramientos], backgroundColor: ['#2dd4bf', '#3b82f6', '#c084fc'] }] }, options: { animation: false, responsive: false, plugins: { datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (v, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b, 0); return sum>0 ? Math.round((v/sum)*100)+'%' : ''; } }, legend: { position: 'bottom', labels: { color: '#333' } }, customCanvasBackgroundColor: { color: 'white'} } }, plugins: [whiteBgPlugin, ChartDataLabels] });
-
-                await new Promise(r => setTimeout(r, 600)); 
-                
-                const imgTen = document.getElementById('pdf-canvas-tendencia').toDataURL('image/jpeg', 1.0);
-                const imgEq = document.getElementById('pdf-canvas-equilibrio').toDataURL('image/jpeg', 1.0);
-
-                if(imgTen.length < 50 || imgEq.length < 50) throw new Error("Canvas vacío de iOS Safari");
-
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                
-                doc.setFontSize(22); doc.setTextColor(15, 118, 110); doc.text(`CerviCare - Informe Clínico (${usuarioActual.nombre})`, 14, 20);
-                doc.setFontSize(11); doc.setTextColor(100, 100, 100); doc.text(`Periodo evaluado: ${fInicio || 'Inicio'} al ${fFin}`, 14, 28);
-
-                doc.setFontSize(10); doc.setTextColor(150, 150, 150); doc.text("Tendencia de Esfuerzo (Reps/Ej)", 14, 40);
-                doc.addImage(imgTen, 'JPEG', 14, 45, 90, 52);
-                
-                doc.text("Equilibrio Relativo", 110, 40); doc.addImage(imgEq, 'JPEG', 110, 45, 75, 75);
-
-                let finalY = 130;
-
-                if (tableBody.length > 0) { doc.autoTable({ startY: finalY, head: [['Ejercicio / Actividad', 'Volumen']], body: tableBody, theme: 'grid', styles: { fontSize: 9 }, headStyles: { fillColor: [15, 118, 110] } }); } 
-                else { doc.text("No hay registros en el periodo seleccionado.", 14, finalY); }
-
-                doc.save(`CerviCare_Reporte_${usuarioActual.nombre}_${fFin}.pdf`);
-
-            } catch (e) { console.error(e); alert("Error al compilar el PDF."); }
-            document.getElementById('pdf-loading-overlay').classList.add('hidden');
-        }
-
-        function cambiarDiaHistorial(offset) { let d = new Date(diaHistorialActual); d.setDate(d.getDate() + offset); diaHistorialActual = getLocalDateStr(d); document.getElementById('fecha-historial-input').value = diaHistorialActual; cargarHistorial(); }
-        function seleccionarDiaHistorial(v) { if(!v) return; diaHistorialActual = v; cargarHistorial(); }
-        
-        async function cargarHistorial() {
-            const t = await db.registros.where({usuarioId: usuarioActual.id}).toArray();
-            const registrosDia = t.filter(r => r.fecha === diaHistorialActual);
-            const l = document.getElementById('lista-registros'); l.innerHTML = '';
-            
-            if (registrosDia.length === 0) { return l.innerHTML = '<p class="text-gray-400 text-sm text-center py-6 border border-dashed border-gray-800 rounded-lg">Sin actividad este día.</p>'; }
-
-            registrosDia.sort((a,b) => a.timestamp - b.timestamp);
-            let sesiones = [], sesionActual = [];
-
-            registrosDia.forEach(r => {
-                if (sesionActual.length === 0) { sesionActual.push(r); } 
-                else {
-                    if ((r.timestamp - sesionActual[sesionActual.length - 1].timestamp) < 90 * 60 * 1000) { sesionActual.push(r); } 
-                    else { sesiones.push([...sesionActual]); sesionActual = [r]; }
-                }
-            });
-            if (sesionActual.length > 0) sesiones.push(sesionActual);
-            sesiones.reverse();
-
-            sesiones.forEach((sesion, index) => {
-                let horaInicio = new Date(sesion[0].timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                let numeroSesion = sesiones.length - index;
-                let estaAbierta = index === 0;
-
-                let htmlSesion = `
-                <div class="mb-4 bg-darkBg border border-gray-700 rounded-xl overflow-hidden shadow-lg">
-                    <div onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.chevron').classList.toggle('rotate-180')" class="bg-gray-800 px-4 py-3 flex justify-between items-center border-b border-gray-700 cursor-pointer transition-colors hover:bg-gray-700">
-                        <span class="font-bold text-sm text-white">🌞 Sesión ${numeroSesion}</span>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-neonCyan font-mono">${horaInicio}</span>
-                            <svg class="chevron w-4 h-4 text-gray-400 transition-transform duration-300 ${estaAbierta ? 'rotate-180' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </div>
-                    </div>
-                    <div class="p-2 space-y-2 transition-all ${estaAbierta ? '' : 'hidden'}">`;
-
-                sesion.reverse().forEach(r => {
-                    htmlSesion += `
-                    <div class="bg-cardBg p-3 rounded-lg border border-gray-700 flex justify-between items-center">
-                        <div>
-                            <p class="font-bold text-sm text-neonCyan">${r.ejercicio}</p>
-                            <p class="text-xs text-gray-400 mt-1">${r.fase.includes('Fase 1')||r.fase.includes('Fase 5') ? 'Terapia única' : r.series+'x'+r.repeticiones}</p>
-                        </div>
-                        <div class="flex gap-1">
-                            <button onclick="editarRegistro(${r.id})" class="text-neonCyan p-2 hover:bg-neonCyan/20 rounded"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-width="1.5"/></svg></button>
-                            <button onclick="borrarRegistro(${r.id})" class="text-red-500 p-2 hover:bg-red-900/30 rounded"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="1.5"/></svg></button>
-                        </div>
-                    </div>`;
-                });
-                htmlSesion += `</div></div>`;
-                l.innerHTML += htmlSesion;
-            });
-        }
-
-        async function editarRegistro(id) { const r = await db.registros.get(id); if(r.fase.includes('Fase 1')||r.fase.includes('Fase 5')) return alert("Terapias no editables."); let ns = prompt("Nuevas SERIES:", r.series), nr = prompt("Nuevas REPETICIONES:", r.repeticiones); if(ns&&nr) { await db.registros.update(id, { series: parseInt(ns), repeticiones: parseInt(nr) }); cargarHistorial(); actualizarVistasProgreso(); } }
-        async function borrarRegistro(id) { if(confirm("¿Borrar?")){ await db.registros.delete(id); cargarHistorial(); actualizarVistasProgreso(); } }
-        async function borrarTodosLosDatos() { if(confirm(`⚠️ ¿BORRAR TODO el historial del perfil "${usuarioActual.nombre}"?`)){ const borrarIds = (await getRegistrosUsuario()).map(r => r.id); await db.registros.bulkDelete(borrarIds); location.reload(); } }
-        async function exportarCSV() { const d = await getRegistrosUsuario(); let c="Fecha,Ejercicio,Series,Reps\n"; d.forEach(r=>c+=`${r.fecha},${r.ejercicio},${r.series},${r.repeticiones}\n`); descargarArchivo(c,`cervicare_${usuarioActual.nombre}.csv`,'text/csv'); }
-        async function exportarBackup() { descargarArchivo(JSON.stringify(await getRegistrosUsuario()),`cervicare_backup_${usuarioActual.nombre}.json`,'application/json'); }
-        function importarBackup(e) { const r=new FileReader(); r.onload=async(ev)=>{ const datos = JSON.parse(ev.target.result); datos.forEach(d => { d.usuarioId = usuarioActual.id; if(!d.timestamp) d.timestamp = Date.now(); }); await db.registros.bulkAdd(datos); alert("Importado."); location.reload(); }; r.readAsText(e.target.files[0]); }
-        function descargarArchivo(c, n, t) { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([c],{type:t})); a.download=n; a.click(); }
-
-        async function forzarActualizacion() {
-            if ('serviceWorker' in navigator) {
-                try {
-                    const regs = await navigator.serviceWorker.getRegistrations();
-                    for (let reg of regs) { await reg.update(); }
-                    const cacheKeys = await caches.keys();
-                    for (let key of cacheKeys) { await caches.delete(key); }
-                    alert("App actualizada. Se reiniciará.");
-                    window.location.reload(true);
-                } catch (e) { alert("Error al buscar actualizaciones."); }
-            } else { window.location.reload(true); }
-        }
-
-        if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').then(reg => { reg.addEventListener('updatefound', () => { const newWorker = reg.installing; newWorker.addEventListener('statechange', () => { if (newWorker.state === 'installed' && navigator.serviceWorker.controller) { window.location.reload(); } }); }); }).catch(err => console.warn('Error SW', err)); }); let refreshing = false; navigator.serviceWorker.addEventListener('controllerchange', () => { if (!refreshing) { refreshing = true; window.location.reload(); } }); }
-    </script>
 </body>
 </html>
