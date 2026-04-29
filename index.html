@@ -9,7 +9,7 @@
     <link rel="icon" href="icono.jpg" type="image/jpeg">
     <link rel="manifest" href="manifest.json">
 
-    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -30,13 +30,13 @@
         }
     </script>
 
-    <script src="[https://unpkg.com/dexie/dist/dexie.js](https://unpkg.com/dexie/dist/dexie.js)"></script>
-    <script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)"></script>
-    <script src="[https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2](https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2)"></script>
-    <link rel="stylesheet" href="[https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css](https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css)" />
-    <script src="[https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js](https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js)"></script>
-    <script src="[https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js](https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js)"></script>
-    <script src="[https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js](https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js)"></script>
+    <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
 
     <style>
         body { -webkit-tap-highlight-color: transparent; user-select: none; }
@@ -135,8 +135,8 @@
             <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Sistema</h3>
             <div class="bg-cardBg p-3 rounded-xl border border-gray-700 mb-6 shadow-lg flex justify-between items-center">
                 <div>
-                    <p class="font-bold text-sm text-white">Versión v1.38</p>
-                    <p class="text-[10px] text-gray-400">Actualización en 2º plano</p>
+                    <p class="font-bold text-sm text-white">Versión v1.39</p>
+                    <p class="text-[10px] text-gray-400">Actualización en 2º plano activada</p>
                 </div>
                 <button id="btn-buscar-updates" class="bg-darkBg border border-neonCyan text-neonCyan px-3 py-1.5 rounded-lg text-xs font-bold shadow-md hover:bg-neonCyan hover:text-darkBg transition-colors">Buscar Updates</button>
             </div>
@@ -155,15 +155,16 @@
                 <input type="file" id="import-file" class="hidden" accept=".json">
                 <button id="btn-borrar-historial" class="col-span-2 bg-red-900/30 border border-red-500 text-red-300 py-2.5 rounded-lg text-sm font-semibold shadow-md mt-1 hover:bg-red-800/50 transition-colors">⚠️ Borrar el Historial de este Perfil</button>
             </div>
-            
+
             <div class="mt-8 flex flex-col items-center justify-center text-gray-500 text-xs pb-4">
-                <p class="font-bold text-gray-400 mb-1">CerviCare v1.38</p>
+                <p class="font-bold text-gray-400 mb-1">CerviCare v1.39</p>
             </div>
         </section>
+
     </main>
 
     <div class="fixed bottom-16 w-full bg-darkBg/95 backdrop-blur-md border-t border-gray-800 text-[10px] text-gray-400 py-1.5 flex justify-center items-center gap-2 z-10 shadow-[0_-5px_15px_rgba(0,0,0,0.5)]">
-        <a href="[https://creativecommons.org/publicdomain/zero/1.0/deed.es](https://creativecommons.org/publicdomain/zero/1.0/deed.es)" target="_blank" rel="noopener noreferrer" class="hover:text-neonCyan transition-colors font-bold">CC0 1.0 Universal</a>
+        <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.es" target="_blank" rel="noopener noreferrer" class="hover:text-neonCyan transition-colors font-bold">CC0 1.0 Universal</a>
         <span class="text-gray-600">|</span>
         <span>2026</span>
         <span class="text-gray-600">|</span>
@@ -193,7 +194,9 @@
     <div id="modal-nombre" class="hidden fixed inset-0 bg-black/90 z-[60] flex justify-center items-center p-4 backdrop-blur-sm">
         <div class="bg-cardBg p-6 rounded-xl border border-neonCyan w-full max-w-sm shadow-2xl">
             <h3 id="modal-nombre-titulo" class="text-lg font-bold text-white mb-4">Nombre del perfil</h3>
-            <input id="modal-nombre-input" type="text" maxlength="40" class="w-full bg-darkBg border border-gray-600 text-white rounded-lg p-3 outline-none focus:border-neonCyan mb-4 text-sm" placeholder="Escribe un nombre...">
+            <input id="modal-nombre-input" type="text" maxlength="40"
+                class="w-full bg-darkBg border border-gray-600 text-white rounded-lg p-3 outline-none focus:border-neonCyan mb-4 text-sm"
+                placeholder="Escribe un nombre...">
             <div class="flex gap-3">
                 <button id="modal-nombre-cancelar" class="w-1/2 bg-gray-700 text-white font-bold py-2.5 rounded-lg">Cancelar</button>
                 <button id="modal-nombre-aceptar" class="w-1/2 bg-neonCyan text-darkBg font-bold py-2.5 rounded-lg">Aceptar</button>
@@ -201,7 +204,7 @@
         </div>
     </div>
 
-    <div id="modal-confirm" class="hidden fixed inset-0 bg-black/90 z-[70] flex justify-center items-center p-4 backdrop-blur-sm">
+    <div id="modal-confirm" class="hidden fixed inset-0 bg-black/90 z-[60] flex justify-center items-center p-4 backdrop-blur-sm">
         <div class="bg-cardBg p-6 rounded-xl border border-red-500 w-full max-w-sm shadow-2xl">
             <h3 id="modal-confirm-titulo" class="text-lg font-bold text-white mb-2">¿Confirmar acción?</h3>
             <p id="modal-confirm-texto" class="text-sm text-gray-400 mb-6"></p>
@@ -247,7 +250,10 @@
                 <option value="30" selected>Últimos 30 días</option>
                 <option value="todo">Historial completo</option>
             </select>
-            <div id="pdf-input-dia" class="hidden mb-4"><label class="text-[10px] text-gray-400">Fecha del informe</label><input type="date" id="pdf-fecha-valor" class="w-full bg-darkBg border border-gray-600 text-sm rounded p-2 text-white mt-1"></div>
+            <div id="pdf-input-dia" class="hidden mb-4">
+                <label class="text-[10px] text-gray-400">Fecha del informe</label>
+                <input type="date" id="pdf-fecha-valor" class="w-full bg-darkBg border border-gray-600 text-sm rounded p-2 text-white mt-1">
+            </div>
             <div class="flex gap-3 mt-4">
                 <button id="btn-cerrar-pdf" class="w-1/2 bg-gray-700 text-white font-bold py-2.5 rounded-lg transition-colors">Cancelar</button>
                 <button id="btn-generar-pdf" class="w-1/2 bg-blueDark text-white font-bold py-2.5 rounded-lg shadow-md flex justify-center items-center">Generar</button>
@@ -255,14 +261,13 @@
         </div>
     </div>
 
-    <div id="pdf-loading-overlay" class="hidden fixed inset-0 z-[9999]">
-        <div class="absolute inset-0 bg-darkBg flex flex-col justify-center items-center p-4 text-center z-10">
-            <svg class="animate-spin h-12 w-12 text-blueLight mb-4" xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+    <div id="pdf-loading-overlay" class="hidden fixed inset-0 z-[9999] flex justify-center items-center">
+        <div class="absolute inset-0 bg-darkBg z-10 flex flex-col justify-center items-center p-4 text-center">
+            <svg class="animate-spin h-12 w-12 text-blueLight mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
             <h2 class="text-2xl font-bold text-white">Generando Informe...</h2>
             <p class="text-sm text-gray-400 mt-2">Compilando documento clínico nativo.</p>
         </div>
-        
-        <div class="absolute inset-0 z-0 flex justify-center items-center pointer-events-none opacity-[0.01]">
+        <div class="absolute inset-0 z-0 flex justify-center items-center pointer-events-none overflow-hidden">
             <div style="background: white; padding: 40px; width: 210mm;">
                 <canvas id="pdf-canvas-tendencia" width="600" height="350" class="mb-4"></canvas>
                 <canvas id="pdf-canvas-equilibrio" width="400" height="400"></canvas>
@@ -296,1088 +301,1226 @@
         </button>
     </nav>
 
-    <script>
-        // =====================================================================
-        // PLUGINS CHART.JS
-        // =====================================================================
-        if (typeof ChartDataLabels !== 'undefined') {
-            Chart.register(ChartDataLabels);
-            Chart.defaults.plugins.datalabels.display = false;
+<script>
+// =====================================================================
+// PLUGINS CHART.JS
+// =====================================================================
+if (typeof ChartDataLabels !== 'undefined') {
+    Chart.register(ChartDataLabels);
+    Chart.defaults.plugins.datalabels.display = false;
+}
+
+const leftAlignLabelsPlugin = {
+    id: 'leftAlignLabels',
+    afterDraw(chart) {
+        try {
+            if (chart.config.type !== 'bar') return;
+            if (!chart.chartArea) return;
+            const { ctx, data, chartArea: { left } } = chart;
+            ctx.save();
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'bottom';
+            ctx.fillStyle = '#cbd5e1';
+            ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
+            const meta = chart.getDatasetMeta(0);
+            if (meta && meta.data) {
+                meta.data.forEach((bar, index) => {
+                    const label = data.labels[index];
+                    if (bar.y) ctx.fillText(label, left, bar.y - 6);
+                });
+            }
+            ctx.restore();
+        } catch(e) { console.warn("Error en plugin de etiquetas:", e); }
+    }
+};
+
+const whiteBgPlugin = {
+    id: 'customCanvasBackgroundColor',
+    beforeDraw: (chart, args, options) => {
+        const { ctx } = chart;
+        ctx.save();
+        ctx.globalCompositeOperation = 'destination-over';
+        ctx.fillStyle = options.color || '#ffffff';
+        ctx.fillRect(0, 0, chart.width, chart.height);
+        ctx.restore();
+    }
+};
+
+// =====================================================================
+// BASE DE DATOS
+// =====================================================================
+const db = new Dexie('CerviCareDB');
+db.version(1).stores({ registros: '++id, fecha, ejercicio, series, repeticiones, fase' });
+db.version(2).stores({ registros: '++id, fecha, timestamp, ejercicio, series, repeticiones, fase' });
+db.version(3).stores({ usuarios: '++id, nombre', registros: '++id, usuarioId, fecha, timestamp, ejercicio, series, repeticiones, fase' });
+
+// =====================================================================
+// CONSTANTES Y DATOS
+// =====================================================================
+const PESO_CATEGORIA = { 'Movilidad': 5, 'Fortalecimiento': 2, 'Estiramientos': 2 };
+const RUTINA_TOTAL_EJERCICIOS = 9;
+const nombresMeses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+const rutinaCervical = [
+    { id: "fase1_calor", short: "Calor", fase: "Fase 1: Preparación", titulo: "Aplicación de Calor", imagen: null, tipo: "temporizador", instrucciones: "<p><strong>Fundamento:</strong> El calor provoca vasodilatación, aumentando el flujo sanguíneo y relajando las fibras musculares antes del estiramiento.</p>" },
+    { id: "mov_flexion", short: "Flexión", fase: "Fase 2: Movilidad", titulo: "Flexión y Extensión", imagen: "flexion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Siéntate recto. Exhala y lleva lentamente la barbilla hacia el pecho. Inhala y vuelve al centro, luego extiende la cabeza suavemente hacia atrás mirando al techo.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>No fuerces la extensión hacia atrás si sientes mareos o pellizcos articulares.</p>" },
+    { id: "mov_inclinacion", short: "Inclin.", fase: "Fase 2: Movilidad", titulo: "Inclinación Lateral", imagen: "inclinacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Intenta tocar el hombro con la oreja de forma controlada.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Es un error común levantar el hombro hacia la oreja. Ancla la mano del lado que estiras debajo de tu muslo.</p>" },
+    { id: "mov_rotacion", short: "Rotación", fase: "Fase 2: Movilidad", titulo: "Rotación", imagen: "rotacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Gira la cabeza lentamente para mirar por encima de tu hombro.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Imagina una línea horizontal trazada desde tu nariz hasta la pared; evita que la cabeza cabecee.</p>" },
+    { id: "mov_circulos", short: "Semicirc.", fase: "Fase 2: Movilidad", titulo: "Semicírculos", imagen: "circulos.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Deja caer la barbilla al pecho y traza un arco de hombro a hombro, dibujando una 'U'.</p><p class='mt-2 text-red-400 font-semibold'>⚠️ Advertencia:</p><p>Evita realizar el semicírculo por la espalda para no comprimir vértebras ni arterias.</p>" },
+    { id: "mov_elevacion", short: "Hombros", fase: "Fase 2: Movilidad", titulo: "Elevación de Hombros", imagen: "elevacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Sube hombros hacia las orejas encogiéndote. Mantén 2-3 segundos.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Déjalos caer abruptamente soltando el aire de golpe para desactivar el trapecio.</p>" },
+    { id: "fort_resistencia1", short: "Res.Front", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Frontal/Nuca", imagen: "resistencia1.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Manos en la frente, empuja la cabeza hacia delante (isométrico). Repite hacia atrás.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Aplica sólo un 20-30% de tu fuerza máxima. 'No rompas el huevo'.</p>" },
+    { id: "fort_resistencia2", short: "Res.Lat", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Lateral", imagen: "resistencia2.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Mano en la sien y empuja lateralmente sin permitir desplazamiento.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Fuerza progresiva durante 5s y relaja lentamente durante otros 5s.</p>" },
+    { id: "est_traccion1", short: "Trac.Front", fase: "Fase 4: Estiramientos", titulo: "Tracción Abajo", imagen: "traccion1.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Manos detrás de la cabeza, deja caer la barbilla al pecho.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>No tires con fuerza. Deja que el peso libre de tus brazos ejerza la tracción durante 15s.</p>" },
+    { id: "est_traccion2", short: "Trac.Lat", fase: "Fase 4: Estiramientos", titulo: "Tracción Lateral", imagen: "traccion2.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Pasa la mano sobre la cabeza hasta la oreja contraria e inclina suavemente.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Utiliza la respiración para ganar milímetros en cada exhalación.</p>" },
+    { id: "fase5_electro", short: "Electro", fase: "Fase 5: Recuperación", titulo: "Electroestimulación", imagen: "electrodos.png", tipo: "electro", instrucciones: `<p><strong>Ubicación:</strong> Coloca los electrodos bilateralmente sobre los músculos trapecios o en la zona esplenia posterior.</p><p class="text-red-400 font-bold mb-3 mt-1 text-sm border-l-2 border-red-500 pl-2">⚠️ NUNCA colocar en la parte delantera del cuello, garganta o carótidas.</p><div class="space-y-2 mt-2"><details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer"><summary class="font-semibold text-neonCyan outline-none">⚡ TENS (Alivio del Dolor)</summary><p class="mt-1 text-xs text-gray-300"><strong>Parámetros:</strong> Frecuencia Alta (80-120 Hz).<br><strong>Sensación:</strong> Hormigueo constante y agradable, SIN provocar contracción muscular.<br><strong>Aplicación:</strong> 20-30 minutos para dolor agudo.</p></details><details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer"><summary class="font-semibold text-neonCyan outline-none">💆 EMS (Masaje Descontracturante)</summary><p class="mt-1 text-xs text-gray-300"><strong>Parámetros:</strong> Frecuencia Baja (2-10 Hz).<br><strong>Sensación:</strong> Intensidad hasta notar un bombeo o pequeñas sacudidas musculares.<br><strong>Aplicación:</strong> 15-20 minutos para aumentar el flujo sanguíneo.</p></details></div>` }
+];
+
+// =====================================================================
+// ESTADO DE LA APLICACIÓN
+// =====================================================================
+const AppState = {
+    usuarioActual: null,
+    miSwiper: null,
+    charts: { tendencia: null, equilibrio: null, ejercicios: null, pdfChart1: null, pdfChart2: null },
+    timer: { interval: null, tiempoRestante: 15 * 60, estado: 'detenido', endTime: null },
+    cal: { month: new Date().getMonth(), year: new Date().getFullYear() },
+    diaHistorial: getLocalDateStr()
+};
+
+// =====================================================================
+// HELPERS
+// =====================================================================
+
+function getLocalDateStr(d = new Date()) {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function sanitize(str) {
+    const d = document.createElement('div');
+    d.textContent = String(str ?? '');
+    return d.innerHTML;
+}
+
+function crearElemento(tag, clases, attrs = {}) {
+    const el = document.createElement(tag);
+    if (clases) el.className = clases;
+    Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+    return el;
+}
+
+function escaparCSV(valor) {
+    const s = String(valor ?? '');
+    if (s.includes(',') || s.includes('"') || s.includes('\n')) {
+        return `"${s.replace(/"/g, '""')}"`;
+    }
+    return s;
+}
+
+// =====================================================================
+// MODALES PERSONALIZADOS
+// =====================================================================
+
+function modalNombre(titulo, valorInicial = '') {
+    return new Promise(resolve => {
+        const modal = document.getElementById('modal-nombre');
+        const input = document.getElementById('modal-nombre-input');
+        document.getElementById('modal-nombre-titulo').textContent = titulo;
+        input.value = valorInicial;
+        modal.classList.remove('hidden');
+        input.focus();
+
+        const onAceptar = () => {
+            const val = input.value.trim();
+            if (!val) { input.focus(); return; }
+            cleanup();
+            resolve(val);
+        };
+        const onCancelar = () => { cleanup(); resolve(null); };
+        const onKey = (e) => { if (e.key === 'Enter') onAceptar(); if (e.key === 'Escape') onCancelar(); };
+
+        function cleanup() {
+            modal.classList.add('hidden');
+            document.getElementById('modal-nombre-aceptar').removeEventListener('click', onAceptar);
+            document.getElementById('modal-nombre-cancelar').removeEventListener('click', onCancelar);
+            document.removeEventListener('keydown', onKey);
         }
 
-        const leftAlignLabelsPlugin = {
-            id: 'leftAlignLabels',
-            afterDraw(chart) {
-                try {
-                    if (chart.config.type !== 'bar') return;
-                    if (!chart.chartArea) return;
-                    const { ctx, data, chartArea: { left } } = chart;
-                    ctx.save();
-                    ctx.textAlign = 'left';
-                    ctx.textBaseline = 'bottom';
-                    ctx.fillStyle = '#cbd5e1';
-                    ctx.font = 'bold 11px system-ui, -apple-system, sans-serif';
-                    const meta = chart.getDatasetMeta(0);
-                    if (meta && meta.data) {
-                        meta.data.forEach((bar, index) => {
-                            const label = data.labels[index];
-                            if (bar.y) ctx.fillText(label, left, bar.y - 6);
-                        });
-                    }
-                    ctx.restore();
-                } catch(e) { console.warn("Error en plugin de etiquetas:", e); }
-            }
+        document.getElementById('modal-nombre-aceptar').addEventListener('click', onAceptar);
+        document.getElementById('modal-nombre-cancelar').addEventListener('click', onCancelar);
+        document.addEventListener('keydown', onKey);
+    });
+}
+
+function modalConfirm(titulo, texto) {
+    return new Promise(resolve => {
+        const modal = document.getElementById('modal-confirm');
+        document.getElementById('modal-confirm-titulo').textContent = titulo;
+        document.getElementById('modal-confirm-texto').textContent = texto;
+        modal.classList.remove('hidden');
+
+        const onAceptar = () => { cleanup(); resolve(true); };
+        const onCancelar = () => { cleanup(); resolve(false); };
+        const onKey = (e) => { if (e.key === 'Enter') onAceptar(); if (e.key === 'Escape') onCancelar(); };
+
+        function cleanup() {
+            modal.classList.add('hidden');
+            document.getElementById('modal-confirm-aceptar').removeEventListener('click', onAceptar);
+            document.getElementById('modal-confirm-cancelar').removeEventListener('click', onCancelar);
+            document.removeEventListener('keydown', onKey);
+        }
+
+        document.getElementById('modal-confirm-aceptar').addEventListener('click', onAceptar);
+        document.getElementById('modal-confirm-cancelar').addEventListener('click', onCancelar);
+        document.addEventListener('keydown', onKey);
+    });
+}
+
+function modalEditar(seriesActuales, repsActuales) {
+    return new Promise(resolve => {
+        const modal = document.getElementById('modal-editar');
+        const elSeries = document.getElementById('modal-editar-series-val');
+        const elReps   = document.getElementById('modal-editar-reps-val');
+        elSeries.textContent = seriesActuales;
+        elReps.textContent   = repsActuales;
+        modal.classList.remove('hidden');
+
+        const cambiar = (el, inc) => {
+            const v = parseInt(el.textContent) + inc;
+            el.textContent = v < 1 ? 1 : v;
         };
 
-        const whiteBgPlugin = {
-            id: 'customCanvasBackgroundColor',
-            beforeDraw: (chart, args, options) => {
-                const { ctx } = chart;
-                ctx.save();
-                ctx.globalCompositeOperation = 'destination-over';
-                ctx.fillStyle = options.color || '#ffffff';
-                ctx.fillRect(0, 0, chart.width, chart.height);
-                ctx.restore();
-            }
-        };
+        const onSeriesMenos = () => cambiar(elSeries, -1);
+        const onSeriesMas   = () => cambiar(elSeries,  1);
+        const onRepsMenos   = () => cambiar(elReps,   -1);
+        const onRepsMas     = () => cambiar(elReps,    1);
+        const onGuardar = () => { cleanup(); resolve({ series: parseInt(elSeries.textContent), reps: parseInt(elReps.textContent) }); };
+        const onCancelar = () => { cleanup(); resolve(null); };
 
-        // =====================================================================
-        // BASE DE DATOS
-        // =====================================================================
-        const db = new Dexie('CerviCareDB');
-        db.version(1).stores({ registros: '++id, fecha, ejercicio, series, repeticiones, fase' });
-        db.version(2).stores({ registros: '++id, fecha, timestamp, ejercicio, series, repeticiones, fase' });
-        db.version(3).stores({ usuarios: '++id, nombre', registros: '++id, usuarioId, fecha, timestamp, ejercicio, series, repeticiones, fase' });
-
-        // =====================================================================
-        // CONSTANTES Y DATOS
-        // =====================================================================
-        const PESO_CATEGORIA = { 'Movilidad': 5, 'Fortalecimiento': 2, 'Estiramientos': 2 };
-        const RUTINA_TOTAL_EJERCICIOS = 9;
-        const nombresMeses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-
-        const rutinaCervical = [
-            { id: "fase1_calor", short: "Calor", fase: "Fase 1: Preparación", titulo: "Aplicación de Calor", imagen: null, tipo: "temporizador", instrucciones: "<p><strong>Fundamento:</strong> El calor provoca vasodilatación, aumentando el flujo sanguíneo y relajando las fibras musculares antes del estiramiento.</p>" },
-            { id: "mov_flexion", short: "Flexión", fase: "Fase 2: Movilidad", titulo: "Flexión y Extensión", imagen: "flexion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Siéntate recto. Exhala y lleva lentamente la barbilla hacia el pecho. Inhala y vuelve al centro, luego extiende la cabeza suavemente hacia atrás mirando al techo.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>No fuerces la extensión hacia atrás si sientes mareos o pellizcos articulares.</p>" },
-            { id: "mov_inclinacion", short: "Inclin.", fase: "Fase 2: Movilidad", titulo: "Inclinación Lateral", imagen: "inclinacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Intenta tocar el hombro con la oreja de forma controlada.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Es un error común levantar el hombro hacia la oreja. Ancla la mano del lado que estiras debajo de tu muslo.</p>" },
-            { id: "mov_rotacion", short: "Rotación", fase: "Fase 2: Movilidad", titulo: "Rotación", imagen: "rotacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Gira la cabeza lentamente para mirar por encima de tu hombro.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Imagina una línea horizontal trazada desde tu nariz hasta la pared; evita que la cabeza cabecee.</p>" },
-            { id: "mov_circulos", short: "Semicirc.", fase: "Fase 2: Movilidad", titulo: "Semicírculos", imagen: "circulos.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Deja caer la barbilla al pecho y traza un arco de hombro a hombro, dibujando una 'U'.</p><p class='mt-2 text-red-400 font-semibold'>⚠️ Advertencia:</p><p>Evita realizar el semicírculo por la espalda para no comprimir vértebras ni arterias.</p>" },
-            { id: "mov_elevacion", short: "Hombros", fase: "Fase 2: Movilidad", titulo: "Elevación de Hombros", imagen: "elevacion.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Sube hombros hacia las orejas encogiéndote. Mantén 2-3 segundos.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Déjalos caer abruptamente soltando el aire de golpe para desactivar el trapecio.</p>" },
-            { id: "fort_resistencia1", short: "Res.Front", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Frontal/Nuca", imagen: "resistencia1.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Manos en la frente, empuja la cabeza hacia delante (isométrico). Repite hacia atrás.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Aplica sólo un 20-30% de tu fuerza máxima. 'No rompas el huevo'.</p>" },
-            { id: "fort_resistencia2", short: "Res.Lat", fase: "Fase 3: Fortalecimiento", titulo: "Resistencia Lateral", imagen: "resistencia2.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Mano en la sien y empuja lateralmente sin permitir desplazamiento.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Fuerza progresiva durante 5s y relaja lentamente durante otros 5s.</p>" },
-            { id: "est_traccion1", short: "Trac.Front", fase: "Fase 4: Estiramientos", titulo: "Tracción Abajo", imagen: "traccion1.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Manos detrás de la cabeza, deja caer la barbilla al pecho.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>No tires con fuerza. Deja que el peso libre de tus brazos ejerza la tracción durante 15s.</p>" },
-            { id: "est_traccion2", short: "Trac.Lat", fase: "Fase 4: Estiramientos", titulo: "Tracción Lateral", imagen: "traccion2.jpg", tipo: "contador", instrucciones: "<p><strong>Técnica:</strong> Pasa la mano sobre la cabeza hasta la oreja contraria e inclina suavemente.</p><p class='mt-2 text-neonCyan font-semibold'>💡 Tip Clínico:</p><p>Utiliza la respiración para ganar milímetros en cada exhalación.</p>" },
-            { id: "fase5_electro", short: "Electro", fase: "Fase 5: Recuperación", titulo: "Electroestimulación", imagen: "electrodos.png", tipo: "electro", instrucciones: `<p><strong>Ubicación:</strong> Coloca los electrodos bilateralmente sobre los músculos trapecios o en la zona esplenia posterior.</p><p class="text-red-400 font-bold mb-3 mt-1 text-sm border-l-2 border-red-500 pl-2">⚠️ NUNCA colocar en la parte delantera del cuello, garganta o carótidas.</p><div class="space-y-2 mt-2"><details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer"><summary class="font-semibold text-neonCyan outline-none">⚡ TENS (Alivio del Dolor)</summary><p class="mt-1 text-xs text-gray-300"><strong>Parámetros:</strong> Frecuencia Alta (80-120 Hz).<br><strong>Sensación:</strong> Hormigueo constante y agradable, SIN provocar contracción muscular.<br><strong>Aplicación:</strong> 20-30 minutos para dolor agudo.</p></details><details class="bg-gray-800 p-2 rounded border border-gray-600 cursor-pointer"><summary class="font-semibold text-neonCyan outline-none">💆 EMS (Masaje Descontracturante)</summary><p class="mt-1 text-xs text-gray-300"><strong>Parámetros:</strong> Frecuencia Baja (2-10 Hz).<br><strong>Sensación:</strong> Intensidad hasta notar un bombeo o pequeñas sacudidas musculares.<br><strong>Aplicación:</strong> 15-20 minutos para aumentar el flujo sanguíneo.</p></details></div>` }
-        ];
-
-        // =====================================================================
-        // ESTADO DE LA APLICACIÓN
-        // =====================================================================
-        const AppState = {
-            usuarioActual: null,
-            miSwiper: null,
-            charts: { tendencia: null, equilibrio: null, ejercicios: null, pdfChart1: null, pdfChart2: null },
-            timer: { interval: null, tiempoRestante: 15 * 60, estado: 'detenido', endTime: null },
-            cal: { month: new Date().getMonth(), year: new Date().getFullYear() },
-            diaHistorial: getLocalDateStr()
-        };
-
-        // =====================================================================
-        // HELPERS
-        // =====================================================================
-        function getLocalDateStr(d = new Date()) {
-            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        function cleanup() {
+            modal.classList.add('hidden');
+            document.getElementById('modal-editar-series-menos').removeEventListener('click', onSeriesMenos);
+            document.getElementById('modal-editar-series-mas').removeEventListener('click', onSeriesMas);
+            document.getElementById('modal-editar-reps-menos').removeEventListener('click', onRepsMenos);
+            document.getElementById('modal-editar-reps-mas').removeEventListener('click', onRepsMas);
+            document.getElementById('modal-editar-guardar').removeEventListener('click', onGuardar);
+            document.getElementById('modal-editar-cancelar').removeEventListener('click', onCancelar);
         }
 
-        function sanitize(str) {
-            const d = document.createElement('div');
-            d.textContent = String(str ?? '');
-            return d.innerHTML;
+        document.getElementById('modal-editar-series-menos').addEventListener('click', onSeriesMenos);
+        document.getElementById('modal-editar-series-mas').addEventListener('click', onSeriesMas);
+        document.getElementById('modal-editar-reps-menos').addEventListener('click', onRepsMenos);
+        document.getElementById('modal-editar-reps-mas').addEventListener('click', onRepsMas);
+        document.getElementById('modal-editar-guardar').addEventListener('click', onGuardar);
+        document.getElementById('modal-editar-cancelar').addEventListener('click', onCancelar);
+    });
+}
+
+// =====================================================================
+// INICIALIZACIÓN
+// =====================================================================
+window.onload = async () => {
+    try {
+        await db.open();
+
+        let count = await db.usuarios.count();
+        let defId = 1;
+        if (count === 0) {
+            defId = await db.usuarios.add({ nombre: "Perfil Principal" });
+        } else {
+            const primerU = await db.usuarios.toCollection().first();
+            if (primerU) defId = primerU.id;
         }
 
-        function crearElemento(tag, clases, attrs = {}) {
-            const el = document.createElement(tag);
-            if (clases) el.className = clases;
-            Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
-            return el;
+        await db.registros.filter(r => !r.usuarioId).modify(r => { r.usuarioId = defId; });
+
+        let savedId = localStorage.getItem('cervicare_uid');
+        if (savedId) AppState.usuarioActual = await db.usuarios.get(parseInt(savedId));
+        if (!AppState.usuarioActual) AppState.usuarioActual = await db.usuarios.get(defId);
+
+        actualizarInterfazUsuario();
+        renderizarRutina();
+        document.getElementById('fecha-historial-input').value = AppState.diaHistorial;
+        cargarHistorial();
+    } catch (err) {
+        console.error("Error al iniciar DB:", err);
+        renderizarRutina();
+    }
+
+    vincularEventos();
+};
+
+// =====================================================================
+// VINCULACIÓN DE EVENTOS
+// =====================================================================
+function vincularEventos() {
+    document.getElementById('btn-abrir-usuarios').addEventListener('click', abrirModalUsuarios);
+    document.getElementById('btn-cerrar-usuarios').addEventListener('click', cerrarModalUsuarios);
+    document.getElementById('btn-nuevo-usuario').addEventListener('click', crearNuevoUsuario);
+
+    document.getElementById('nav-rutina').addEventListener('click', () => cambiarPestana('rutina'));
+    document.getElementById('nav-estadisticas').addEventListener('click', () => cambiarPestana('estadisticas'));
+    document.getElementById('nav-registro').addEventListener('click', () => cambiarPestana('registro'));
+    document.getElementById('nav-ajustes').addEventListener('click', () => cambiarPestana('ajustes'));
+
+    document.getElementById('btn-mes-anterior').addEventListener('click', () => cambiarMes(-1));
+    document.getElementById('btn-mes-siguiente').addEventListener('click', () => cambiarMes(1));
+
+    document.getElementById('filtro-tipo').addEventListener('change', renderizarGraficos);
+    document.getElementById('filtro-periodo').addEventListener('change', toggleFechasPersonalizadas);
+    document.getElementById('fecha-unica').addEventListener('change', renderizarGraficos);
+    document.getElementById('fecha-inicio').addEventListener('change', renderizarGraficos);
+    document.getElementById('fecha-fin').addEventListener('change', renderizarGraficos);
+
+    document.getElementById('btn-dia-anterior').addEventListener('click', () => cambiarDiaHistorial(-1));
+    document.getElementById('btn-dia-siguiente').addEventListener('click', () => cambiarDiaHistorial(1));
+    document.getElementById('fecha-historial-input').addEventListener('change', (e) => seleccionarDiaHistorial(e.target.value));
+
+    document.getElementById('btn-buscar-updates').addEventListener('click', forzarActualizacion);
+    document.getElementById('btn-abrir-pdf').addEventListener('click', abrirModalPDF);
+    document.getElementById('btn-cerrar-pdf').addEventListener('click', cerrarModalPDF);
+    document.getElementById('btn-generar-pdf').addEventListener('click', ejecutarGeneracionPDF);
+    document.getElementById('pdf-rango').addEventListener('change', toggleFiltroDiaPDF);
+    document.getElementById('btn-exportar-csv').addEventListener('click', exportarCSV);
+    document.getElementById('btn-exportar-backup').addEventListener('click', exportarBackup);
+    document.getElementById('btn-importar-trigger').addEventListener('click', () => document.getElementById('import-file').click());
+    document.getElementById('import-file').addEventListener('change', importarBackup);
+    document.getElementById('btn-borrar-historial').addEventListener('click', borrarTodosLosDatos);
+
+    document.getElementById('lista-registros').addEventListener('click', async (e) => {
+        const editarBtn = e.target.closest('[data-editar]');
+        if (editarBtn) { await editarRegistro(parseInt(editarBtn.dataset.editar)); return; }
+        const borrarBtn = e.target.closest('[data-borrar]');
+        if (borrarBtn) { await borrarRegistro(parseInt(borrarBtn.dataset.borrar)); }
+    });
+
+    document.getElementById('lista-registros').addEventListener('click', (e) => {
+        const header = e.target.closest('.accordion-header');
+        if (header) {
+            const body = header.nextElementSibling;
+            const chevron = header.querySelector('.chevron');
+            body.classList.toggle('hidden');
+            chevron.classList.toggle('rotate-180');
+        }
+    });
+
+    document.getElementById('visor-imagen').addEventListener('click', cerrarVisorImagen);
+    document.getElementById('btn-cerrar-visor').addEventListener('click', (e) => { e.stopPropagation(); cerrarVisorImagen(); });
+}
+
+// =====================================================================
+// USUARIOS
+// =====================================================================
+function actualizarInterfazUsuario() {
+    if (!AppState.usuarioActual) return;
+    localStorage.setItem('cervicare_uid', AppState.usuarioActual.id);
+    document.getElementById('lbl-usuario-actual').textContent = AppState.usuarioActual.nombre;
+    document.getElementById('lbl-pdf-user').textContent = AppState.usuarioActual.nombre;
+    document.getElementById('lbl-gestion-user').textContent = AppState.usuarioActual.nombre;
+}
+
+async function abrirModalUsuarios() {
+    const lista = document.getElementById('lista-perfiles-ui');
+    lista.innerHTML = '';
+    const todos = await db.usuarios.toArray();
+
+    const fragmento = document.createDocumentFragment();
+    todos.forEach(u => {
+        const activo = u.id === AppState.usuarioActual?.id;
+        const wrapper = crearElemento('div', 'flex gap-2 mb-2');
+
+        const btnSeleccionar = crearElemento('button',
+            `flex-1 text-left p-3 rounded-lg border flex justify-between items-center transition ${activo ? 'bg-neonCyan/10 border-neonCyan text-white' : 'bg-darkBg border-gray-700 text-gray-400 hover:bg-gray-800'}`
+        );
+        const spanNombre = crearElemento('span', 'font-bold truncate');
+        spanNombre.textContent = u.nombre; 
+        btnSeleccionar.appendChild(spanNombre);
+        if (activo) {
+            btnSeleccionar.innerHTML += '<svg class="w-5 h-5 text-neonCyan flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
+        }
+        btnSeleccionar.addEventListener('click', () => cambiarDeUsuario(u.id));
+
+        const btnEditar = crearElemento('button',
+            'p-3 bg-darkBg border border-gray-700 text-gray-400 hover:text-neonCyan rounded-lg hover:bg-gray-800 transition',
+            { title: 'Editar nombre' }
+        );
+        btnEditar.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>';
+        btnEditar.addEventListener('click', () => editarNombreUsuario(u.id, u.nombre));
+
+        wrapper.appendChild(btnSeleccionar);
+        wrapper.appendChild(btnEditar);
+        fragmento.appendChild(wrapper);
+    });
+    lista.appendChild(fragmento);
+
+    document.getElementById('modal-usuarios').classList.remove('hidden');
+}
+
+function cerrarModalUsuarios() {
+    document.getElementById('modal-usuarios').classList.add('hidden');
+}
+
+async function cambiarDeUsuario(id) {
+    AppState.usuarioActual = await db.usuarios.get(id);
+    actualizarInterfazUsuario();
+    cerrarModalUsuarios();
+    if (!document.getElementById('vista-estadisticas').classList.contains('hidden')) actualizarVistasProgreso();
+    cargarHistorial();
+}
+
+async function crearNuevoUsuario() {
+    const nombre = await modalNombre('Nombre del nuevo perfil');
+    if (!nombre) return;
+    const nuevoId = await db.usuarios.add({ nombre });
+    AppState.usuarioActual = { id: nuevoId, nombre };
+    actualizarInterfazUsuario();
+    cerrarModalUsuarios();
+    if (!document.getElementById('vista-estadisticas').classList.contains('hidden')) actualizarVistasProgreso();
+    cargarHistorial();
+}
+
+async function editarNombreUsuario(id, nombreActual) {
+    const nuevoNombre = await modalNombre('Modificar nombre del perfil', nombreActual);
+    if (!nuevoNombre || nuevoNombre === nombreActual) return;
+    await db.usuarios.update(id, { nombre: nuevoNombre });
+    if (AppState.usuarioActual?.id === id) {
+        AppState.usuarioActual.nombre = nuevoNombre;
+        actualizarInterfazUsuario();
+    }
+    abrirModalUsuarios();
+}
+
+// =====================================================================
+// VISOR DE IMAGEN
+// =====================================================================
+function abrirVisorImagen(src) {
+    const v = document.getElementById('visor-imagen');
+    const img = document.getElementById('visor-imagen-src');
+    img.src = src;
+    v.classList.remove('hidden');
+    void v.offsetWidth;
+    v.classList.remove('opacity-0');
+    img.classList.remove('scale-95');
+    img.classList.add('scale-100');
+}
+
+function cerrarVisorImagen() {
+    const v = document.getElementById('visor-imagen');
+    const img = document.getElementById('visor-imagen-src');
+    v.classList.add('opacity-0');
+    img.classList.remove('scale-100');
+    img.classList.add('scale-95');
+    setTimeout(() => { v.classList.add('hidden'); }, 300);
+}
+
+// =====================================================================
+// RUTINA - RENDERIZADO
+// =====================================================================
+function renderizarRutina() {
+    const contenedor = document.getElementById('contenedor-ejercicios');
+    const navPills   = document.getElementById('top-nav-pills');
+
+    if (AppState.miSwiper) { AppState.miSwiper.destroy(true, true); AppState.miSwiper = null; }
+
+    const pillsHTML  = [];
+    const slidesHTML = [];
+
+    rutinaCervical.forEach((ej, index) => {
+        pillsHTML.push(`<button data-slide="${index}" class="chip flex-shrink-0 text-xs font-bold px-4 py-1.5 rounded-full border border-gray-600 bg-transparent text-gray-400">${index + 1}. ${sanitize(ej.short)}</button>`);
+
+        let controlesHTML = '';
+        if (ej.tipo === 'temporizador') {
+            controlesHTML = `<div class="flex gap-2 w-full">
+                <button data-timer-play class="flex-1 bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-[0_0_10px_rgba(45,212,191,0.3)] transition-colors">Iniciar Calor</button>
+                <button data-timer-reset class="hidden px-4 bg-red-900 border border-red-500 text-red-200 font-bold py-3 rounded-lg transition-colors">⏹️</button>
+            </div>`;
+        } else if (ej.tipo === 'contador') {
+            controlesHTML = `<div class="flex justify-between gap-3 mb-3">
+                <div class="flex items-center justify-between bg-darkBg px-3 py-2 rounded w-1/2 border border-gray-600">
+                    <span class="text-xs text-gray-400">Series</span>
+                    <button data-inc="series-${ej.id}" data-delta="-1" class="text-neonCyan text-xl px-2 font-bold">-</button>
+                    <span id="series-${ej.id}" class="font-bold text-lg">1</span>
+                    <button data-inc="series-${ej.id}" data-delta="1" class="text-neonCyan text-xl px-2 font-bold">+</button>
+                </div>
+                <div class="flex items-center justify-between bg-darkBg px-3 py-2 rounded w-1/2 border border-gray-600">
+                    <span class="text-xs text-gray-400">Reps</span>
+                    <button data-inc="reps-${ej.id}" data-delta="-1" class="text-neonCyan text-xl px-2 font-bold">-</button>
+                    <span id="reps-${ej.id}" class="font-bold text-lg">1</span>
+                    <button data-inc="reps-${ej.id}" data-delta="1" class="text-neonCyan text-xl px-2 font-bold">+</button>
+                </div>
+            </div>
+            <button data-guardar="${ej.id}" data-titulo="${sanitize(ej.titulo)}" data-fase="${sanitize(ej.fase)}" class="w-full bg-gray-700 text-white font-bold py-3 rounded-lg transition-colors">Guardar y Siguiente</button>`;
+        } else if (ej.tipo === 'electro') {
+            controlesHTML = `<div class="flex gap-2">
+                <button data-electro="si" class="w-1/2 bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-md transition-colors">Sí, Aplicada</button>
+                <button data-electro="no" class="w-1/2 bg-gray-700 text-white font-bold py-3 rounded-lg transition-colors">Saltar</button>
+            </div>`;
         }
 
-        function escaparCSV(valor) {
-            const s = String(valor ?? '');
-            if (s.includes(',') || s.includes('"') || s.includes('\n')) {
-                return `"${s.replace(/"/g, '""')}"`;
-            }
-            return s;
-        }
+        const imagenSrc = ej.imagen ? sanitize(ej.imagen) : '';
+        let visualHTML = ej.imagen
+            ? `<img src="${imagenSrc}" data-visor="${imagenSrc}" class="h-60 mx-auto object-contain p-1 cursor-pointer transition-transform hover:scale-105" alt="${sanitize(ej.titulo)}" onerror="this.style.display='none'" title="Tocar para ampliar">`
+            : `<div class="flex items-center justify-center h-60"><span class="text-5xl font-bold text-neonCyan" id="display-${ej.id}">15:00</span></div>`;
 
-        // =====================================================================
-        // MODALES PERSONALIZADOS
-        // =====================================================================
-        function modalNombre(titulo, valorInicial = '') {
-            return new Promise(resolve => {
-                const modal = document.getElementById('modal-nombre');
-                const input = document.getElementById('modal-nombre-input');
-                document.getElementById('modal-nombre-titulo').textContent = titulo;
-                input.value = valorInicial;
-                modal.classList.remove('hidden');
-                input.focus();
-
-                const onAceptar = () => {
-                    const val = input.value.trim();
-                    if (!val) { input.focus(); return; }
-                    cleanup();
-                    resolve(val);
-                };
-                const onCancelar = () => { cleanup(); resolve(null); };
-                const onKey = (e) => { if (e.key === 'Enter') onAceptar(); if (e.key === 'Escape') onCancelar(); };
-
-                function cleanup() {
-                    modal.classList.add('hidden');
-                    document.getElementById('modal-nombre-aceptar').removeEventListener('click', onAceptar);
-                    document.getElementById('modal-nombre-cancelar').removeEventListener('click', onCancelar);
-                    document.removeEventListener('keydown', onKey);
-                }
-
-                document.getElementById('modal-nombre-aceptar').addEventListener('click', onAceptar);
-                document.getElementById('modal-nombre-cancelar').addEventListener('click', onCancelar);
-                document.addEventListener('keydown', onKey);
-            });
-        }
-
-        function modalConfirm(titulo, texto) {
-            return new Promise(resolve => {
-                const modal = document.getElementById('modal-confirm');
-                document.getElementById('modal-confirm-titulo').textContent = titulo;
-                document.getElementById('modal-confirm-texto').textContent = texto;
-                modal.classList.remove('hidden');
-
-                const onAceptar = () => { cleanup(); resolve(true); };
-                const onCancelar = () => { cleanup(); resolve(false); };
-                const onKey = (e) => { if (e.key === 'Enter') onAceptar(); if (e.key === 'Escape') onCancelar(); };
-
-                function cleanup() {
-                    modal.classList.add('hidden');
-                    document.getElementById('modal-confirm-aceptar').removeEventListener('click', onAceptar);
-                    document.getElementById('modal-confirm-cancelar').removeEventListener('click', onCancelar);
-                    document.removeEventListener('keydown', onKey);
-                }
-
-                document.getElementById('modal-confirm-aceptar').addEventListener('click', onAceptar);
-                document.getElementById('modal-confirm-cancelar').addEventListener('click', onCancelar);
-                document.addEventListener('keydown', onKey);
-            });
-        }
-
-        function modalEditar(seriesActuales, repsActuales) {
-            return new Promise(resolve => {
-                const modal = document.getElementById('modal-editar');
-                const elSeries = document.getElementById('modal-editar-series-val');
-                const elReps   = document.getElementById('modal-editar-reps-val');
-                elSeries.textContent = seriesActuales;
-                elReps.textContent   = repsActuales;
-                modal.classList.remove('hidden');
-
-                const cambiar = (el, inc) => {
-                    const v = parseInt(el.textContent) + inc;
-                    el.textContent = v < 1 ? 1 : v;
-                };
-
-                const onSeriesMenos = () => cambiar(elSeries, -1);
-                const onSeriesMas   = () => cambiar(elSeries,  1);
-                const onRepsMenos   = () => cambiar(elReps,   -1);
-                const onRepsMas     = () => cambiar(elReps,    1);
-                const onGuardar = () => { cleanup(); resolve({ series: parseInt(elSeries.textContent), reps: parseInt(elReps.textContent) }); };
-                const onCancelar = () => { cleanup(); resolve(null); };
-
-                function cleanup() {
-                    modal.classList.add('hidden');
-                    document.getElementById('modal-editar-series-menos').removeEventListener('click', onSeriesMenos);
-                    document.getElementById('modal-editar-series-mas').removeEventListener('click', onSeriesMas);
-                    document.getElementById('modal-editar-reps-menos').removeEventListener('click', onRepsMenos);
-                    document.getElementById('modal-editar-reps-mas').removeEventListener('click', onRepsMas);
-                    document.getElementById('modal-editar-guardar').removeEventListener('click', onGuardar);
-                    document.getElementById('modal-editar-cancelar').removeEventListener('click', onCancelar);
-                }
-
-                document.getElementById('modal-editar-series-menos').addEventListener('click', onSeriesMenos);
-                document.getElementById('modal-editar-series-mas').addEventListener('click', onSeriesMas);
-                document.getElementById('modal-editar-reps-menos').addEventListener('click', onRepsMenos);
-                document.getElementById('modal-editar-reps-mas').addEventListener('click', onRepsMas);
-                document.getElementById('modal-editar-guardar').addEventListener('click', onGuardar);
-                document.getElementById('modal-editar-cancelar').addEventListener('click', onCancelar);
-            });
-        }
-
-        // =====================================================================
-        // INICIALIZACIÓN
-        // =====================================================================
-        window.onload = async () => {
-            try {
-                await db.open();
-
-                let count = await db.usuarios.count();
-                let defId = 1;
-                if (count === 0) {
-                    defId = await db.usuarios.add({ nombre: "Perfil Principal" });
-                } else {
-                    const primerU = await db.usuarios.toCollection().first();
-                    if (primerU) defId = primerU.id;
-                }
-
-                // Migración segura: asignar usuarioId a registros antiguos huérfanos
-                await db.registros.filter(r => !r.usuarioId).modify(r => { r.usuarioId = defId; });
-
-                let savedId = localStorage.getItem('cervicare_uid');
-                if (savedId) AppState.usuarioActual = await db.usuarios.get(parseInt(savedId));
-                if (!AppState.usuarioActual) AppState.usuarioActual = await db.usuarios.get(defId);
-
-                actualizarInterfazUsuario();
-                renderizarRutina();
-                document.getElementById('fecha-historial-input').value = AppState.diaHistorial;
-                cargarHistorial();
-            } catch (err) {
-                console.error("Error al iniciar DB:", err);
-                renderizarRutina();
-            }
-
-            vincularEventos();
-        };
-
-        // =====================================================================
-        // VINCULACIÓN DE EVENTOS
-        // =====================================================================
-        function vincularEventos() {
-            // Usuarios
-            document.getElementById('btn-abrir-usuarios').addEventListener('click', abrirModalUsuarios);
-            document.getElementById('btn-cerrar-usuarios').addEventListener('click', cerrarModalUsuarios);
-            document.getElementById('btn-nuevo-usuario').addEventListener('click', crearNuevoUsuario);
-
-            // Menú Inferior
-            document.getElementById('nav-rutina').addEventListener('click', () => cambiarPestana('rutina'));
-            document.getElementById('nav-estadisticas').addEventListener('click', () => cambiarPestana('estadisticas'));
-            document.getElementById('nav-registro').addEventListener('click', () => cambiarPestana('registro'));
-            document.getElementById('nav-ajustes').addEventListener('click', () => cambiarPestana('ajustes'));
-
-            // Calendario y Filtros
-            document.getElementById('btn-mes-anterior').addEventListener('click', () => cambiarMes(-1));
-            document.getElementById('btn-mes-siguiente').addEventListener('click', () => cambiarMes(1));
-            document.getElementById('filtro-tipo').addEventListener('change', renderizarGraficos);
-            document.getElementById('filtro-periodo').addEventListener('change', toggleFechasPersonalizadas);
-            document.getElementById('fecha-unica').addEventListener('change', renderizarGraficos);
-            document.getElementById('fecha-inicio').addEventListener('change', renderizarGraficos);
-            document.getElementById('fecha-fin').addEventListener('change', renderizarGraficos);
-
-            // Historial (Registro)
-            document.getElementById('btn-dia-anterior').addEventListener('click', () => cambiarDiaHistorial(-1));
-            document.getElementById('btn-dia-siguiente').addEventListener('click', () => cambiarDiaHistorial(1));
-            document.getElementById('fecha-historial-input').addEventListener('change', (e) => seleccionarDiaHistorial(e.target.value));
-
-            // Ajustes
-            document.getElementById('btn-buscar-updates').addEventListener('click', forzarActualizacion);
-            document.getElementById('btn-abrir-pdf').addEventListener('click', abrirModalPDF);
-            document.getElementById('btn-cerrar-pdf').addEventListener('click', cerrarModalPDF);
-            document.getElementById('btn-generar-pdf').addEventListener('click', ejecutarGeneracionPDF);
-            document.getElementById('pdf-rango').addEventListener('change', toggleFiltroDiaPDF);
-            document.getElementById('btn-exportar-csv').addEventListener('click', exportarCSV);
-            document.getElementById('btn-exportar-backup').addEventListener('click', exportarBackup);
-            document.getElementById('btn-importar-trigger').addEventListener('click', () => document.getElementById('import-file').click());
-            document.getElementById('import-file').addEventListener('change', importarBackup);
-            document.getElementById('btn-borrar-historial').addEventListener('click', borrarTodosLosDatos);
-
-            // Delegación de clic en la lista de registros (Editar / Borrar) para evitar Memory Leaks
-            document.getElementById('lista-registros').addEventListener('click', async (e) => {
-                const editarBtn = e.target.closest('[data-editar]');
-                if (editarBtn) { await editarRegistro(parseInt(editarBtn.dataset.editar)); return; }
-                const borrarBtn = e.target.closest('[data-borrar]');
-                if (borrarBtn) { await borrarRegistro(parseInt(borrarBtn.dataset.borrar)); }
-            });
-
-            // Delegación para abrir/cerrar acordeones de sesiones
-            document.getElementById('lista-registros').addEventListener('click', (e) => {
-                const header = e.target.closest('.accordion-header');
-                if (header) {
-                    const body = header.nextElementSibling;
-                    const chevron = header.querySelector('.chevron');
-                    body.classList.toggle('hidden');
-                    chevron.classList.toggle('rotate-180');
-                }
-            });
-
-            // Visor de Imágenes
-            document.getElementById('visor-imagen').addEventListener('click', cerrarVisorImagen);
-            document.getElementById('btn-cerrar-visor').addEventListener('click', (e) => { e.stopPropagation(); cerrarVisorImagen(); });
-        }
-
-        // =====================================================================
-        // USUARIOS
-        // =====================================================================
-        function actualizarInterfazUsuario() {
-            if (!AppState.usuarioActual) return;
-            localStorage.setItem('cervicare_uid', AppState.usuarioActual.id);
-            document.getElementById('lbl-usuario-actual').textContent = AppState.usuarioActual.nombre;
-            document.getElementById('lbl-pdf-user').textContent = AppState.usuarioActual.nombre;
-            document.getElementById('lbl-gestion-user').textContent = AppState.usuarioActual.nombre;
-        }
-
-        async function abrirModalUsuarios() {
-            const lista = document.getElementById('lista-perfiles-ui');
-            lista.innerHTML = '';
-            const todos = await db.usuarios.toArray();
-            const fragmento = document.createDocumentFragment();
-            
-            todos.forEach(u => {
-                const activo = u.id === AppState.usuarioActual?.id;
-                const wrapper = crearElemento('div', 'flex gap-2 mb-2');
-
-                const btnSeleccionar = crearElemento('button', `flex-1 text-left p-3 rounded-lg border flex justify-between items-center transition ${activo ? 'bg-neonCyan/10 border-neonCyan text-white' : 'bg-darkBg border-gray-700 text-gray-400 hover:bg-gray-800'}`);
-                const spanNombre = crearElemento('span', 'font-bold truncate');
-                spanNombre.textContent = u.nombre;
-                btnSeleccionar.appendChild(spanNombre);
-                
-                if (activo) {
-                    btnSeleccionar.innerHTML += '<svg class="w-5 h-5 text-neonCyan flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
-                }
-                btnSeleccionar.addEventListener('click', () => cambiarDeUsuario(u.id));
-
-                const btnEditar = crearElemento('button', 'p-3 bg-darkBg border border-gray-700 text-gray-400 hover:text-neonCyan rounded-lg hover:bg-gray-800 transition', { title: 'Editar nombre' });
-                btnEditar.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>';
-                btnEditar.addEventListener('click', () => editarNombreUsuario(u.id, u.nombre));
-
-                wrapper.appendChild(btnSeleccionar);
-                wrapper.appendChild(btnEditar);
-                fragmento.appendChild(wrapper);
-            });
-            lista.appendChild(fragmento);
-            document.getElementById('modal-usuarios').classList.remove('hidden');
-        }
-
-        function cerrarModalUsuarios() { document.getElementById('modal-usuarios').classList.add('hidden'); }
-
-        async function cambiarDeUsuario(id) {
-            AppState.usuarioActual = await db.usuarios.get(id);
-            actualizarInterfazUsuario();
-            cerrarModalUsuarios();
-            if (!document.getElementById('vista-estadisticas').classList.contains('hidden')) actualizarVistasProgreso();
-            cargarHistorial();
-        }
-
-        async function crearNuevoUsuario() {
-            const nombre = await modalNombre('Nombre del nuevo perfil');
-            if (!nombre) return;
-            const nuevoId = await db.usuarios.add({ nombre });
-            AppState.usuarioActual = { id: nuevoId, nombre };
-            actualizarInterfazUsuario();
-            cerrarModalUsuarios();
-            if (!document.getElementById('vista-estadisticas').classList.contains('hidden')) actualizarVistasProgreso();
-            cargarHistorial();
-        }
-
-        async function editarNombreUsuario(id, nombreActual) {
-            const nuevoNombre = await modalNombre('Modificar nombre del perfil', nombreActual);
-            if (!nuevoNombre || nuevoNombre === nombreActual) return;
-            await db.usuarios.update(id, { nombre: nuevoNombre });
-            if (AppState.usuarioActual?.id === id) {
-                AppState.usuarioActual.nombre = nuevoNombre;
-                actualizarInterfazUsuario();
-            }
-            abrirModalUsuarios();
-        }
-
-        // =====================================================================
-        // RUTINA DOM
-        // =====================================================================
-        function renderizarRutina() {
-            const contenedor = document.getElementById('contenedor-ejercicios');
-            const navPills   = document.getElementById('top-nav-pills');
-
-            if (AppState.miSwiper) { AppState.miSwiper.destroy(true, true); AppState.miSwiper = null; }
-
-            const pillsHTML  = [];
-            const slidesHTML = [];
-
-            rutinaCervical.forEach((ej, index) => {
-                pillsHTML.push(`<button data-slide="${index}" class="chip flex-shrink-0 text-xs font-bold px-4 py-1.5 rounded-full border border-gray-600 bg-transparent text-gray-400">${index + 1}. ${sanitize(ej.short)}</button>`);
-
-                let controlesHTML = '';
-                if (ej.tipo === 'temporizador') {
-                    controlesHTML = `<div class="flex gap-2 w-full">
-                        <button data-timer-play class="flex-1 bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-[0_0_10px_rgba(45,212,191,0.3)] transition-colors">Iniciar Calor</button>
-                        <button data-timer-reset class="hidden px-4 bg-red-900 border border-red-500 text-red-200 font-bold py-3 rounded-lg transition-colors">⏹️</button>
-                    </div>`;
-                } else if (ej.tipo === 'contador') {
-                    controlesHTML = `<div class="flex justify-between gap-3 mb-3">
-                        <div class="flex items-center justify-between bg-darkBg px-3 py-2 rounded w-1/2 border border-gray-600">
-                            <span class="text-xs text-gray-400">Series</span>
-                            <button data-inc="series-${ej.id}" data-delta="-1" class="text-neonCyan text-xl px-2 font-bold">-</button>
-                            <span id="series-${ej.id}" class="font-bold text-lg">1</span>
-                            <button data-inc="series-${ej.id}" data-delta="1" class="text-neonCyan text-xl px-2 font-bold">+</button>
-                        </div>
-                        <div class="flex items-center justify-between bg-darkBg px-3 py-2 rounded w-1/2 border border-gray-600">
-                            <span class="text-xs text-gray-400">Reps</span>
-                            <button data-inc="reps-${ej.id}" data-delta="-1" class="text-neonCyan text-xl px-2 font-bold">-</button>
-                            <span id="reps-${ej.id}" class="font-bold text-lg">1</span>
-                            <button data-inc="reps-${ej.id}" data-delta="1" class="text-neonCyan text-xl px-2 font-bold">+</button>
-                        </div>
+        slidesHTML.push(`
+            <div class="swiper-slide flex flex-col items-center justify-start p-4 pt-0 pb-6">
+                <div class="bg-cardBg w-full max-w-sm h-[70vh] rounded-2xl shadow-lg p-5 flex flex-col border border-gray-700">
+                    <p class="text-neonCyan font-bold text-center text-xs uppercase tracking-wide mb-2">${sanitize(ej.fase)}</p>
+                    <h3 class="text-white font-bold text-lg text-center mb-3 leading-tight">${sanitize(ej.titulo)}</h3>
+                    <div class="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-3 pr-1">
+                        <div class="w-full bg-gray-800 rounded-xl border border-gray-700 flex-shrink-0 flex items-center justify-center overflow-hidden">${visualHTML}</div>
+                        <details class="group bg-darkBg border border-gray-700 rounded-lg p-3">
+                            <summary class="font-semibold text-gray-300 outline-none select-none cursor-pointer flex justify-between items-center text-sm">
+                                Instrucciones Clínicas <span class="text-neonCyan font-bold text-xl group-open:rotate-180 transition-transform">▾</span>
+                            </summary>
+                            <div class="mt-3 text-sm text-gray-300 space-y-2 border-t border-gray-700 pt-2 pb-1">${ej.instrucciones}</div>
+                        </details>
                     </div>
-                    <button data-guardar="${ej.id}" data-titulo="${sanitize(ej.titulo)}" data-fase="${sanitize(ej.fase)}" class="w-full bg-gray-700 text-white font-bold py-3 rounded-lg transition-colors">Guardar y Siguiente</button>`;
-                } else if (ej.tipo === 'electro') {
-                    controlesHTML = `<div class="flex gap-2">
-                        <button data-electro="si" class="w-1/2 bg-neonCyan text-darkBg font-bold py-3 rounded-lg shadow-md transition-colors">Sí, Aplicada</button>
-                        <button data-electro="no" class="w-1/2 bg-gray-700 text-white font-bold py-3 rounded-lg transition-colors">Saltar</button>
-                    </div>`;
-                }
+                    <div class="h-auto flex flex-col justify-end mt-4">${controlesHTML}</div>
+                </div>
+            </div>`);
+    });
 
-                const imagenSrc = ej.imagen ? sanitize(ej.imagen) : '';
-                let visualHTML = ej.imagen
-                    ? `<img src="${imagenSrc}" data-visor="${imagenSrc}" class="h-60 mx-auto object-contain p-1 cursor-pointer transition-transform hover:scale-105" alt="${sanitize(ej.titulo)}" onerror="this.style.display='none'" title="Tocar para ampliar">`
-                    : `<div class="flex items-center justify-center h-60"><span class="text-5xl font-bold text-neonCyan" id="display-${ej.id}">15:00</span></div>`;
+    navPills.innerHTML  = pillsHTML.join('');
+    contenedor.innerHTML = slidesHTML.join('');
 
-                slidesHTML.push(`
-                    <div class="swiper-slide flex flex-col items-center justify-start p-4 pt-0 pb-6">
-                        <div class="bg-cardBg w-full max-w-sm h-[70vh] rounded-2xl shadow-lg p-5 flex flex-col border border-gray-700">
-                            <p class="text-neonCyan font-bold text-center text-xs uppercase tracking-wide mb-2">${sanitize(ej.fase)}</p>
-                            <h3 class="text-white font-bold text-lg text-center mb-3 leading-tight">${sanitize(ej.titulo)}</h3>
-                            <div class="flex-1 overflow-y-auto custom-scrollbar flex flex-col gap-3 pr-1">
-                                <div class="w-full bg-gray-800 rounded-xl border border-gray-700 flex-shrink-0 flex items-center justify-center overflow-hidden">${visualHTML}</div>
-                                <details class="group bg-darkBg border border-gray-700 rounded-lg p-3">
-                                    <summary class="font-semibold text-gray-300 outline-none select-none cursor-pointer flex justify-between items-center text-sm">
-                                        Instrucciones Clínicas <span class="text-neonCyan font-bold text-xl group-open:rotate-180 transition-transform">▾</span>
-                                    </summary>
-                                    <div class="mt-3 text-sm text-gray-300 space-y-2 border-t border-gray-700 pt-2 pb-1">${ej.instrucciones}</div>
-                                </details>
-                            </div>
-                            <div class="h-auto flex flex-col justify-end mt-4">${controlesHTML}</div>
-                        </div>
-                    </div>`);
-            });
+    navPills.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-slide]');
+        if (btn) irADiapositiva(parseInt(btn.dataset.slide));
+    });
 
-            navPills.innerHTML  = pillsHTML.join('');
-            contenedor.innerHTML = slidesHTML.join('');
+    contenedor.addEventListener('click', (e) => {
+        const visorTarget = e.target.closest('[data-visor]');
+        if (visorTarget) { abrirVisorImagen(visorTarget.dataset.visor); return; }
 
-            // Delegación en Rutina
-            navPills.addEventListener('click', (e) => {
-                const btn = e.target.closest('[data-slide]');
-                if (btn) irADiapositiva(parseInt(btn.dataset.slide));
-            });
+        const incTarget = e.target.closest('[data-inc]');
+        if (incTarget) { cambiarValor(incTarget.dataset.inc, parseInt(incTarget.dataset.delta)); return; }
 
-            contenedor.addEventListener('click', (e) => {
-                const visorTarget = e.target.closest('[data-visor]');
-                if (visorTarget) { abrirVisorImagen(visorTarget.dataset.visor); return; }
-                const incTarget = e.target.closest('[data-inc]');
-                if (incTarget) { cambiarValor(incTarget.dataset.inc, parseInt(incTarget.dataset.delta)); return; }
-                const guardarTarget = e.target.closest('[data-guardar]');
-                if (guardarTarget) { guardarRegistro(guardarTarget.dataset.guardar, guardarTarget.dataset.titulo, guardarTarget.dataset.fase, guardarTarget); return; }
-                const electro = e.target.closest('[data-electro]');
-                if (electro) { guardarElectro(electro.dataset.electro === 'si', electro); return; }
-                const timerPlay = e.target.closest('[data-timer-play]');
-                if (timerPlay) { toggleTemporizador(timerPlay); return; }
-                const timerReset = e.target.closest('[data-timer-reset]');
-                if (timerReset) { resetTemporizador(); return; }
-            });
+        const guardarTarget = e.target.closest('[data-guardar]');
+        if (guardarTarget) { guardarRegistro(guardarTarget.dataset.guardar, guardarTarget.dataset.titulo, guardarTarget.dataset.fase, guardarTarget); return; }
 
-            if (typeof Swiper !== 'undefined') {
-                AppState.miSwiper = new Swiper(".mySwiper", { spaceBetween: 15, on: { slideChange: function () { actualizarEstiloPills(this.activeIndex); } } });
-                actualizarEstiloPills(0);
-            }
+        const electro = e.target.closest('[data-electro]');
+        if (electro) { guardarElectro(electro.dataset.electro === 'si', electro); return; }
+
+        const timerPlay = e.target.closest('[data-timer-play]');
+        if (timerPlay) { toggleTemporizador(timerPlay); return; }
+        const timerReset = e.target.closest('[data-timer-reset]');
+        if (timerReset) { resetTemporizador(); return; }
+    });
+
+    if (typeof Swiper !== 'undefined') {
+        AppState.miSwiper = new Swiper(".mySwiper", {
+            spaceBetween: 15,
+            on: { slideChange: function () { actualizarEstiloPills(this.activeIndex); } }
+        });
+        actualizarEstiloPills(0);
+    }
+}
+
+function irADiapositiva(index) {
+    if (AppState.miSwiper) AppState.miSwiper.slideTo(index);
+}
+
+function actualizarEstiloPills(activeIndex) {
+    document.querySelectorAll('.chip').forEach((pill, idx) => {
+        if (idx === activeIndex) {
+            pill.classList.remove('bg-transparent','text-gray-400','border-gray-600');
+            pill.classList.add('bg-neonCyan','text-darkBg','border-neonCyan');
+            pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        } else {
+            pill.classList.remove('bg-neonCyan','text-darkBg','border-neonCyan');
+            pill.classList.add('bg-transparent','text-gray-400','border-gray-600');
         }
-
-        function irADiapositiva(index) { if (AppState.miSwiper) AppState.miSwiper.slideTo(index); }
-        function actualizarEstiloPills(activeIndex) {
-            document.querySelectorAll('.chip').forEach((pill, idx) => {
-                if (idx === activeIndex) {
-                    pill.classList.remove('bg-transparent','text-gray-400','border-gray-600');
-                    pill.classList.add('bg-neonCyan','text-darkBg','border-neonCyan');
-                    pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-                } else {
-                    pill.classList.remove('bg-neonCyan','text-darkBg','border-neonCyan');
-                    pill.classList.add('bg-transparent','text-gray-400','border-gray-600');
-                }
-            });
-        }
-        function cambiarPestana(id) {
-            if (!AppState.usuarioActual) return;
-            ['rutina','estadisticas','registro','ajustes'].forEach(p => {
-                document.getElementById(`vista-${p}`).classList.add('hidden');
-                document.getElementById(`nav-${p}`).classList.remove('text-neonCyan');
-                document.getElementById(`nav-${p}`).classList.add('text-gray-500');
-            });
-            document.getElementById(`vista-${id}`).classList.remove('hidden');
-            document.getElementById(`nav-${id}`).classList.remove('text-gray-500');
-            document.getElementById(`nav-${id}`).classList.add('text-neonCyan');
-            if (id === 'estadisticas') requestAnimationFrame(() => actualizarVistasProgreso());
-            if (id === 'registro') cargarHistorial();
-        }
-
-        // =====================================================================
-        // TEMPORIZADOR
-        // =====================================================================
-        function toggleTemporizador(btnPlay) {
-            const t = AppState.timer;
-            const btnReset = btnPlay?.parentElement?.querySelector('[data-timer-reset]');
-            if (t.estado === 'detenido' || t.estado === 'pausado') {
-                solicitarPermisoNotificaciones();
-                t.estado = 'corriendo';
-                if (btnPlay) { btnPlay.textContent = "Pausar"; btnPlay.classList.replace('bg-neonCyan','bg-amber-500'); btnPlay.classList.replace('text-darkBg','text-white'); }
-                if (btnReset) btnReset.classList.remove('hidden');
-
-                t.endTime = Date.now() + (t.tiempoRestante * 1000);
-                t.interval = setInterval(() => {
-                    t.tiempoRestante = Math.max(0, Math.round((t.endTime - Date.now()) / 1000));
-                    const display = document.getElementById('display-fase1_calor');
-                    if (!display) { clearInterval(t.interval); return; }
-
-                    if (t.tiempoRestante <= 0) {
-                        clearInterval(t.interval); t.estado = 'completado'; display.innerText = "¡Listo!";
-                        if (btnPlay) {
-                            btnPlay.textContent = "Siguiente Fase"; btnPlay.classList.replace('bg-amber-500','bg-neonCyan'); btnPlay.classList.replace('text-white','text-darkBg');
-                            const nuevoBtn = btnPlay.cloneNode(true);
-                            btnPlay.parentElement.replaceChild(nuevoBtn, btnPlay);
-                            nuevoBtn.addEventListener('click', () => AppState.miSwiper?.slideNext());
-                        }
-                        if (btnReset) btnReset.classList.add('hidden');
-                        enviarNotificacion(); guardarCalorAuto();
-                    } else {
-                        display.innerText = `${Math.floor(t.tiempoRestante/60).toString().padStart(2,'0')}:${(t.tiempoRestante%60).toString().padStart(2,'0')}`;
-                    }
-                }, 500);
-            } else if (t.estado === 'corriendo') {
-                clearInterval(t.interval); t.estado = 'pausado';
-                if (btnPlay) { btnPlay.textContent = "Reanudar"; btnPlay.classList.replace('bg-amber-500','bg-neonCyan'); btnPlay.classList.replace('text-white','text-darkBg'); }
-            }
-        }
-
-        function resetTemporizador() {
-            const t = AppState.timer;
-            clearInterval(t.interval); t.tiempoRestante = 15 * 60; t.estado = 'detenido'; t.endTime = null;
-            const display = document.getElementById('display-fase1_calor'); if (display) display.innerText = "15:00";
-            const btnReset = document.querySelector('[data-timer-reset]'); if (btnReset) btnReset.classList.add('hidden');
-            const btnPlay = document.querySelector('[data-timer-play]');
-            if (btnPlay) { btnPlay.textContent = "Iniciar Calor"; btnPlay.classList.replace('bg-amber-500','bg-neonCyan'); btnPlay.classList.replace('text-white','text-darkBg'); }
-        }
-
-        async function guardarRegistro(id, titulo, fase, btn) {
-            if (!AppState.usuarioActual) return;
-            await db.registros.add({ usuarioId: AppState.usuarioActual.id, fecha: getLocalDateStr(), timestamp: Date.now(), ejercicio: titulo, series: parseInt(document.getElementById(`series-${id}`)?.innerText ?? 1), repeticiones: parseInt(document.getElementById(`reps-${id}`)?.innerText ?? 1), fase });
-            const txt = btn.textContent; btn.textContent = "¡Guardado!"; btn.classList.replace('bg-gray-700','bg-green-500'); btn.classList.replace('text-white','text-darkBg');
-            setTimeout(() => { btn.textContent = txt; btn.classList.replace('bg-green-500','bg-gray-700'); btn.classList.replace('text-darkBg','text-white'); AppState.miSwiper?.slideNext(); actualizarVistasProgreso(); cargarHistorial(); }, 600);
-        }
-
-        async function guardarElectro(aplicada, btn) {
-            if (!AppState.usuarioActual) return;
-            if (aplicada) { await db.registros.add({ usuarioId: AppState.usuarioActual.id, fecha: getLocalDateStr(), timestamp: Date.now(), ejercicio: 'Electroestimulación', series: 1, repeticiones: 1, fase: 'Fase 5' }); btn.textContent = "¡Registrado!"; btn.classList.replace('bg-neonCyan','bg-green-500'); }
-            setTimeout(() => { AppState.miSwiper?.slideTo(0); if (aplicada) { btn.textContent = "Sí, Aplicada"; btn.classList.replace('bg-green-500','bg-neonCyan'); } actualizarVistasProgreso(); cargarHistorial(); }, 800);
-        }
-
-        // =====================================================================
-        // GRÁFICOS Y PROGRESO
-        // =====================================================================
-        async function getRegistrosUsuario() {
-            if (!AppState.usuarioActual) return [];
-            return await db.registros.where({ usuarioId: AppState.usuarioActual.id }).toArray();
-        }
-
-        function toggleFechasPersonalizadas() {
-            const per = document.getElementById('filtro-periodo').value;
-            document.getElementById('rango-fechas').classList.toggle('hidden', per !== 'rango');
-            document.getElementById('input-dia-concreto').classList.toggle('hidden', per !== 'dia_concreto');
-            if (per !== 'rango' && per !== 'dia_concreto') renderizarGraficos();
-        }
-
-        async function actualizarVistasProgreso() {
-            if (!AppState.usuarioActual) return;
-            await dibujarCalendarioMensual();
-            await renderizarGraficos();
-        }
-
-        function cambiarMes(offset) {
-            AppState.cal.month += offset;
-            if (AppState.cal.month < 0)  { AppState.cal.month = 11; AppState.cal.year--; }
-            if (AppState.cal.month > 11) { AppState.cal.month = 0;  AppState.cal.year++; }
-            dibujarCalendarioMensual();
-        }
-
-        async function dibujarCalendarioMensual() {
-            const { month, year } = AppState.cal;
-            document.getElementById('mes-actual-label').textContent = `${nombresMeses[month]} ${year}`;
-            const container = document.getElementById('calendario-grid');
-            
-            const todos = await getRegistrosUsuario();
-            const evalPorDia = {};
-            todos.forEach(r => {
-                if (!evalPorDia[r.fecha]) evalPorDia[r.fecha] = { ejercicios: new Set(), calor: false, electro: false };
-                if (r.fase.includes('Fase 1'))       evalPorDia[r.fecha].calor = true;
-                else if (r.fase.includes('Fase 5'))  evalPorDia[r.fecha].electro = true;
-                else                                  evalPorDia[r.fecha].ejercicios.add(r.ejercicio);
-            });
-
-            let primerDia = new Date(year, month, 1).getDay();
-            if (primerDia === 0) primerDia = 7;
-            const diasEnMes = new Date(year, month + 1, 0).getDate();
-            const hoyStr = getLocalDateStr();
-
-            const celdas = [];
-            for (let i = 1; i < primerDia; i++) celdas.push(`<div class="h-10"></div>`);
-
-            for (let day = 1; day <= diasEnMes; day++) {
-                const fechaStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-                const datos = evalPorDia[fechaStr];
-                let dotColor = 'bg-transparent', shadowClass = '', clasesBorde = 'border border-transparent', tieneDatos = false;
-                if (datos) {
-                    tieneDatos = true;
-                    const numEj = datos.ejercicios.size;
-                    const esCompleta = numEj >= RUTINA_TOTAL_EJERCICIOS;
-                    if (esCompleta && datos.calor)      { dotColor = 'bg-neonPurple'; shadowClass = 'shadow-[0_0_8px_rgba(192,132,252,0.6)]'; }
-                    else if (esCompleta)                { dotColor = 'bg-neonGreen';  shadowClass = 'shadow-[0_0_8px_rgba(74,222,128,0.6)]'; }
-                    else if (numEj > 0 && datos.calor)  { dotColor = 'bg-neonOrange'; shadowClass = 'shadow-[0_0_8px_rgba(251,146,60,0.6)]'; }
-                    else if (numEj > 0 || datos.calor)  { dotColor = 'bg-neonYellow'; shadowClass = 'shadow-[0_0_8px_rgba(250,204,21,0.6)]'; }
-                    if (datos.electro) clasesBorde = 'ring-2 ring-neonCyan';
-                }
-                const bgCelda = fechaStr === hoyStr ? 'bg-gray-800' : 'bg-transparent';
-                celdas.push(`<div class="h-10 flex flex-col items-center justify-center rounded-lg ${bgCelda} ${clasesBorde} cursor-pointer hover:bg-gray-700 transition" data-cal-fecha="${fechaStr}"><span class="text-xs ${tieneDatos?'text-white font-bold':'text-gray-400'}">${day}</span><div class="w-1.5 h-1.5 rounded-full mt-0.5 ${dotColor} ${shadowClass}"></div></div>`);
-            }
-            container.innerHTML = celdas.join('');
-
-            container.addEventListener('click', (e) => {
-                const celda = e.target.closest('[data-cal-fecha]');
-                if (!celda) return;
-                document.getElementById('filtro-periodo').value = 'dia_concreto';
-                document.getElementById('fecha-unica').value = celda.dataset.calFecha;
-                toggleFechasPersonalizadas();
-                renderizarGraficos();
-            }, { once: true });
-        }
-
-        async function renderizarGraficos() {
-            if (!AppState.usuarioActual) return;
-            const todos = await getRegistrosUsuario();
-            const fPeriodo = document.getElementById('filtro-periodo').value;
-            let fInicioStr = null, fFinStr = null;
-            const hoyStr = getLocalDateStr();
-
-            if (fPeriodo === 'hoy')          { fInicioStr = hoyStr; fFinStr = hoyStr; }
-            else if (fPeriodo === 'dia_concreto') { fInicioStr = document.getElementById('fecha-unica').value; fFinStr = fInicioStr; }
-            else if (fPeriodo === '7')       { let d = new Date(); d.setDate(d.getDate()-7);  fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
-            else if (fPeriodo === '30')      { let d = new Date(); d.setDate(d.getDate()-30); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
-            else if (fPeriodo === 'rango')   { fInicioStr = document.getElementById('fecha-inicio').value; fFinStr = document.getElementById('fecha-fin').value; }
-
-            const datosFiltrados = todos.filter(r => {
-                if (fInicioStr && r.fecha < fInicioStr) return false;
-                if (fFinStr   && r.fecha > fFinStr)     return false;
-                return true;
-            });
-
-            const fTipo = document.getElementById('filtro-tipo').value;
-            const datosEquilibrio = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 };
-            const datosTendenciaCat = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} };
-            const datosEjercicios = {}, fechasSet = new Set();
-
-            datosFiltrados.forEach(reg => {
-                const esCalor   = reg.fase.includes('Fase 1');
-                const esElectro = reg.fase.includes('Fase 5');
-                if (!esCalor && !esElectro) {
-                    if (fTipo === 'todos' || reg.fase.includes(fTipo)) {
-                        if (reg.fase.includes('Movilidad'))        datosEquilibrio['Movilidad']        += reg.repeticiones;
-                        if (reg.fase.includes('Fortalecimiento'))  datosEquilibrio['Fortalecimiento']  += reg.repeticiones;
-                        if (reg.fase.includes('Estiramientos'))    datosEquilibrio['Estiramientos']    += reg.repeticiones;
-                        if (!datosEjercicios[reg.ejercicio]) datosEjercicios[reg.ejercicio] = 0;
-                        datosEjercicios[reg.ejercicio] += reg.repeticiones;
-                    }
-                }
-                if (fTipo !== 'todos' && !reg.fase.includes(fTipo)) return;
-                if (fTipo === 'todos' && (esCalor || esElectro)) return;
-                fechasSet.add(reg.fecha);
-                if (!esCalor && !esElectro) {
-                    let cat = reg.fase.includes('Movilidad') ? 'Movilidad' : (reg.fase.includes('Fortalecimiento') ? 'Fortalecimiento' : 'Estiramientos');
-                    if (!datosTendenciaCat[cat][reg.fecha]) datosTendenciaCat[cat][reg.fecha] = 0;
-                    datosTendenciaCat[cat][reg.fecha] += reg.repeticiones;
-                }
-            });
-
-            datosEquilibrio.Movilidad       = +(datosEquilibrio.Movilidad       / PESO_CATEGORIA.Movilidad).toFixed(1);
-            datosEquilibrio.Fortalecimiento = +(datosEquilibrio.Fortalecimiento / PESO_CATEGORIA.Fortalecimiento).toFixed(1);
-            datosEquilibrio.Estiramientos   = +(datosEquilibrio.Estiramientos   / PESO_CATEGORIA.Estiramientos).toFixed(1);
-            Object.keys(datosTendenciaCat).forEach(cat => {
-                Object.keys(datosTendenciaCat[cat]).forEach(f => {
-                    datosTendenciaCat[cat][f] = +(datosTendenciaCat[cat][f] / PESO_CATEGORIA[cat]).toFixed(1);
-                });
-            });
-
-            const fechas = Array.from(fechasSet).sort();
-            let datasetsLinea = fTipo === 'todos'
-                ? [
-                    { label: 'Movilidad',       pointStyle: 'circle',   pointRadius: 5, data: fechas.map(f => datosTendenciaCat['Movilidad'][f]       || 0), borderColor: '#2dd4bf', tension: 0.4 },
-                    { label: 'Fortalecimiento', pointStyle: 'rect',     pointRadius: 5, data: fechas.map(f => datosTendenciaCat['Fortalecimiento'][f]  || 0), borderColor: '#3b82f6', tension: 0.4 },
-                    { label: 'Estiramientos',   pointStyle: 'triangle', pointRadius: 6, data: fechas.map(f => datosTendenciaCat['Estiramientos'][f]    || 0), borderColor: '#c084fc', tension: 0.4 }
-                  ]
-                : [{ label: fTipo, data: fechas.map(f => datosTendenciaCat[fTipo][f] || 0), borderColor: fTipo==='Fortalecimiento'?'#3b82f6':(fTipo==='Estiramientos'?'#c084fc':'#2dd4bf'), fill: true, tension: 0.4 }];
-
-            if (fTipo === 'todos') {
-                for (let i = 0; i < fechas.length; i++) {
-                    let mapVal = {};
-                    datasetsLinea.forEach((ds, dsIdx) => { let v = ds.data[i]; if (v > 0) { if (!mapVal[v]) mapVal[v] = []; mapVal[v].push(dsIdx); } });
-                    Object.keys(mapVal).forEach(v => { let indices = mapVal[v]; if (indices.length > 1) { let offset = -0.05*(indices.length-1)/2; indices.forEach(idx => { datasetsLinea[idx].data[i] = parseFloat(v)+offset; offset += 0.05; }); } });
-                }
-            }
-
-            const charts = AppState.charts;
-            if (charts.tendencia)  charts.tendencia.destroy();
-            if (charts.equilibrio) charts.equilibrio.destroy();
-            if (charts.ejercicios) charts.ejercicios.destroy();
-
-            charts.tendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), {
-                type: 'line', data: { labels: fechas, datasets: datasetsLinea },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: fTipo === 'todos', labels: { usePointStyle: true, color: '#cbd5e1', boxWidth: 10 } }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + (Math.round(c.raw*10)/10).toFixed(1) + ' media' } }, datalabels: { display: false } } }
-            });
-
-            charts.equilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), {
-                type: 'doughnut', data: { labels: ['Movilidad','Fortalecimiento','Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf','#3b82f6','#c084fc'], borderWidth: 0 }] },
-                options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } }, tooltip: { callbacks: { label: c => ' '+c.label+': '+c.parsed+' medias/ej' } }, datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (v, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0); return sum>0 ? Math.round((v/sum)*100)+'%' : ''; } } } }
-            });
-
-            const nombresEj = Object.keys(datosEjercicios).sort((a,b) => datosEjercicios[b]-datosEjercicios[a]);
-            const valsEj = nombresEj.map(e => datosEjercicios[e]);
-            charts.ejercicios = new Chart(document.getElementById('grafico-ejercicios').getContext('2d'), {
-                type: 'bar', data: { labels: nombresEj, datasets: [{ data: valsEj, backgroundColor: '#2dd4bf', barThickness: 6, borderRadius: 3 }] },
-                options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { top: 25, right: 30, left: 0, bottom: 0 } }, scales: { x: { display: false, beginAtZero: true }, y: { display: true, grid: { display: false, drawBorder: false }, border: { display: false }, ticks: { display: false }, afterFit: s => s.width = 0 } }, plugins: { legend: { display: false }, tooltip: { enabled: false }, datalabels: { display: true, align: 'right', anchor: 'end', offset: 4, formatter: Math.round, color: '#2dd4bf', font: { weight: 'bold', size: 11 } } } },
-                plugins: [leftAlignLabelsPlugin]
-            });
-        }
-
-        // =====================================================================
-        // PDF
-        // =====================================================================
-        function toggleFiltroDiaPDF() { document.getElementById('pdf-input-dia').classList.toggle('hidden', document.getElementById('pdf-rango').value !== 'especifico'); }
-        function abrirModalPDF()  { document.getElementById('modal-pdf').classList.remove('hidden'); }
-        function cerrarModalPDF() { document.getElementById('modal-pdf').classList.add('hidden'); }
-
-        async function ejecutarGeneracionPDF() {
-            if (!AppState.usuarioActual) return;
-            cerrarModalPDF();
-            document.getElementById('pdf-loading-overlay').classList.remove('hidden');
-            
-            try {
-                const rangoVal = document.getElementById('pdf-rango').value;
-                let fInicio = null, fFin = getLocalDateStr();
-                if (rangoVal === 'hoy')        { fInicio = fFin; }
-                else if (rangoVal === 'especifico') { fInicio = document.getElementById('pdf-fecha-valor').value; fFin = fInicio; }
-                else if (rangoVal !== 'todo')  { let d = new Date(); d.setDate(d.getDate()-parseInt(rangoVal)); fInicio = getLocalDateStr(d); }
-
-                const todos     = await getRegistrosUsuario();
-                const filtrados = todos.filter(r => (!fInicio || r.fecha >= fInicio) && (!fFin || r.fecha <= fFin));
-                filtrados.sort((a,b) => a.timestamp - b.timestamp);
-
-                const sesionesPorDia = {};
-                filtrados.forEach(r => {
-                    if (!sesionesPorDia[r.fecha]) sesionesPorDia[r.fecha] = [];
-                    let currDay = sesionesPorDia[r.fecha];
-                    if (currDay.length === 0) { currDay.push([r]); }
-                    else {
-                        let lastSesion = currDay[currDay.length-1], lastRec = lastSesion[lastSesion.length-1];
-                        if ((r.timestamp - lastRec.timestamp) < 90*60*1000) { lastSesion.push(r); }
-                        else { currDay.push([r]); }
-                    }
-                });
-
-                const tableBody = [];
-                Object.keys(sesionesPorDia).sort().reverse().forEach(f => {
-                    tableBody.push([{ content: `Fecha: ${f}`, colSpan: 2, styles: { fillColor: [220,220,220], textColor: [0,0,0], fontStyle: 'bold' } }]);
-                    let daySessions = sesionesPorDia[f].reverse();
-                    daySessions.forEach((sesion, index) => {
-                        let horaSesion = new Date(sesion[0].timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-                        tableBody.push([{ content: `Sesión ${daySessions.length-index} (${horaSesion})`, colSpan: 2, styles: { fillColor: [245,245,245], textColor: [50,50,50], fontStyle: 'italic', cellPadding: 2 } }]);
-                        sesion.forEach(r => {
-                            const esTerapia = r.fase.includes('Fase 1') || r.fase.includes('Fase 5');
-                            tableBody.push([r.ejercicio, esTerapia ? 'Terapia única' : r.series+' x '+r.repeticiones]);
-                        });
-                    });
-                });
-
-                const dEq  = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 };
-                const dTen = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} };
-                const fSet = new Set();
-                filtrados.forEach(r => {
-                    const esT = r.fase.includes('Fase 1') || r.fase.includes('Fase 5');
-                    if (!esT) {
-                        let cat = r.fase.includes('Movilidad') ? 'Movilidad' : (r.fase.includes('Fortalecimiento') ? 'Fortalecimiento' : 'Estiramientos');
-                        dEq[cat] += r.repeticiones;
-                        if (!dTen[cat][r.fecha]) dTen[cat][r.fecha] = 0;
-                        dTen[cat][r.fecha] += r.repeticiones;
-                        fSet.add(r.fecha);
-                    }
-                });
-                dEq.Movilidad       = +(dEq.Movilidad/5).toFixed(1);
-                dEq.Fortalecimiento = +(dEq.Fortalecimiento/2).toFixed(1);
-                dEq.Estiramientos   = +(dEq.Estiramientos/2).toFixed(1);
-                Object.keys(dTen).forEach(cat => { Object.keys(dTen[cat]).forEach(f => { dTen[cat][f] = +(dTen[cat][f]/PESO_CATEGORIA[cat]).toFixed(1); }); });
-                const fList = Array.from(fSet).sort();
-
-                const charts = AppState.charts;
-                if (charts.pdfChart1) charts.pdfChart1.destroy();
-                charts.pdfChart1 = new Chart(document.getElementById('pdf-canvas-tendencia').getContext('2d'), {
-                    type: 'line', data: { labels: fList, datasets: [
-                        { label: 'Movilidad',       pointStyle:'circle',   data: fList.map(f => dTen['Movilidad'][f]||0),       borderColor:'#2dd4bf', tension: 0.4 },
-                        { label: 'Fortalecimiento', pointStyle:'rect',     data: fList.map(f => dTen['Fortalecimiento'][f]||0), borderColor:'#3b82f6', tension: 0.4 },
-                        { label: 'Estiramientos',   pointStyle:'triangle', data: fList.map(f => dTen['Estiramientos'][f]||0),   borderColor:'#c084fc', tension: 0.4 }
-                    ]},
-                    options: { animation: false, responsive: false, plugins: { datalabels:{display:false}, legend:{labels:{usePointStyle:true,color:'#333'}}, customCanvasBackgroundColor:{color:'white'} }, scales:{y:{beginAtZero:true}} },
-                    plugins: [whiteBgPlugin]
-                });
-
-                if (charts.pdfChart2) charts.pdfChart2.destroy();
-                charts.pdfChart2 = new Chart(document.getElementById('pdf-canvas-equilibrio').getContext('2d'), {
-                    type: 'doughnut', data: { labels: ['Movilidad','Fortalecimiento','Estiramientos'], datasets: [{ data: [dEq.Movilidad,dEq.Fortalecimiento,dEq.Estiramientos], backgroundColor:['#2dd4bf','#3b82f6','#c084fc'] }] },
-                    options: { animation:false, responsive:false, plugins: { datalabels:{display:true,color:'#fff',font:{weight:'bold',size:14},formatter:(v,ctx)=>{let sum=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return sum>0?Math.round((v/sum)*100)+'%':'';}}, legend:{position:'bottom',labels:{color:'#333'}}, customCanvasBackgroundColor:{color:'white'} } },
-                    plugins: [whiteBgPlugin, ChartDataLabels]
-                });
-
-                await new Promise(r => setTimeout(r, 600));
-                const imgTen = document.getElementById('pdf-canvas-tendencia').toDataURL('image/jpeg',1.0);
-                const imgEq  = document.getElementById('pdf-canvas-equilibrio').toDataURL('image/jpeg',1.0);
-                if (imgTen.length < 50 || imgEq.length < 50) throw new Error("El navegador bloqueó la captura del Canvas.");
-
-                const { jsPDF } = window.jspdf;
-                const doc = new jsPDF();
-                doc.setFontSize(22); doc.setTextColor(15,118,110);
-                doc.text(`CerviCare - Informe Clínico (${AppState.usuarioActual.nombre})`, 14, 20);
-                doc.setFontSize(11); doc.setTextColor(100,100,100);
-                doc.text(`Periodo evaluado: ${fInicio||'Inicio'} al ${fFin}`, 14, 28);
-                doc.setFontSize(10); doc.setTextColor(150,150,150);
-                doc.text("Tendencia de Esfuerzo (Reps/Ej)", 14, 40);
-                doc.addImage(imgTen,'JPEG',14,45,90,52);
-                doc.text("Equilibrio Relativo", 110, 40);
-                doc.addImage(imgEq,'JPEG',110,45,75,75);
-
-                if (tableBody.length > 0) {
-                    doc.autoTable({ startY: 130, head: [['Ejercicio / Actividad','Volumen']], body: tableBody, theme:'grid', styles:{fontSize:9}, headStyles:{fillColor:[15,118,110]} });
-                } else {
-                    doc.text("No hay registros en el periodo seleccionado.", 14, 130);
-                }
-                
-                document.getElementById('pdf-loading-overlay').classList.add('hidden'); // Ocultar ANTES de save()
-                doc.save(`CerviCare_Reporte_${AppState.usuarioActual.nombre}_${fFin}.pdf`);
-
-            } catch(e) {
-                console.error(e);
-                document.getElementById('pdf-loading-overlay').classList.add('hidden'); // Siempre ocultar en error
-                await modalConfirm('Error al generar PDF', 'No se pudo compilar el documento. Si estás en modo Privado/Incógnito de iOS, por favor usa el modo normal.');
-            }
-        }
-
-        // =====================================================================
-        // HISTORIAL / REGISTRO SESIONES
-        // =====================================================================
-        function cambiarDiaHistorial(offset) {
-            let d = new Date(AppState.diaHistorial);
-            d.setDate(d.getDate() + offset);
-            AppState.diaHistorial = getLocalDateStr(d);
-            document.getElementById('fecha-historial-input').value = AppState.diaHistorial;
-            cargarHistorial();
-        }
-
-        function seleccionarDiaHistorial(v) {
-            if (!v) return;
-            AppState.diaHistorial = v;
-            cargarHistorial();
-        }
-
-        async function cargarHistorial() {
-            if (!AppState.usuarioActual) return;
-
-            const lista = document.getElementById('lista-registros');
-            lista.innerHTML = '<p class="text-gray-400 text-sm text-center py-6">Cargando...</p>';
-
-            const todos = await getRegistrosUsuario();
-            const registrosDia = todos.filter(r => r.fecha === AppState.diaHistorial);
-
-            if (registrosDia.length === 0) {
-                lista.innerHTML = '<p class="text-gray-400 text-sm text-center py-6 border border-dashed border-gray-800 rounded-lg">Sin actividad este día.</p>';
-                return;
-            }
-
-            registrosDia.sort((a,b) => a.timestamp - b.timestamp);
-            let sesiones = [], sesionActual = [];
-            registrosDia.forEach(r => {
-                if (sesionActual.length === 0) { sesionActual.push(r); }
-                else {
-                    if ((r.timestamp - sesionActual[sesionActual.length-1].timestamp) < 90*60*1000) { sesionActual.push(r); }
-                    else { sesiones.push([...sesionActual]); sesionActual = [r]; }
-                }
-            });
-            if (sesionActual.length > 0) sesiones.push(sesionActual);
-            sesiones.reverse();
-
-            const htmlParts = [];
-            sesiones.forEach((sesion, index) => {
-                const horaInicio   = new Date(sesion[0].timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-                const numeroSesion = sesiones.length - index;
-                const estaAbierta  = index === 0;
-
-                htmlParts.push(`
-                <div class="mb-4 bg-darkBg border border-gray-700 rounded-xl overflow-hidden shadow-lg">
-                    <div class="accordion-header bg-gray-800 px-4 py-3 flex justify-between items-center border-b border-gray-700 cursor-pointer transition-colors hover:bg-gray-700">
-                        <span class="font-bold text-sm text-white">🌞 Sesión ${numeroSesion}</span>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-neonCyan font-mono">${horaInicio}</span>
-                            <svg class="chevron w-4 h-4 text-gray-400 transition-transform duration-300 ${estaAbierta?'rotate-180':''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                        </div>
-                    </div>
-                    <div class="accordion-body p-2 space-y-2 ${estaAbierta?'':'hidden'}">`);
-
-                sesion.slice().reverse().forEach(r => {
-                    const esTerapia = r.fase.includes('Fase 1') || r.fase.includes('Fase 5');
-                    const btnEditar = esTerapia ? '' : `<button data-editar="${r.id}" class="text-neonCyan p-2 hover:bg-neonCyan/20 rounded"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-width="1.5"/></svg></button>`;
-                    htmlParts.push(`
-                    <div class="bg-cardBg p-3 rounded-lg border border-gray-700 flex justify-between items-center">
-                        <div>
-                            <p class="font-bold text-sm text-neonCyan">${sanitize(r.ejercicio)}</p>
-                            <p class="text-xs text-gray-400 mt-1">${esTerapia ? 'Terapia única' : r.series+'x'+r.repeticiones}</p>
-                        </div>
-                        <div class="flex gap-1">
-                            ${btnEditar}
-                            <button data-borrar="${r.id}" class="text-red-500 p-2 hover:bg-red-900/30 rounded"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="1.5"/></svg></button>
-                        </div>
-                    </div>`);
-                });
-                htmlParts.push('</div></div>');
-            });
-
-            lista.innerHTML = htmlParts.join('');
-        }
-
-        async function editarRegistro(id) {
-            const r = await db.registros.get(id);
-            if (!r) return;
-            const resultado = await modalEditar(r.series, r.repeticiones);
-            if (!resultado) return;
-            await db.registros.update(id, { series: resultado.series, repeticiones: resultado.reps });
-            cargarHistorial();
-            actualizarVistasProgreso();
-        }
-
-        async function borrarRegistro(id) {
-            const ok = await modalConfirm('Borrar registro', '¿Eliminar este registro? Esta acción no se puede deshacer.');
-            if (!ok) return;
-            await db.registros.delete(id);
-            cargarHistorial();
-            actualizarVistasProgreso();
-        }
-
-        async function borrarTodosLosDatos() {
-            if (!AppState.usuarioActual) return;
-            const ok = await modalConfirm(
-                '⚠️ Borrar historial completo',
-                `¿Eliminar TODOS los registros del perfil "${AppState.usuarioActual.nombre}"? Esta acción no se puede deshacer.`
-            );
-            if (!ok) return;
-            const ids = (await getRegistrosUsuario()).map(r => r.id);
-            await db.registros.bulkDelete(ids);
-            location.reload();
-        }
-
-        // =====================================================================
-        // EXPORTAR / IMPORTAR
-        // =====================================================================
-        async function exportarCSV() {
-            const datos = await getRegistrosUsuario();
-            const cabecera = ['Fecha','Ejercicio','Series','Reps'].map(escaparCSV).join(',');
-            const filas    = datos.map(r => [r.fecha, r.ejercicio, r.series, r.repeticiones].map(escaparCSV).join(','));
-            descargarArchivo([cabecera, ...filas].join('\n'), `cervicare_${AppState.usuarioActual.nombre}.csv`, 'text/csv');
-        }
-
-        async function exportarBackup() {
-            descargarArchivo(JSON.stringify(await getRegistrosUsuario()), `cervicare_backup_${AppState.usuarioActual.nombre}.json`, 'application/json');
-        }
-
-        async function importarBackup(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-
-            const CAMPOS_REQUERIDOS  = ['fecha','ejercicio','series','repeticiones','fase'];
-            const TIPOS_CAMPO        = { fecha: 'string', ejercicio: 'string', series: 'number', repeticiones: 'number', fase: 'string' };
-
-            const reader = new FileReader();
-            reader.onload = async (ev) => {
-                try {
-                    let datos;
-                    try { datos = JSON.parse(ev.target.result); } catch { throw new Error("El archivo no es un JSON válido."); }
-
-                    if (!Array.isArray(datos)) throw new Error("El JSON debe ser un array de registros.");
-
-                    const datosSanitizados = datos.map((d, i) => {
-                        for (const campo of CAMPOS_REQUERIDOS) {
-                            if (!(campo in d)) throw new Error(`Registro ${i}: falta el campo "${campo}".`);
-                            if (typeof d[campo] !== TIPOS_CAMPO[campo]) throw new Error(`Registro ${i}: tipo incorrecto en "${campo}".`);
-                        }
-                        return {
-                            usuarioId:    AppState.usuarioActual.id,
-                            fecha:        String(d.fecha).slice(0,10),
-                            timestamp:    typeof d.timestamp === 'number' ? d.timestamp : Date.now(),
-                            ejercicio:    String(d.ejercicio).slice(0, 200),
-                            series:       Math.max(1, Math.min(999, parseInt(d.series))),
-                            repeticiones: Math.max(1, Math.min(999, parseInt(d.repeticiones))),
-                            fase:         String(d.fase).slice(0, 200)
-                        };
-                    });
-
-                    await db.registros.bulkAdd(datosSanitizados);
-                    await modalConfirm('Importación completada', `Se importaron ${datosSanitizados.length} registros correctamente.`);
-                    location.reload();
-                } catch(err) {
-                    await modalConfirm('Error en la importación', err.message);
-                }
-            };
-            reader.readAsText(file);
-            e.target.value = '';
-        }
-
-        function descargarArchivo(contenido, nombre, tipo) {
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(new Blob([contenido], { type: tipo }));
-            a.download = nombre;
-            a.click();
-            URL.revokeObjectURL(a.href);
-        }
-
-        // =====================================================================
-        // SERVICE WORKER / ACTUALIZACIONES (OTA)
-        // =====================================================================
-        async function forzarActualizacion() {
-            if ('serviceWorker' in navigator) {
-                try {
-                    const regs = await navigator.serviceWorker.getRegistrations();
-                    for (let reg of regs) { await reg.update(); }
-                    const cacheKeys = await caches.keys();
-                    for (let key of cacheKeys) { await caches.delete(key); }
-                    await modalConfirm('Actualización', 'App actualizada. Se reiniciará ahora.');
-                    window.location.reload(true);
-                } catch(e) {
-                    await modalConfirm('Error', 'No se pudo buscar actualizaciones.');
-                }
-            } else {
-                window.location.reload(true);
-            }
-        }
-
+    });
+}
+
+// =====================================================================
+// NAVEGACIÓN DE PESTAÑAS
+// =====================================================================
+function cambiarPestana(id) {
+    if (!AppState.usuarioActual) return; 
+    ['rutina','estadisticas','registro','ajustes'].forEach(p => {
+        document.getElementById(`vista-${p}`).classList.add('hidden');
+        document.getElementById(`nav-${p}`).classList.remove('text-neonCyan');
+        document.getElementById(`nav-${p}`).classList.add('text-gray-500');
+    });
+    document.getElementById(`vista-${id}`).classList.remove('hidden');
+    document.getElementById(`nav-${id}`).classList.remove('text-gray-500');
+    document.getElementById(`nav-${id}`).classList.add('text-neonCyan');
+    
+    if (id === 'estadisticas') requestAnimationFrame(() => actualizarVistasProgreso());
+    if (id === 'registro') cargarHistorial();
+}
+
+// =====================================================================
+// CONTADORES
+// =====================================================================
+function cambiarValor(id, inc) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const v = parseInt(el.innerText) + inc;
+    el.innerText = v < 1 ? 1 : v;
+}
+
+// =====================================================================
+// TEMPORIZADOR
+// =====================================================================
+async function solicitarPermisoNotificaciones() {
+    if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
+        await Notification.requestPermission();
+    }
+}
+
+function enviarNotificacion() {
+    if ("Notification" in window && Notification.permission === "granted") {
+        const title   = "¡Tiempo de Calor Completado!";
+        const options = { body: "Es hora de continuar con la rutina.", icon: "./icono.jpg", vibrate: [200,100,200] };
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => {
-                        reg.addEventListener('updatefound', () => {
-                            const newWorker = reg.installing;
-                            newWorker.addEventListener('statechange', () => {
-                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    window.location.reload();
-                                }
-                            });
-                        });
-                    })
-                    .catch(err => console.warn('Error SW', err));
-            });
-            let refreshing = false;
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (!refreshing) { refreshing = true; window.location.reload(); }
-            });
+            navigator.serviceWorker.ready.then(reg => reg.showNotification(title, options));
+        } else {
+            new Notification(title, options);
         }
-    </script>
+    }
+}
+
+async function guardarCalorAuto() {
+    if (!AppState.usuarioActual) return;
+    await db.registros.add({ usuarioId: AppState.usuarioActual.id, fecha: getLocalDateStr(), timestamp: Date.now(), ejercicio: 'Aplicación de Calor', series: 1, repeticiones: 1, fase: 'Fase 1: Preparación' });
+    actualizarVistasProgreso();
+}
+
+function toggleTemporizador(btnPlay) {
+    const t = AppState.timer;
+    const btnReset = btnPlay?.parentElement?.querySelector('[data-timer-reset]');
+
+    if (t.estado === 'detenido' || t.estado === 'pausado') {
+        solicitarPermisoNotificaciones();
+        t.estado = 'corriendo';
+        if (btnPlay) {
+            btnPlay.textContent = "Pausar";
+            btnPlay.classList.replace('bg-neonCyan','bg-amber-500');
+            btnPlay.classList.replace('text-darkBg','text-white');
+        }
+        if (btnReset) btnReset.classList.remove('hidden');
+
+        t.endTime = Date.now() + (t.tiempoRestante * 1000);
+        t.interval = setInterval(() => {
+            t.tiempoRestante = Math.max(0, Math.round((t.endTime - Date.now()) / 1000));
+            const display = document.getElementById('display-fase1_calor');
+            if (!display) { clearInterval(t.interval); return; }
+
+            if (t.tiempoRestante <= 0) {
+                clearInterval(t.interval);
+                t.estado = 'completado';
+                display.innerText = "¡Listo!";
+                if (btnPlay) {
+                    btnPlay.textContent = "Siguiente Fase";
+                    btnPlay.classList.replace('bg-amber-500','bg-neonCyan');
+                    btnPlay.classList.replace('text-white','text-darkBg');
+                    const nuevoBtn = btnPlay.cloneNode(true);
+                    btnPlay.parentElement.replaceChild(nuevoBtn, btnPlay);
+                    nuevoBtn.addEventListener('click', () => AppState.miSwiper?.slideNext());
+                }
+                if (btnReset) btnReset.classList.add('hidden');
+                enviarNotificacion();
+                guardarCalorAuto();
+            } else {
+                display.innerText = `${Math.floor(t.tiempoRestante/60).toString().padStart(2,'0')}:${(t.tiempoRestante%60).toString().padStart(2,'0')}`;
+            }
+        }, 500);
+
+    } else if (t.estado === 'corriendo') {
+        clearInterval(t.interval);
+        t.estado = 'pausado';
+        if (btnPlay) {
+            btnPlay.textContent = "Reanudar";
+            btnPlay.classList.replace('bg-amber-500','bg-neonCyan');
+            btnPlay.classList.replace('text-white','text-darkBg');
+        }
+    }
+}
+
+function resetTemporizador() {
+    const t = AppState.timer;
+    clearInterval(t.interval);
+    t.tiempoRestante = 15 * 60;
+    t.estado = 'detenido';
+    t.endTime = null;
+    const display = document.getElementById('display-fase1_calor');
+    if (display) display.innerText = "15:00";
+    
+    const btnReset = document.querySelector('[data-timer-reset]');
+    if (btnReset) btnReset.classList.add('hidden');
+    const btnPlay = document.querySelector('[data-timer-play]');
+    if (btnPlay) {
+        btnPlay.textContent = "Iniciar Calor";
+        btnPlay.classList.replace('bg-amber-500','bg-neonCyan');
+        btnPlay.classList.replace('text-white','text-darkBg');
+    }
+}
+
+// =====================================================================
+// GUARDAR REGISTROS
+// =====================================================================
+async function guardarRegistro(id, titulo, fase, btn) {
+    if (!AppState.usuarioActual) return;
+    await db.registros.add({
+        usuarioId: AppState.usuarioActual.id,
+        fecha: getLocalDateStr(),
+        timestamp: Date.now(),
+        ejercicio: titulo,
+        series: parseInt(document.getElementById(`series-${id}`)?.innerText ?? 1),
+        repeticiones: parseInt(document.getElementById(`reps-${id}`)?.innerText ?? 1),
+        fase
+    });
+    const txt = btn.textContent;
+    btn.textContent = "¡Guardado!";
+    btn.classList.replace('bg-gray-700','bg-green-500');
+    btn.classList.replace('text-white','text-darkBg');
+    setTimeout(() => {
+        btn.textContent = txt;
+        btn.classList.replace('bg-green-500','bg-gray-700');
+        btn.classList.replace('text-darkBg','text-white');
+        AppState.miSwiper?.slideNext();
+        actualizarVistasProgreso();
+        cargarHistorial();
+    }, 600);
+}
+
+async function guardarElectro(aplicada, btn) {
+    if (!AppState.usuarioActual) return;
+    if (aplicada) {
+        await db.registros.add({ usuarioId: AppState.usuarioActual.id, fecha: getLocalDateStr(), timestamp: Date.now(), ejercicio: 'Electroestimulación', series: 1, repeticiones: 1, fase: 'Fase 5' });
+        btn.textContent = "¡Registrado!";
+        btn.classList.replace('bg-neonCyan','bg-green-500');
+    }
+    setTimeout(() => {
+        AppState.miSwiper?.slideTo(0);
+        if (aplicada) {
+            btn.textContent = "Sí, Aplicada";
+            btn.classList.replace('bg-green-500','bg-neonCyan');
+        }
+        actualizarVistasProgreso();
+        cargarHistorial();
+    }, 800);
+}
+
+// =====================================================================
+// GRÁFICOS Y CALENDARIO
+// =====================================================================
+function toggleFechasPersonalizadas() {
+    const per = document.getElementById('filtro-periodo').value;
+    document.getElementById('rango-fechas').classList.toggle('hidden', per !== 'rango');
+    document.getElementById('input-dia-concreto').classList.toggle('hidden', per !== 'dia_concreto');
+    if (per !== 'rango' && per !== 'dia_concreto') renderizarGraficos();
+}
+
+async function actualizarVistasProgreso() {
+    if (!AppState.usuarioActual) return; 
+    await dibujarCalendarioMensual();
+    await renderizarGraficos();
+}
+
+function cambiarMes(offset) {
+    AppState.cal.month += offset;
+    if (AppState.cal.month < 0)  { AppState.cal.month = 11; AppState.cal.year--; }
+    if (AppState.cal.month > 11) { AppState.cal.month = 0;  AppState.cal.year++; }
+    dibujarCalendarioMensual();
+}
+
+async function getRegistrosUsuario() {
+    if (!AppState.usuarioActual) return [];
+    return await db.registros.where({ usuarioId: AppState.usuarioActual.id }).toArray();
+}
+
+async function dibujarCalendarioMensual() {
+    const { month, year } = AppState.cal;
+    document.getElementById('mes-actual-label').textContent = `${nombresMeses[month]} ${year}`;
+    const container = document.getElementById('calendario-grid');
+
+    const todos = await getRegistrosUsuario();
+    const evalPorDia = {};
+    todos.forEach(r => {
+        if (!evalPorDia[r.fecha]) evalPorDia[r.fecha] = { ejercicios: new Set(), calor: false, electro: false };
+        if (r.fase.includes('Fase 1'))       evalPorDia[r.fecha].calor = true;
+        else if (r.fase.includes('Fase 5'))  evalPorDia[r.fecha].electro = true;
+        else                                  evalPorDia[r.fecha].ejercicios.add(r.ejercicio);
+    });
+
+    let primerDia = new Date(year, month, 1).getDay();
+    if (primerDia === 0) primerDia = 7;
+    const diasEnMes = new Date(year, month + 1, 0).getDate();
+    const hoyStr = getLocalDateStr();
+
+    const celdas = [];
+    for (let i = 1; i < primerDia; i++) celdas.push(`<div class="h-10"></div>`);
+
+    for (let day = 1; day <= diasEnMes; day++) {
+        const fechaStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+        const datos = evalPorDia[fechaStr];
+        let dotColor = 'bg-transparent', shadowClass = '', clasesBorde = 'border border-transparent', tieneDatos = false;
+        if (datos) {
+            tieneDatos = true;
+            const numEj = datos.ejercicios.size;
+            const esCompleta = numEj >= RUTINA_TOTAL_EJERCICIOS;
+            if (esCompleta && datos.calor)      { dotColor = 'bg-neonPurple'; shadowClass = 'shadow-[0_0_8px_rgba(192,132,252,0.6)]'; }
+            else if (esCompleta)                { dotColor = 'bg-neonGreen';  shadowClass = 'shadow-[0_0_8px_rgba(74,222,128,0.6)]'; }
+            else if (numEj > 0 && datos.calor)  { dotColor = 'bg-neonOrange'; shadowClass = 'shadow-[0_0_8px_rgba(251,146,60,0.6)]'; }
+            else if (numEj > 0 || datos.calor)  { dotColor = 'bg-neonYellow'; shadowClass = 'shadow-[0_0_8px_rgba(250,204,21,0.6)]'; }
+            if (datos.electro) clasesBorde = 'ring-2 ring-neonCyan';
+        }
+        const bgCelda = fechaStr === hoyStr ? 'bg-gray-800' : 'bg-transparent';
+        celdas.push(`<div class="h-10 flex flex-col items-center justify-center rounded-lg ${bgCelda} ${clasesBorde} cursor-pointer hover:bg-gray-700 transition" data-cal-fecha="${fechaStr}"><span class="text-xs ${tieneDatos?'text-white font-bold':'text-gray-400'}">${day}</span><div class="w-1.5 h-1.5 rounded-full mt-0.5 ${dotColor} ${shadowClass}"></div></div>`);
+    }
+    container.innerHTML = celdas.join('');
+
+    container.addEventListener('click', (e) => {
+        const celda = e.target.closest('[data-cal-fecha]');
+        if (!celda) return;
+        const fecha = celda.dataset.calFecha;
+        document.getElementById('filtro-periodo').value = 'dia_concreto';
+        document.getElementById('fecha-unica').value = fecha;
+        toggleFechasPersonalizadas();
+        renderizarGraficos();
+    }, { once: true });
+}
+
+async function renderizarGraficos() {
+    if (!AppState.usuarioActual) return; 
+    const todos = await getRegistrosUsuario();
+    const fPeriodo = document.getElementById('filtro-periodo').value;
+    let fInicioStr = null, fFinStr = null;
+    const hoyStr = getLocalDateStr();
+
+    if (fPeriodo === 'hoy')          { fInicioStr = hoyStr; fFinStr = hoyStr; }
+    else if (fPeriodo === 'dia_concreto') { fInicioStr = document.getElementById('fecha-unica').value; fFinStr = fInicioStr; }
+    else if (fPeriodo === '7')       { let d = new Date(); d.setDate(d.getDate()-7);  fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
+    else if (fPeriodo === '30')      { let d = new Date(); d.setDate(d.getDate()-30); fInicioStr = getLocalDateStr(d); fFinStr = hoyStr; }
+    else if (fPeriodo === 'rango')   { fInicioStr = document.getElementById('fecha-inicio').value; fFinStr = document.getElementById('fecha-fin').value; }
+
+    const datosFiltrados = todos.filter(r => {
+        if (fInicioStr && r.fecha < fInicioStr) return false;
+        if (fFinStr   && r.fecha > fFinStr)     return false;
+        return true;
+    });
+
+    const fTipo = document.getElementById('filtro-tipo').value;
+    const datosEquilibrio = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 };
+    const datosTendenciaCat = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} };
+    const datosEjercicios = {}, fechasSet = new Set();
+
+    datosFiltrados.forEach(reg => {
+        const esCalor   = reg.fase.includes('Fase 1');
+        const esElectro = reg.fase.includes('Fase 5');
+        if (!esCalor && !esElectro) {
+            if (fTipo === 'todos' || reg.fase.includes(fTipo)) {
+                if (reg.fase.includes('Movilidad'))        datosEquilibrio['Movilidad']        += reg.repeticiones;
+                if (reg.fase.includes('Fortalecimiento'))  datosEquilibrio['Fortalecimiento']  += reg.repeticiones;
+                if (reg.fase.includes('Estiramientos'))    datosEquilibrio['Estiramientos']    += reg.repeticiones;
+                if (!datosEjercicios[reg.ejercicio]) datosEjercicios[reg.ejercicio] = 0;
+                datosEjercicios[reg.ejercicio] += reg.repeticiones;
+            }
+        }
+        if (fTipo !== 'todos' && !reg.fase.includes(fTipo)) return;
+        if (fTipo === 'todos' && (esCalor || esElectro)) return;
+        fechasSet.add(reg.fecha);
+        if (!esCalor && !esElectro) {
+            let cat = reg.fase.includes('Movilidad') ? 'Movilidad' : (reg.fase.includes('Fortalecimiento') ? 'Fortalecimiento' : 'Estiramientos');
+            if (!datosTendenciaCat[cat][reg.fecha]) datosTendenciaCat[cat][reg.fecha] = 0;
+            datosTendenciaCat[cat][reg.fecha] += reg.repeticiones;
+        }
+    });
+
+    datosEquilibrio.Movilidad       = +(datosEquilibrio.Movilidad       / PESO_CATEGORIA.Movilidad).toFixed(1);
+    datosEquilibrio.Fortalecimiento = +(datosEquilibrio.Fortalecimiento / PESO_CATEGORIA.Fortalecimiento).toFixed(1);
+    datosEquilibrio.Estiramientos   = +(datosEquilibrio.Estiramientos   / PESO_CATEGORIA.Estiramientos).toFixed(1);
+    Object.keys(datosTendenciaCat).forEach(cat => {
+        Object.keys(datosTendenciaCat[cat]).forEach(f => {
+            datosTendenciaCat[cat][f] = +(datosTendenciaCat[cat][f] / PESO_CATEGORIA[cat]).toFixed(1);
+        });
+    });
+
+    const fechas = Array.from(fechasSet).sort();
+    let datasetsLinea = fTipo === 'todos'
+        ? [
+            { label: 'Movilidad',       pointStyle: 'circle',   pointRadius: 5, data: fechas.map(f => datosTendenciaCat['Movilidad'][f]       || 0), borderColor: '#2dd4bf', tension: 0.4 },
+            { label: 'Fortalecimiento', pointStyle: 'rect',     pointRadius: 5, data: fechas.map(f => datosTendenciaCat['Fortalecimiento'][f]  || 0), borderColor: '#3b82f6', tension: 0.4 },
+            { label: 'Estiramientos',   pointStyle: 'triangle', pointRadius: 6, data: fechas.map(f => datosTendenciaCat['Estiramientos'][f]    || 0), borderColor: '#c084fc', tension: 0.4 }
+          ]
+        : [{ label: fTipo, data: fechas.map(f => datosTendenciaCat[fTipo][f] || 0), borderColor: fTipo==='Fortalecimiento'?'#3b82f6':(fTipo==='Estiramientos'?'#c084fc':'#2dd4bf'), fill: true, tension: 0.4 }];
+
+    if (fTipo === 'todos') {
+        for (let i = 0; i < fechas.length; i++) {
+            let mapVal = {};
+            datasetsLinea.forEach((ds, dsIdx) => { let v = ds.data[i]; if (v > 0) { if (!mapVal[v]) mapVal[v] = []; mapVal[v].push(dsIdx); } });
+            Object.keys(mapVal).forEach(v => { let indices = mapVal[v]; if (indices.length > 1) { let offset = -0.05*(indices.length-1)/2; indices.forEach(idx => { datasetsLinea[idx].data[i] = parseFloat(v)+offset; offset += 0.05; }); } });
+        }
+    }
+
+    const charts = AppState.charts;
+    if (charts.tendencia)  charts.tendencia.destroy();
+    if (charts.equilibrio) charts.equilibrio.destroy();
+    if (charts.ejercicios) charts.ejercicios.destroy();
+
+    charts.tendencia = new Chart(document.getElementById('grafico-tendencia').getContext('2d'), {
+        type: 'line', data: { labels: fechas, datasets: datasetsLinea },
+        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, grid: { color: '#334155' } }, x: { grid: { display: false } } }, plugins: { legend: { display: fTipo === 'todos', labels: { usePointStyle: true, color: '#cbd5e1', boxWidth: 10 } }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + (Math.round(c.raw*10)/10).toFixed(1) + ' media' } }, datalabels: { display: false } } }
+    });
+
+    charts.equilibrio = new Chart(document.getElementById('grafico-equilibrio').getContext('2d'), {
+        type: 'doughnut', data: { labels: ['Movilidad','Fortalecimiento','Estiramientos'], datasets: [{ data: [datosEquilibrio.Movilidad, datosEquilibrio.Fortalecimiento, datosEquilibrio.Estiramientos], backgroundColor: ['#2dd4bf','#3b82f6','#c084fc'], borderWidth: 0 }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { color: '#cbd5e1' } }, tooltip: { callbacks: { label: c => ' '+c.label+': '+c.parsed+' medias/ej' } }, datalabels: { display: true, color: '#fff', font: { weight: 'bold', size: 14 }, formatter: (v, ctx) => { let sum = ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0); return sum>0 ? Math.round((v/sum)*100)+'%' : ''; } } } }
+    });
+
+    const nombresEj = Object.keys(datosEjercicios).sort((a,b) => datosEjercicios[b]-datosEjercicios[a]);
+    const valsEj = nombresEj.map(e => datosEjercicios[e]);
+    charts.ejercicios = new Chart(document.getElementById('grafico-ejercicios').getContext('2d'), {
+        type: 'bar', data: { labels: nombresEj, datasets: [{ data: valsEj, backgroundColor: '#2dd4bf', barThickness: 6, borderRadius: 3 }] },
+        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, layout: { padding: { top: 25, right: 30, left: 0, bottom: 0 } }, scales: { x: { display: false, beginAtZero: true }, y: { display: true, grid: { display: false, drawBorder: false }, border: { display: false }, ticks: { display: false }, afterFit: s => s.width = 0 } }, plugins: { legend: { display: false }, tooltip: { enabled: false }, datalabels: { display: true, align: 'right', anchor: 'end', offset: 4, formatter: Math.round, color: '#2dd4bf', font: { weight: 'bold', size: 11 } } } },
+        plugins: [leftAlignLabelsPlugin]
+    });
+}
+
+// =====================================================================
+// PDF
+// =====================================================================
+function toggleFiltroDiaPDF() {
+    document.getElementById('pdf-input-dia').classList.toggle('hidden', document.getElementById('pdf-rango').value !== 'especifico');
+}
+function abrirModalPDF()  { document.getElementById('modal-pdf').classList.remove('hidden'); }
+function cerrarModalPDF() { document.getElementById('modal-pdf').classList.add('hidden'); }
+
+async function ejecutarGeneracionPDF() {
+    if (!AppState.usuarioActual) return;
+    cerrarModalPDF();
+    document.getElementById('pdf-loading-overlay').classList.remove('hidden');
+    try {
+        const rangoVal = document.getElementById('pdf-rango').value;
+        let fInicio = null, fFin = getLocalDateStr();
+        if (rangoVal === 'hoy')        { fInicio = fFin; }
+        else if (rangoVal === 'especifico') { fInicio = document.getElementById('pdf-fecha-valor').value; fFin = fInicio; }
+        else if (rangoVal !== 'todo')  { let d = new Date(); d.setDate(d.getDate()-parseInt(rangoVal)); fInicio = getLocalDateStr(d); }
+
+        const todos     = await getRegistrosUsuario();
+        const filtrados = todos.filter(r => (!fInicio || r.fecha >= fInicio) && (!fFin || r.fecha <= fFin));
+        filtrados.sort((a,b) => a.timestamp - b.timestamp);
+
+        const sesionesPorDia = {};
+        filtrados.forEach(r => {
+            if (!sesionesPorDia[r.fecha]) sesionesPorDia[r.fecha] = [];
+            let currDay = sesionesPorDia[r.fecha];
+            if (currDay.length === 0) { currDay.push([r]); }
+            else {
+                let lastSesion = currDay[currDay.length-1], lastRec = lastSesion[lastSesion.length-1];
+                if ((r.timestamp - lastRec.timestamp) < 90*60*1000) { lastSesion.push(r); }
+                else { currDay.push([r]); }
+            }
+        });
+
+        const tableBody = [];
+        Object.keys(sesionesPorDia).sort().reverse().forEach(f => {
+            tableBody.push([{ content: `Fecha: ${f}`, colSpan: 2, styles: { fillColor: [220,220,220], textColor: [0,0,0], fontStyle: 'bold' } }]);
+            let daySessions = sesionesPorDia[f].reverse();
+            daySessions.forEach((sesion, index) => {
+                let horaSesion = new Date(sesion[0].timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+                tableBody.push([{ content: `Sesión ${daySessions.length-index} (${horaSesion})`, colSpan: 2, styles: { fillColor: [245,245,245], textColor: [50,50,50], fontStyle: 'italic', cellPadding: 2 } }]);
+                sesion.forEach(r => {
+                    const esTerapia = r.fase.includes('Fase 1') || r.fase.includes('Fase 5');
+                    tableBody.push([r.ejercicio, esTerapia ? 'Terapia única' : r.series+' x '+r.repeticiones]);
+                });
+            });
+        });
+
+        const dEq  = { 'Movilidad': 0, 'Fortalecimiento': 0, 'Estiramientos': 0 };
+        const dTen  = { 'Movilidad': {}, 'Fortalecimiento': {}, 'Estiramientos': {} };
+        const fSet  = new Set();
+        filtrados.forEach(r => {
+            const esT = r.fase.includes('Fase 1') || r.fase.includes('Fase 5');
+            if (!esT) {
+                let cat = r.fase.includes('Movilidad') ? 'Movilidad' : (r.fase.includes('Fortalecimiento') ? 'Fortalecimiento' : 'Estiramientos');
+                dEq[cat] += r.repeticiones;
+                if (!dTen[cat][r.fecha]) dTen[cat][r.fecha] = 0;
+                dTen[cat][r.fecha] += r.repeticiones;
+                fSet.add(r.fecha);
+            }
+        });
+        dEq.Movilidad       = +(dEq.Movilidad/5).toFixed(1);
+        dEq.Fortalecimiento = +(dEq.Fortalecimiento/2).toFixed(1);
+        dEq.Estiramientos   = +(dEq.Estiramientos/2).toFixed(1);
+        Object.keys(dTen).forEach(cat => { Object.keys(dTen[cat]).forEach(f => { dTen[cat][f] = +(dTen[cat][f]/PESO_CATEGORIA[cat]).toFixed(1); }); });
+        const fList = Array.from(fSet).sort();
+
+        const charts = AppState.charts;
+        if (charts.pdfChart1) charts.pdfChart1.destroy();
+        charts.pdfChart1 = new Chart(document.getElementById('pdf-canvas-tendencia').getContext('2d'), {
+            type: 'line', data: { labels: fList, datasets: [
+                { label: 'Movilidad',       pointStyle:'circle',   data: fList.map(f => dTen['Movilidad'][f]||0),       borderColor:'#2dd4bf', tension: 0.4 },
+                { label: 'Fortalecimiento', pointStyle:'rect',     data: fList.map(f => dTen['Fortalecimiento'][f]||0), borderColor:'#3b82f6', tension: 0.4 },
+                { label: 'Estiramientos',   pointStyle:'triangle', data: fList.map(f => dTen['Estiramientos'][f]||0),   borderColor:'#c084fc', tension: 0.4 }
+            ]},
+            options: { animation: false, responsive: false, plugins: { datalabels:{display:false}, legend:{labels:{usePointStyle:true,color:'#333'}}, customCanvasBackgroundColor:{color:'white'} }, scales:{y:{beginAtZero:true}} },
+            plugins: [whiteBgPlugin]
+        });
+
+        if (charts.pdfChart2) charts.pdfChart2.destroy();
+        charts.pdfChart2 = new Chart(document.getElementById('pdf-canvas-equilibrio').getContext('2d'), {
+            type: 'doughnut', data: { labels: ['Movilidad','Fortalecimiento','Estiramientos'], datasets: [{ data: [dEq.Movilidad,dEq.Fortalecimiento,dEq.Estiramientos], backgroundColor:['#2dd4bf','#3b82f6','#c084fc'] }] },
+            options: { animation:false, responsive:false, plugins: { datalabels:{display:true,color:'#fff',font:{weight:'bold',size:14},formatter:(v,ctx)=>{let sum=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return sum>0?Math.round((v/sum)*100)+'%':'';}}, legend:{position:'bottom',labels:{color:'#333'}}, customCanvasBackgroundColor:{color:'white'} } },
+            plugins: [whiteBgPlugin, ChartDataLabels]
+        });
+
+        await new Promise(r => setTimeout(r, 600));
+        const imgTen = document.getElementById('pdf-canvas-tendencia').toDataURL('image/jpeg',1.0);
+        const imgEq  = document.getElementById('pdf-canvas-equilibrio').toDataURL('image/jpeg',1.0);
+        if (imgTen.length < 50 || imgEq.length < 50) throw new Error("Canvas vacío");
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.setFontSize(22); doc.setTextColor(15,118,110);
+        doc.text(`CerviCare - Informe Clínico (${AppState.usuarioActual.nombre})`, 14, 20);
+        doc.setFontSize(11); doc.setTextColor(100,100,100);
+        doc.text(`Periodo evaluado: ${fInicio||'Inicio'} al ${fFin}`, 14, 28);
+        doc.setFontSize(10); doc.setTextColor(150,150,150);
+        doc.text("Tendencia de Esfuerzo (Reps/Ej)", 14, 40);
+        doc.addImage(imgTen,'JPEG',14,45,90,52);
+        doc.text("Equilibrio Relativo", 110, 40);
+        doc.addImage(imgEq,'JPEG',110,45,75,75);
+
+        if (tableBody.length > 0) {
+            doc.autoTable({ startY: 130, head: [['Ejercicio / Actividad','Volumen']], body: tableBody, theme:'grid', styles:{fontSize:9}, headStyles:{fillColor:[15,118,110]} });
+        } else {
+            doc.text("No hay registros en el periodo seleccionado.", 14, 130);
+        }
+        doc.save(`CerviCare_Reporte_${AppState.usuarioActual.nombre}_${fFin}.pdf`);
+
+    } catch(e) {
+        console.error(e);
+        await modalConfirm('Error al generar PDF', 'No se pudo compilar el documento. Consulta la consola para más detalles.');
+    }
+    document.getElementById('pdf-loading-overlay').classList.add('hidden');
+}
+
+// =====================================================================
+// HISTORIAL
+// =====================================================================
+function cambiarDiaHistorial(offset) {
+    let d = new Date(AppState.diaHistorial);
+    d.setDate(d.getDate() + offset);
+    AppState.diaHistorial = getLocalDateStr(d);
+    document.getElementById('fecha-historial-input').value = AppState.diaHistorial;
+    cargarHistorial();
+}
+
+function seleccionarDiaHistorial(v) {
+    if (!v) return;
+    AppState.diaHistorial = v;
+    cargarHistorial();
+}
+
+async function cargarHistorial() {
+    if (!AppState.usuarioActual) return;
+
+    const lista = document.getElementById('lista-registros');
+    lista.innerHTML = '<p class="text-gray-400 text-sm text-center py-6">Cargando...</p>';
+
+    const todos = await getRegistrosUsuario();
+    const registrosDia = todos.filter(r => r.fecha === AppState.diaHistorial);
+
+    if (registrosDia.length === 0) {
+        lista.innerHTML = '<p class="text-gray-400 text-sm text-center py-6 border border-dashed border-gray-800 rounded-lg">Sin actividad este día.</p>';
+        return;
+    }
+
+    registrosDia.sort((a,b) => a.timestamp - b.timestamp);
+    let sesiones = [], sesionActual = [];
+    registrosDia.forEach(r => {
+        if (sesionActual.length === 0) { sesionActual.push(r); }
+        else {
+            if ((r.timestamp - sesionActual[sesionActual.length-1].timestamp) < 90*60*1000) { sesionActual.push(r); }
+            else { sesiones.push([...sesionActual]); sesionActual = [r]; }
+        }
+    });
+    if (sesionActual.length > 0) sesiones.push(sesionActual);
+    sesiones.reverse();
+
+    const htmlParts = [];
+    sesiones.forEach((sesion, index) => {
+        const horaInicio  = new Date(sesion[0].timestamp).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+        const numeroSesion = sesiones.length - index;
+        const estaAbierta  = index === 0;
+
+        htmlParts.push(`
+        <div class="mb-4 bg-darkBg border border-gray-700 rounded-xl overflow-hidden shadow-lg">
+            <div class="accordion-header bg-gray-800 px-4 py-3 flex justify-between items-center border-b border-gray-700 cursor-pointer transition-colors hover:bg-gray-700">
+                <span class="font-bold text-sm text-white">🌞 Sesión ${numeroSesion}</span>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-neonCyan font-mono">${horaInicio}</span>
+                    <svg class="chevron w-4 h-4 text-gray-400 transition-transform duration-300 ${estaAbierta?'rotate-180':''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+            </div>
+            <div class="accordion-body p-2 space-y-2 ${estaAbierta?'':'hidden'}">`);
+
+        sesion.slice().reverse().forEach(r => {
+            const esTerapia = r.fase.includes('Fase 1') || r.fase.includes('Fase 5');
+            const btnEditar = esTerapia ? '' : `<button data-editar="${r.id}" class="text-neonCyan p-2 hover:bg-neonCyan/20 rounded"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" stroke-width="1.5"/></svg></button>`;
+            htmlParts.push(`
+            <div class="bg-cardBg p-3 rounded-lg border border-gray-700 flex justify-between items-center">
+                <div>
+                    <p class="font-bold text-sm text-neonCyan">${sanitize(r.ejercicio)}</p>
+                    <p class="text-xs text-gray-400 mt-1">${esTerapia ? 'Terapia única' : r.series+'x'+r.repeticiones}</p>
+                </div>
+                <div class="flex gap-1">
+                    ${btnEditar}
+                    <button data-borrar="${r.id}" class="text-red-500 p-2 hover:bg-red-900/30 rounded"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-width="1.5"/></svg></button>
+                </div>
+            </div>`);
+        });
+        htmlParts.push('</div></div>');
+    });
+
+    lista.innerHTML = htmlParts.join('');
+}
+
+// =====================================================================
+// EDITAR / BORRAR REGISTROS
+// =====================================================================
+async function editarRegistro(id) {
+    const r = await db.registros.get(id);
+    if (!r) return;
+    const resultado = await modalEditar(r.series, r.repeticiones);
+    if (!resultado) return;
+    await db.registros.update(id, { series: resultado.series, repeticiones: resultado.reps });
+    cargarHistorial();
+    actualizarVistasProgreso();
+}
+
+async function borrarRegistro(id) {
+    const ok = await modalConfirm('Borrar registro', '¿Eliminar este registro? Esta acción no se puede deshacer.');
+    if (!ok) return;
+    await db.registros.delete(id);
+    cargarHistorial();
+    actualizarVistasProgreso();
+}
+
+async function borrarTodosLosDatos() {
+    if (!AppState.usuarioActual) return;
+    const ok = await modalConfirm(
+        '⚠️ Borrar historial completo',
+        `¿Eliminar TODOS los registros del perfil "${AppState.usuarioActual.nombre}"? Esta acción no se puede deshacer.`
+    );
+    if (!ok) return;
+    const ids = (await getRegistrosUsuario()).map(r => r.id);
+    await db.registros.bulkDelete(ids);
+    location.reload();
+}
+
+// =====================================================================
+// EXPORTAR / IMPORTAR
+// =====================================================================
+async function exportarCSV() {
+    const datos = await getRegistrosUsuario();
+    const cabecera = ['Fecha','Ejercicio','Series','Reps'].map(escaparCSV).join(',');
+    const filas    = datos.map(r => [r.fecha, r.ejercicio, r.series, r.repeticiones].map(escaparCSV).join(','));
+    descargarArchivo([cabecera, ...filas].join('\n'), `cervicare_${AppState.usuarioActual.nombre}.csv`, 'text/csv');
+}
+
+async function exportarBackup() {
+    descargarArchivo(JSON.stringify(await getRegistrosUsuario()), `cervicare_backup_${AppState.usuarioActual.nombre}.json`, 'application/json');
+}
+
+async function importarBackup(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const CAMPOS_REQUERIDOS  = ['fecha','ejercicio','series','repeticiones','fase'];
+    const TIPOS_CAMPO        = { fecha: 'string', ejercicio: 'string', series: 'number', repeticiones: 'number', fase: 'string' };
+    const MAX_REGISTROS      = 50000;
+    const MAX_LONGITUD_CAMPO = 200;
+
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+        try {
+            let datos;
+            try { datos = JSON.parse(ev.target.result); } catch { throw new Error("El archivo no es un JSON válido."); }
+
+            if (!Array.isArray(datos)) throw new Error("El JSON debe ser un array de registros.");
+            if (datos.length > MAX_REGISTROS) throw new Error(`El backup excede el límite de ${MAX_REGISTROS} registros.`);
+
+            const datosSanitizados = datos.map((d, i) => {
+                for (const campo of CAMPOS_REQUERIDOS) {
+                    if (!(campo in d)) throw new Error(`Registro ${i}: falta el campo "${campo}".`);
+                    if (typeof d[campo] !== TIPOS_CAMPO[campo]) throw new Error(`Registro ${i}: tipo incorrecto en "${campo}".`);
+                    if (typeof d[campo] === 'string' && d[campo].length > MAX_LONGITUD_CAMPO) throw new Error(`Registro ${i}: campo "${campo}" demasiado largo.`);
+                }
+                return {
+                    usuarioId:    AppState.usuarioActual.id,
+                    fecha:        String(d.fecha).slice(0,10),
+                    timestamp:    typeof d.timestamp === 'number' ? d.timestamp : Date.now(),
+                    ejercicio:    String(d.ejercicio).slice(0, MAX_LONGITUD_CAMPO),
+                    series:       Math.max(1, Math.min(999, parseInt(d.series))),
+                    repeticiones: Math.max(1, Math.min(999, parseInt(d.repeticiones))),
+                    fase:         String(d.fase).slice(0, MAX_LONGITUD_CAMPO)
+                };
+            });
+
+            await db.registros.bulkAdd(datosSanitizados);
+            await modalConfirm('Importación completada', `Se importaron ${datosSanitizados.length} registros correctamente.`);
+            location.reload();
+        } catch(err) {
+            await modalConfirm('Error en la importación', err.message);
+        }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+}
+
+function descargarArchivo(contenido, nombre, tipo) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([contenido], { type: tipo }));
+    a.download = nombre;
+    a.click();
+    URL.revokeObjectURL(a.href);
+}
+
+// =====================================================================
+// SERVICE WORKER / ACTUALIZACIONES (OTA)
+// =====================================================================
+async function forzarActualizacion() {
+    if ('serviceWorker' in navigator) {
+        try {
+            const regs = await navigator.serviceWorker.getRegistrations();
+            for (let reg of regs) { await reg.update(); }
+            const cacheKeys = await caches.keys();
+            for (let key of cacheKeys) { await caches.delete(key); }
+            await modalConfirm('Actualización', 'App actualizada. Se reiniciará ahora.');
+            window.location.reload(true);
+        } catch(e) {
+            await modalConfirm('Error', 'No se pudo buscar actualizaciones.');
+        }
+    } else {
+        window.location.reload(true);
+    }
+}
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => {
+                reg.addEventListener('updatefound', () => {
+                    const newWorker = reg.installing;
+                    newWorker.addEventListener('statechange', () => {
+                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                            window.location.reload();
+                        }
+                    });
+                });
+            })
+            .catch(err => console.warn('Error SW', err));
+    });
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) { refreshing = true; window.location.reload(); }
+    });
+}
+</script>
 </body>
 </html>
