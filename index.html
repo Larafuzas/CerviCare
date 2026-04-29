@@ -146,12 +146,9 @@
     </main>
 
     <div class="fixed bottom-16 w-full bg-darkBg/95 backdrop-blur-md border-t border-gray-800 text-[10px] text-gray-400 py-1.5 flex justify-center items-center gap-2 z-10 shadow-[0_-5px_15px_rgba(0,0,0,0.5)]">
-        <svg class="w-3.5 h-3.5 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2.31-7.88c.11-.64.44-1.13.98-1.46.54-.33 1.18-.5 1.93-.5.71 0 1.34.15 1.88.46.54.31.91.75 1.12 1.32l1.64-1.07c-.42-.92-1.05-1.63-1.89-2.12-.84-.49-1.83-.74-2.96-.74-1.39 0-2.54.35-3.46 1.05-1.03.81-1.68 1.95-1.95 3.42-.27 1.47-.14 2.82.38 4.05.52 1.23 1.38 2.19 2.58 2.89 1.11.66 2.37.99 3.79.99 1.24 0 2.32-.27 3.23-.81.91-.54 1.58-1.28 2.01-2.23l-1.65-1.04c-.25.56-.66 1-1.22 1.33-.56.33-1.22.49-1.98.49-.84 0-1.55-.18-2.13-.54-.68-.42-1.18-1-1.5-1.74-.32-.74-.41-1.58-.28-2.52zm5.73 0c.11-.64.44-1.13.98-1.46.54-.33 1.18-.5 1.93-.5.71 0 1.34.15 1.88.46.54.31.91.75 1.12 1.32l1.64-1.07c-.42-.92-1.05-1.63-1.89-2.12-.84-.49-1.83-.74-2.96-.74-1.39 0-2.54.35-3.46 1.05-1.03.81-1.68 1.95-1.95 3.42-.27 1.47-.14 2.82.38 4.05.52 1.23 1.38 2.19 2.58 2.89 1.11.66 2.37.99 3.79.99 1.24 0 2.32-.27 3.23-.81.91-.54 1.58-1.28 2.01-2.23l-1.65-1.04c-.25.56-.66 1-1.22 1.33-.56.33-1.22.49-1.98.49-.84 0-1.55-.18-2.13-.54-.68-.42-1.18-1-1.5-1.74-.32-.74-.41-1.58-.28-2.52z"/>
-        </svg>
-        <span>CC BY-NC-SA</span>
+        <a href="https://creativecommons.org/publicdomain/zero/1.0/deed.es" target="_blank" rel="noopener noreferrer" class="hover:text-neonCyan transition-colors">CC0 1.0 Universal</a>
         <span class="text-gray-600">|</span>
-        <span>© 2024</span>
+        <span>2026</span>
         <span class="text-gray-600">|</span>
         <span>Por <strong class="text-neonCyan font-bold tracking-wide">Larafuzas</strong></span>
     </div>
@@ -302,6 +299,7 @@
         window.onload = async () => { 
             try {
                 await db.open();
+
                 let count = await db.usuarios.count();
                 let defId = 1;
                 if(count === 0) {
@@ -323,7 +321,7 @@
                 cargarHistorial(); 
             } catch (err) { 
                 console.error("Error al iniciar DB:", err); 
-                renderizarRutina();
+                renderizarRutina(); 
             }
         };
 
@@ -394,14 +392,11 @@
 
         function irADiapositiva(index) { if(miSwiper) miSwiper.slideTo(index); }
         function actualizarEstiloPills(activeIndex) { document.querySelectorAll('.chip').forEach((pill, idx) => { if (idx === activeIndex) { pill.classList.replace('bg-transparent', 'bg-neonCyan'); pill.classList.replace('text-gray-400', 'text-darkBg'); pill.classList.replace('border-gray-600', 'border-neonCyan'); pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); } else { pill.classList.replace('bg-neonCyan', 'bg-transparent'); pill.classList.replace('text-darkBg', 'text-gray-400'); pill.classList.replace('border-neonCyan', 'border-gray-600'); } }); }
-
         function cambiarPestana(id) { ['rutina', 'estadisticas', 'ajustes'].forEach(p => { document.getElementById(`vista-${p}`).classList.add('hidden'); document.getElementById(`nav-${p}`).classList.replace('text-neonCyan', 'text-gray-500'); }); document.getElementById(`vista-${id}`).classList.remove('hidden'); document.getElementById(`nav-${id}`).classList.replace('text-gray-500', 'text-neonCyan'); if (id === 'estadisticas') setTimeout(actualizarVistasProgreso, 50); if (id === 'ajustes') cargarHistorial(); }
-
         function cambiarValor(id, inc) { let el = document.getElementById(id), v = parseInt(el.innerText) + inc; el.innerText = v < 1 ? 1 : v; }
 
         async function solicitarPermisoNotificaciones() { if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") { await Notification.requestPermission(); } }
         function enviarNotificacion() { if ("Notification" in window && Notification.permission === "granted") { const title = "¡Tiempo de Calor Completado!"; const options = { body: "Es hora de continuar con la rutina.", icon: "./icono.jpg", vibrate: [200, 100, 200] }; if ('serviceWorker' in navigator) { navigator.serviceWorker.ready.then(reg => reg.showNotification(title, options)); } else { new Notification(title, options); } } }
-        
         async function guardarCalorAuto() { await db.registros.add({ usuarioId: usuarioActual.id, fecha: getLocalDateStr(), timestamp: Date.now(), ejercicio: 'Aplicación de Calor', series: 1, repeticiones: 1, fase: 'Fase 1: Preparación' }); actualizarVistasProgreso(); }
 
         function toggleTemporizador() { const bp = document.getElementById('btn-timer-play'), br = document.getElementById('btn-timer-reset'); if (timerEstado === 'detenido' || timerEstado === 'pausado') { solicitarPermisoNotificaciones(); timerEstado = 'corriendo'; bp.innerText = "Pausar"; bp.className = bp.className.replace('bg-neonCyan', 'bg-amber-500').replace('text-darkBg', 'text-white'); br.classList.remove('hidden'); endTime = Date.now() + (tiempoRestante * 1000); timerInterval = setInterval(() => { tiempoRestante = Math.round((endTime - Date.now()) / 1000); if (tiempoRestante <= 0) { tiempoRestante = 0; clearInterval(timerInterval); timerEstado = 'completado'; document.getElementById('display-fase1_calor').innerText = "¡Listo!"; bp.innerText = "Siguiente Fase"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); bp.onclick = () => miSwiper.slideNext(); br.classList.add('hidden'); enviarNotificacion(); guardarCalorAuto(); } else { document.getElementById('display-fase1_calor').innerText = `${Math.floor(tiempoRestante/60).toString().padStart(2,'0')}:${(tiempoRestante%60).toString().padStart(2,'0')}`; } }, 500); } else if (timerEstado === 'corriendo') { clearInterval(timerInterval); timerEstado = 'pausado'; bp.innerText = "Reanudar"; bp.className = bp.className.replace('bg-amber-500', 'bg-neonCyan').replace('text-white', 'text-darkBg'); } }
@@ -526,17 +521,20 @@
                 
                 doc.setFontSize(22); doc.setTextColor(15, 118, 110); doc.text(`CerviCare - Informe Clínico (${usuarioActual.nombre})`, 14, 20);
                 doc.setFontSize(11); doc.setTextColor(100, 100, 100); doc.text(`Periodo evaluado: ${fInicio || 'Inicio'} al ${fFin}`, 14, 28);
+
                 doc.setFontSize(10); doc.setTextColor(150, 150, 150); doc.text("Tendencia de Esfuerzo (Reps/Ej)", 14, 40);
                 doc.addImage(imgTen, 'JPEG', 14, 45, 90, 52);
+                
                 doc.text("Equilibrio Relativo", 110, 40); doc.addImage(imgEq, 'JPEG', 110, 45, 75, 75);
 
                 let finalY = 130;
+
                 if (tableBody.length > 0) { doc.autoTable({ startY: finalY, head: [['Ejercicio / Actividad', 'Volumen']], body: tableBody, theme: 'grid', styles: { fontSize: 9 }, headStyles: { fillColor: [15, 118, 110] } }); } 
                 else { doc.text("No hay registros en el periodo seleccionado.", 14, finalY); }
 
                 doc.save(`CerviCare_Reporte_${usuarioActual.nombre}_${fFin}.pdf`);
 
-            } catch (e) { console.error(e); alert("Error: Tu navegador bloqueó la captura gráfica. Si estás en modo Privado/Incógnito, usa navegación normal."); }
+            } catch (e) { console.error(e); alert("Error al compilar el PDF."); }
             document.getElementById('pdf-loading-overlay').classList.add('hidden');
         }
 
