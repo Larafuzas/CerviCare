@@ -119,6 +119,15 @@
         <section id="vista-ajustes" class="hidden h-full w-full p-4 overflow-y-auto pb-28">
             <h2 class="text-xl font-bold text-white mb-4">Ajustes y Configuración</h2>
             
+            <h3 class="text-neonCyan font-semibold mb-2 text-sm uppercase tracking-wide">Sistema</h3>
+            <div class="bg-cardBg p-3 rounded-xl border border-gray-700 mb-6 shadow-lg flex justify-between items-center">
+                <div>
+                    <p class="font-bold text-sm text-white">Versión v1.36</p>
+                    <p class="text-[10px] text-gray-400">Actualización en 2º plano activada</p>
+                </div>
+                <button onclick="forzarActualizacion()" class="bg-darkBg border border-neonCyan text-neonCyan px-3 py-1.5 rounded-lg text-xs font-bold shadow-md hover:bg-neonCyan hover:text-darkBg transition-colors">Buscar Updates</button>
+            </div>
+
             <div class="bg-blueDark/20 p-4 rounded-xl border border-blueDark mb-6 shadow-lg">
                 <h3 class="text-blueLight font-semibold mb-2 text-sm uppercase tracking-wide">Exportación Clínica</h3>
                 <p class="text-xs text-gray-400 mb-3">Genera un informe PDF de los registros de <strong id="lbl-pdf-user">...</strong> para el fisioterapeuta.</p>
@@ -299,6 +308,7 @@
         window.onload = async () => { 
             try {
                 await db.open();
+
                 let count = await db.usuarios.count();
                 let defId = 1;
                 if(count === 0) {
@@ -550,7 +560,7 @@
 
                 doc.save(`CerviCare_Reporte_${usuarioActual.nombre}_${fFin}.pdf`);
 
-            } catch (e) { console.error(e); alert("Error: Tu navegador bloqueó la captura gráfica. Si estás en modo Privado/Incógnito, usa navegación normal."); }
+            } catch (e) { console.error(e); alert("Error al compilar el PDF."); }
             document.getElementById('pdf-loading-overlay').classList.add('hidden');
         }
 
@@ -615,6 +625,19 @@
         async function exportarBackup() { descargarArchivo(JSON.stringify(await getRegistrosUsuario()),`cervicare_backup_${usuarioActual.nombre}.json`,'application/json'); }
         function importarBackup(e) { const r=new FileReader(); r.onload=async(ev)=>{ const datos = JSON.parse(ev.target.result); datos.forEach(d => { d.usuarioId = usuarioActual.id; if(!d.timestamp) d.timestamp = Date.now(); }); await db.registros.bulkAdd(datos); alert("Importado."); location.reload(); }; r.readAsText(e.target.files[0]); }
         function descargarArchivo(c, n, t) { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([c],{type:t})); a.download=n; a.click(); }
+
+        async function forzarActualizacion() {
+            if ('serviceWorker' in navigator) {
+                try {
+                    const regs = await navigator.serviceWorker.getRegistrations();
+                    for (let reg of regs) { await reg.update(); }
+                    const cacheKeys = await caches.keys();
+                    for (let key of cacheKeys) { await caches.delete(key); }
+                    alert("App actualizada. Se reiniciará.");
+                    window.location.reload(true);
+                } catch (e) { alert("Error al buscar actualizaciones."); }
+            } else { window.location.reload(true); }
+        }
 
         if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').then(reg => { reg.addEventListener('updatefound', () => { const newWorker = reg.installing; newWorker.addEventListener('statechange', () => { if (newWorker.state === 'installed' && navigator.serviceWorker.controller) { window.location.reload(); } }); }); }).catch(err => console.warn('Error SW', err)); }); let refreshing = false; navigator.serviceWorker.addEventListener('controllerchange', () => { if (!refreshing) { refreshing = true; window.location.reload(); } }); }
     </script>
